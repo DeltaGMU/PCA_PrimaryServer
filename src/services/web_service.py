@@ -105,30 +105,28 @@ class ServerThreadWorker(threading.Thread):
 
 
 class WebService:
-    def __init__(self, web_session_manager, ip, port, use_https=False, ssl_cert=None, ssl_key=None):
-        global_vars.web_manager = web_session_manager
-        global_vars.web_manager.web_service = self
-        self.web_server = ServerThreadWorker(
-            kwargs={
-                "ip": ip, "port": port,
-                "ssl_cert": ssl_cert if use_https else None,
-                "ssl_key": ssl_key if use_https else None
-                },
-            daemon=True
-        )
-        if not self.web_server:
-            raise RuntimeError(f"Web Service Error [Error Code: {ERR_WEB_SRVCE_NOT_INITIALIZED}\n"
-                               f"The web service was not initialized or encountered an error while initializing!\n"
-                               f"If you are the server administrator, please refer to the software manual!")
-
-        else:
-            self.initialize_web()
+    def __init__(self, ip: str, port: str, use_https: bool = False, ssl_cert: bool = None, ssl_key: bool = None):
+        self.ip = ip
+        self.port = port
+        self.use_https = use_https
+        self.ssl_cert = ssl_cert
+        self.ssl_key = ssl_key
+        self.web_server = None
 
     def initialize_web(self):
+        self.web_server = ServerThreadWorker(
+            kwargs={
+                "ip": self.ip, "port": self.port,
+                "ssl_cert": self.ssl_cert if self.use_https else None,
+                "ssl_key": self.ssl_key if self.use_https else None
+            },
+            daemon=True
+        )
         self.web_server.run()
         # log(INFO, f"Initialized API Server on: {ip}:{port}/api/", origin=L_WEB_INTERFACE, print_mode=PrintMode.REG_PRINT.value)
         # log(INFO, f"Server API documentation can be found on: {ip}:{port}/docs/", origin=L_WEB_INTERFACE, print_mode=PrintMode.REG_PRINT.value)
         # log(INFO, f"Initialized Web Application on: {ip}:{port}/", origin=L_WEB_INTERFACE, print_mode=PrintMode.REG_PRINT.value)
 
     def stop_web(self):
-        self.web_server.stop()
+        if self.web_server:
+            self.web_server.stop()

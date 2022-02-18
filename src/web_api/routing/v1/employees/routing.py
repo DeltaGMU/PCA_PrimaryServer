@@ -1,7 +1,7 @@
-from fastapi import Body, HTTPException
+from fastapi import Body
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
-from src.utils.employee_utils import generate_employee_id, verify_employee_password, \
+from src.lib.utils.employee_utils import generate_employee_id, verify_employee_password, \
     create_employee_password_hashes
 from src.web_api.models import ResponseModel
 from src.data_classes.employee import Employee, PydanticEmployee, EmployeeHours, PydanticEmployeeHours

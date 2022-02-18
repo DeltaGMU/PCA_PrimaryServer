@@ -1,6 +1,6 @@
 from typing import Union
 from src.lib import global_vars
-from src.utils.db_utils import verify_db_active
+from src.lib.utils.db_utils import verify_db_active
 from src.lib.error_codes import ERR_DB_SRVCE_INACTIVE
 from sqlalchemy.exc import SQLAlchemyError
 from src.data_classes.employee import Employee

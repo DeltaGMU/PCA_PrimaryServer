@@ -1,6 +1,6 @@
 from src.services.core_service import CoreService
 from src.services.web_service import WebService
-from src.utils.session_manager import SessionManager, WebSessionManager
+from src.lib.utils.session_manager import SessionManager, WebSessionManager
 from src.lib import global_vars
 from dotenv import load_dotenv
 from os import getenv
@@ -11,7 +11,7 @@ load_dotenv()
 
 def init():
     parser = argparse.ArgumentParser(
-        description="A python-based timesheet/childcare solution with an integrated web_api server "
+        description="A python-based timesheet/childcare solution with an integrated REST api server "
                     "built for Providence Christian Academy. Developed by Elwis Salinas, Jason Jerome, Elleni Adhanom, "
                     "Robert Gryder, Ramisa Resha, and Dimitrik Johnson as members of Team Delta at George Mason University."
     )
@@ -44,10 +44,8 @@ def init():
     try:
         session_manager = SessionManager(args.server_ip, args.server_port, args.db_name,
                                          args.user, args.password, global_vars.debug_mode)
-        web_session_manager = WebSessionManager()
-        CoreService(session_manager)
-        WebService(web_session_manager, args.web_ip, args.web_port)
-
+        web_session_manager = WebSessionManager(args.web_ip, args.web_port, global_vars.debug_mode)
+        CoreService(session_manager, web_session_manager)
     except RuntimeError as e:
         from sys import exit
         print(f"Encountered a fatal error!\n{e}")

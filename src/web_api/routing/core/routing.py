@@ -1,7 +1,7 @@
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
 from src.web_api.models import ResponseModel
-from src.utils.db_utils import verify_db_active
+from src.lib.utils.db_utils import verify_db_active
 router = InferringRouter()
 
 
