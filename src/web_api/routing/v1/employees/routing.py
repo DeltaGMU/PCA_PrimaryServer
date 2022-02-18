@@ -21,7 +21,6 @@ class CoreRouter:
             employees = session.query(Employee).all()
             for row in employees:
                 item: Employee = row
-                print(item.as_dict())
                 all_employees.append(item.as_dict())
         return ResponseModel(200, "success", {"employees": all_employees}).as_dict()
 

@@ -1,6 +1,7 @@
 from src.services.core_service import CoreService
 from src.services.web_service import WebService
 from src.utils.session_manager import SessionManager, WebSessionManager
+from src.lib import global_vars
 from dotenv import load_dotenv
 from os import getenv
 import argparse
@@ -32,21 +33,17 @@ def init():
                                help='Enter the web server IP if a .env file is not present.')
     optional_args.add_argument('--web_port', dest='web_port', required=False, default=getenv('WEB_PORT'),
                                help='Enter the desired REST server port if a .env file is not present.')
-    optional_args.add_argument('--debug', dest='debug_mode', required=False, default=False,
+    optional_args.add_argument('--debug', dest='debug_mode', action='store_true', required=False, default=False,
                                help='Enter the name of the mariadb database if a .env file is not present.')
 
     args = parser.parse_args()
 
-    debug_mode = False
-    try:
-        if not args.debug_mode and getenv('DEBUG_MODE').upper() == 'TRUE':
-            debug_mode = True
-    except ValueError as e:
-        raise ValueError(f"Expected 'DEBUG_MODE' parameter to be a number 0 (disabled) or 1 (enabled)!\n{e}")
+    if args.debug_mode:
+        global_vars.debug_mode = True
 
     try:
         session_manager = SessionManager(args.server_ip, args.server_port, args.db_name,
-                                         args.user, args.password, debug_mode)
+                                         args.user, args.password, global_vars.debug_mode)
         web_session_manager = WebSessionManager()
         CoreService(session_manager)
         WebService(web_session_manager, args.web_ip, args.web_port)

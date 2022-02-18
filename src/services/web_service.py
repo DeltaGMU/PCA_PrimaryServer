@@ -44,7 +44,7 @@ def general_exception_handler(request: Request, exc: Exception):
 
 
 @web_app.exception_handler(RequestValidationError)
-def general_exception_handler(request: Request, exc: Exception):
+def general_exception_handler(exc: Exception):
     resp = ResponseModel(422, "Error - Unprocessable Entity",
                          {"error_message": f"The provided entity was missing one or more fields!",
                           "detail_message": str(exc)})
@@ -52,18 +52,21 @@ def general_exception_handler(request: Request, exc: Exception):
 
 
 @web_app.exception_handler(StarletteHTTPException)
-async def starlette_http_exception(request: Request, exc: Exception):
-    resp = ResponseModel(404, "Error - Not Found", {"error_message": "This path is invalid!", "detail_message": str(exc)})
+async def starlette_http_exception(exc: Exception):
+    resp = ResponseModel(404, "Error - Not Found",
+                         {"error_message": "This path is invalid!",
+                          "detail_message": str(exc)})
     return JSONResponse(resp.as_dict(), media_type="application/json", status_code=404)
 
 
 @web_app.get("/")
 async def serve_app(request: Request):
-    return Jinja2Templates(directory=f"{Path(path.dirname(__file__)).parent.parent}/src/web_api/static/templates").TemplateResponse("index.html", {"request": request})
+    return Jinja2Templates(directory=f"{Path(path.dirname(__file__)).parent.parent}/src/web_api/static/templates").\
+        TemplateResponse("index.html", {"request": request})
 
 
 @web_app.get("/favicon.ico")
-async def serve_favicon(request: Request):
+async def serve_favicon():
     favicon = open(f"{Path(path.dirname(__file__)).parent.parent}/src/web_api/static/favicon.ico", mode="rb")
     return StreamingResponse(favicon, media_type="image/x-icon")
 
@@ -85,7 +88,7 @@ class ServerThreadWorker(threading.Thread):
                 host=self.ip,
                 port=self.port,
                 reload=False,
-                log_level=global_vars.logging_mode if global_vars.logging_mode else "critical",
+                log_level=global_vars.logging_mode if global_vars.debug_mode else "critical",
                 loop="asyncio",
                 ssl_certfile=kwargs["kwargs"].get("ssl_cert"),
                 ssl_keyfile=kwargs["kwargs"].get("ssl_key"),
