@@ -1,7 +1,7 @@
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
 from src.web_api.models import ResponseModel
-from src.lib.global_vars import SharedData
+from src.lib.service_manager import SharedData
 router = InferringRouter()
 
 # pylint: disable=R0201

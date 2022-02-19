@@ -1,4 +1,4 @@
-from src.lib.global_vars import SharedData
+from src.lib.service_manager import SharedData
 from src.lib.error_codes import ERR_SESSION_MNGR_NOT_INITIALIZED, ERR_WEB_SESSION_MNGR_NOT_INITIALIZED
 
 

@@ -12,8 +12,8 @@ from typing import Dict
 from src.lib.utils.employee_utils import generate_employee_id, verify_employee_password, \
     create_employee_password_hashes
 from src.web_api.models import ResponseModel
-from src.data_classes.employee import Employee, PydanticEmployee, EmployeeHours, PydanticEmployeeHours
-from src.lib.global_vars import SharedData
+from src.lib.data_classes.employee import Employee, PydanticEmployee, EmployeeHours, PydanticEmployeeHours
+from src.lib.service_manager import SharedData
 
 router = InferringRouter()
 

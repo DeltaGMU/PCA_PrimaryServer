@@ -1,7 +1,6 @@
 import threading
 from pathlib import Path
 from os import path
-import json
 import uvicorn
 from fastapi import FastAPI, Request, HTTPException, status
 from fastapi.exceptions import RequestValidationError, ValidationError
@@ -13,7 +12,7 @@ from src.lib.strings import META_VERSION
 from src.web_api.models import ResponseModel
 from src.web_api.routing.v1 import routing as v1_routing
 from src.web_api.routing.v1.employees import routing as employees_routing
-from src.lib.global_vars import SharedData
+from src.lib.service_manager import SharedData
 
 web_app = FastAPI(
     title="PCA Web API",

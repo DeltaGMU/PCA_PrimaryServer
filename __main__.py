@@ -1,6 +1,6 @@
 from src.services.core_service import CoreService
-from src.lib.global_vars import SharedData
-from src.lib.utils.session_manager import SessionManager, WebSessionManager
+from src.lib.service_manager import SharedData
+from src.lib.session_manager import SessionManager, WebSessionManager
 from dotenv import load_dotenv
 from os import getenv
 import argparse

@@ -1,8 +1,8 @@
 from typing import Union
-from src.lib.global_vars import SharedData
+from src.lib.service_manager import SharedData
 from src.lib.error_codes import ERR_DB_SRVCE_INACTIVE
 from sqlalchemy.exc import SQLAlchemyError
-from src.data_classes.employee import Employee
+from src.lib.data_classes.employee import Employee
 from passlib.hash import bcrypt
 
 
