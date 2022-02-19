@@ -4,7 +4,7 @@ from src.web_api.models import ResponseModel
 from src.lib.global_vars import SharedData
 router = InferringRouter()
 
-
+# pylint: disable=R0201
 @cbv(router)
 class CoreRouter:
     @router.get("/api/v1/")
