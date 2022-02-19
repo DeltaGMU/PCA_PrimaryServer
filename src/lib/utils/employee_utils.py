@@ -1,6 +1,5 @@
 from typing import Union
-from src.lib import global_vars
-from src.lib.utils.db_utils import verify_db_active
+from src.lib.global_vars import SharedData
 from src.lib.error_codes import ERR_DB_SRVCE_INACTIVE
 from sqlalchemy.exc import SQLAlchemyError
 from src.data_classes.employee import Employee
@@ -8,13 +7,14 @@ from passlib.hash import bcrypt
 
 
 def generate_employee_id(first_name: str, last_name: str) -> Union[str, None]:
-    if not verify_db_active():
+    shared_data = SharedData()
+    if not shared_data.Managers.get_session_manager().db_engine:
         raise RuntimeError(f'Database Error [Error Code: {ERR_DB_SRVCE_INACTIVE}]\n'
                            'The database was unable to be verified as online and active!')
     if not len(first_name) > 0 and not len(last_name) > 0:
         return None
     try:
-        with global_vars.session_manager.make_session() as session:
+        with shared_data.Managers.get_session_manager().make_session() as session:
             last_employee = session.query(Employee).order_by(Employee.id.desc()).first()
             # Generate and add a blank employee template, but flush the statement instead of committing it.
             # Use the blank employee to get the last id that was auto-generated and increment that by 1.

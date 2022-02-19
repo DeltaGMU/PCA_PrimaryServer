@@ -13,8 +13,7 @@ from src.lib.strings import META_VERSION
 from src.web_api.models import ResponseModel
 from src.web_api.routing.core import routing as core_routing
 from src.web_api.routing.v1.employees import routing as employees_routing
-from src.lib import global_vars
-from src.lib.error_codes import ERR_WEB_SRVCE_NOT_INITIALIZED
+from src.lib.global_vars import SharedData
 
 web_app = FastAPI(
     title="PCA Web API",
@@ -88,7 +87,7 @@ class ServerThreadWorker(threading.Thread):
                 host=self.ip,
                 port=self.port,
                 reload=False,
-                log_level=global_vars.logging_mode if global_vars.debug_mode else "critical",
+                log_level="info" if SharedData().Settings.get_debug_mode() else "critical",
                 loop="asyncio",
                 ssl_certfile=kwargs["kwargs"].get("ssl_cert"),
                 ssl_keyfile=kwargs["kwargs"].get("ssl_key"),

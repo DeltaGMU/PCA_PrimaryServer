@@ -1,7 +1,7 @@
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
 from src.web_api.models import ResponseModel
-from src.lib.utils.db_utils import verify_db_active
+from src.lib.global_vars import SharedData
 router = InferringRouter()
 
 
@@ -13,4 +13,4 @@ class CoreRouter:
 
     @router.get("/api/v1/status")
     async def status(self):
-        return ResponseModel(200, "success", {"status": "online" if verify_db_active() else "offline"}).as_dict()
+        return ResponseModel(200, "success", {"status": "online" if SharedData().Managers.get_session_manager().is_active() else "offline"}).as_dict()

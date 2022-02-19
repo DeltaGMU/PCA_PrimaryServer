@@ -1,7 +1,6 @@
 from src.services.core_service import CoreService
-from src.services.web_service import WebService
+from src.lib.global_vars import SharedData
 from src.lib.utils.session_manager import SessionManager, WebSessionManager
-from src.lib import global_vars
 from dotenv import load_dotenv
 from os import getenv
 import argparse
@@ -38,14 +37,18 @@ def init():
 
     args = parser.parse_args()
 
-    if args.debug_mode:
-        global_vars.debug_mode = True
-
     try:
+        shared_data = SharedData()
+        shared_data.Settings.set_debug_mode(args.debug_mode)
+
         session_manager = SessionManager(args.server_ip, args.server_port, args.db_name,
-                                         args.user, args.password, global_vars.debug_mode)
-        web_session_manager = WebSessionManager(args.web_ip, args.web_port, global_vars.debug_mode)
-        CoreService(session_manager, web_session_manager)
+                                         args.user, args.password, shared_data.Settings.get_debug_mode())
+        shared_data.Managers.set_session_manager(session_manager)
+
+        web_session_manager = WebSessionManager(args.web_ip, args.web_port, shared_data.Settings.get_debug_mode())
+        shared_data.Managers.set_web_manager(web_session_manager)
+
+        CoreService()
     except RuntimeError as e:
         from sys import exit
         print(f"Encountered a fatal error!\n{e}")

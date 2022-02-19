@@ -6,11 +6,11 @@ from src.services.web_service import WebService
 
 class SessionManager:
     def __init__(self,
-                 server_host: str = None,
-                 server_port: str = None,
-                 server_db: str = None,
-                 server_user: str = None,
-                 server_pass: str = None,
+                 server_host: str,
+                 server_port: str,
+                 server_db: str,
+                 server_user: str,
+                 server_pass: str,
                  debug_mode: bool = False):
         if None in (server_host, server_port, server_db, server_user, server_pass):
             raise RuntimeError(f"Session Manager Error [Error Code: {ERR_SESSION_MNGR_INCORRECT_PARAMS}]\n"
@@ -30,9 +30,12 @@ class SessionManager:
     def get_engine(self):
         return self.db_engine
 
+    def is_active(self) -> bool:
+        return self.db_engine is not None
+
 
 class WebSessionManager:
-    def __init__(self, web_ip: str = None, web_port: str = None, debug_mode: bool = False):
+    def __init__(self, web_ip: str, web_port: str, debug_mode: bool = False):
         if None in (web_ip, web_port):
             raise RuntimeError(f"Web Session Manager Error [Error Code: {ERR_WEB_SESSION_MNGR_INCORRECT_PARAMS}]\n"
                                "One or more parameters required to start the service was null!\n"
