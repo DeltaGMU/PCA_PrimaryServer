@@ -1,17 +1,17 @@
 import threading
+from pathlib import Path
+from os import path
+import json
 import uvicorn
-from fastapi import FastAPI, Request
-from fastapi.exceptions import RequestValidationError
+from fastapi import FastAPI, Request, HTTPException, status
+from fastapi.exceptions import RequestValidationError, ValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from starlette.exceptions import HTTPException as StarletteHTTPException
-from pathlib import Path
-from os import path
 from src.lib.strings import META_VERSION
 from src.web_api.models import ResponseModel
-from src.web_api.routing.core import routing as core_routing
+from src.web_api.routing.v1 import routing as v1_routing
 from src.web_api.routing.v1.employees import routing as employees_routing
 from src.lib.global_vars import SharedData
 
@@ -30,32 +30,40 @@ web_app.add_middleware(
 web_app.mount("/static", StaticFiles(
     directory=f"{Path(path.dirname(__file__)).parent.parent}/src/web_api/static"),
     name="static")
-web_app.include_router(core_routing.router)
+web_app.include_router(v1_routing.router)
 web_app.include_router(employees_routing.router)
 
 
 @web_app.exception_handler(Exception)
-def general_exception_handler(request: Request, exc: Exception):
-    resp = ResponseModel(400, "Error - Bad Request",
+async def general_exception_handler(request: Request, exc: Exception):
+    resp = ResponseModel(status.HTTP_500_INTERNAL_SERVER_ERROR, "Error: Internal Server Error",
                          {"error_message": f"Failed to execute: {request.method}: {request.url}",
                           "detail_message": str(exc)})
-    return JSONResponse(resp.as_dict(), media_type="application/json", status_code=400)
+    return JSONResponse(resp.as_dict(), media_type="application/json", status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@web_app.exception_handler(HTTPException)
+async def general_http_exception(request: Request, exc: HTTPException):
+    resp = ResponseModel(exc.status_code, "Error: HTTP Exception Error",
+                         {"error_message": f"Failed to execute: {request.method}: {request.url}",
+                          "detail_message": str(exc.detail)})
+    return JSONResponse(resp.as_dict(), media_type="application/json", status_code=exc.status_code)
+
+
+@web_app.exception_handler(ValidationError)
+async def general_validation_exception(request: Request, exc: ValidationError):
+    resp = ResponseModel(status.HTTP_400_BAD_REQUEST, "Error: Validation Error",
+                         {"error_message": f"Failed to execute: {request.method}: {request.url}",
+                          "detail_message": str(exc)})
+    return JSONResponse(resp.as_dict(), media_type="application/json", status_code=status.HTTP_400_BAD_REQUEST)
 
 
 @web_app.exception_handler(RequestValidationError)
-def general_exception_handler(exc: Exception):
-    resp = ResponseModel(422, "Error - Unprocessable Entity",
-                         {"error_message": f"The provided entity was missing one or more fields!",
+async def general_request_validation_exception(request: Request, exc: RequestValidationError):
+    resp = ResponseModel(status.HTTP_400_BAD_REQUEST, "Error: Request Validation Error",
+                         {"error_message": f"Failed to execute: {request.method}: {request.url}",
                           "detail_message": str(exc)})
-    return JSONResponse(resp.as_dict(), media_type="application/json", status_code=400)
-
-
-@web_app.exception_handler(StarletteHTTPException)
-async def starlette_http_exception(exc: Exception):
-    resp = ResponseModel(404, "Error - Not Found",
-                         {"error_message": "This path is invalid!",
-                          "detail_message": str(exc)})
-    return JSONResponse(resp.as_dict(), media_type="application/json", status_code=404)
+    return JSONResponse(resp.as_dict(), media_type="application/json", status_code=status.HTTP_400_BAD_REQUEST)
 
 
 @web_app.get("/")
@@ -66,8 +74,8 @@ async def serve_app(request: Request):
 
 @web_app.get("/favicon.ico")
 async def serve_favicon():
-    favicon = open(f"{Path(path.dirname(__file__)).parent.parent}/src/web_api/static/favicon.ico", mode="rb")
-    return StreamingResponse(favicon, media_type="image/x-icon")
+    with open(f"{Path(path.dirname(__file__)).parent.parent}/src/web_api/static/favicon.ico", mode="rb") as favicon_file:
+        return StreamingResponse(favicon_file, media_type="image/x-icon")
 
 
 class UvicornServer(uvicorn.Server):
