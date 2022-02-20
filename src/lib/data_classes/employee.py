@@ -22,7 +22,7 @@ class PydanticEmployeeHours(BaseModel):
 
 class EmployeeHours(Base):
     __tablename__ = 'employee_hours'
-    id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
+    id = Column(Integer, primary_key=True, autoincrement=True, unique=True, nullable=False)
     EmployeeID = Column(VARCHAR(length=50), ForeignKey('employees.id'), nullable=False)
     HoursWorked = Column(INTEGER(unsigned=True), nullable=False, default=0)
     DateWorked = Column(Date, nullable=False)
@@ -43,9 +43,9 @@ class EmployeeHours(Base):
 
 
 class Employee(Base):
-    __tablename__ = 'employees'
-    id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
-    EmployeeID = Column(VARCHAR(length=50), nullable=False)
+    __tablename__ = 'employee'
+    id = Column(Integer, primary_key=True, autoincrement=True, unique=True, nullable=False)
+    EmployeeID = Column(VARCHAR(length=50), unique=True, nullable=False)
     FirstName = Column(VARCHAR(length=50), nullable=False)
     LastName = Column(VARCHAR(length=50), nullable=False)
     PasswordHash = Column(VARCHAR(length=60), nullable=False)
