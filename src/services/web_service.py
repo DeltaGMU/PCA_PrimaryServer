@@ -13,6 +13,8 @@ from src.lib.strings import META_VERSION, ROOT_DIR, LOG_ORIGIN_API
 from src.web_api.models import ResponseModel
 from src.web_api.routing.v1 import routing as v1_routing
 from src.web_api.routing.v1.employees import routing as employees_routing
+from src.web_api.routing.v1.students import routing as students_routing
+
 
 web_app = FastAPI(
     title="PCA Web API",
@@ -31,6 +33,7 @@ web_app.mount("/static", StaticFiles(
     name="static")
 web_app.include_router(v1_routing.router)
 web_app.include_router(employees_routing.router)
+web_app.include_router(students_routing.router)
 
 
 @web_app.exception_handler(Exception)

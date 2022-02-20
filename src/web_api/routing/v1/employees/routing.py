@@ -56,7 +56,7 @@ class EmployeesRouter:
                 session.add(new_employee)
                 session.commit()
             except IntegrityError as err:
-                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(err))
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(err)) from err
             created_employee = session.query(Employee).filter(Employee.EmployeeID == employee_id).one()
         return ResponseModel(status.HTTP_201_CREATED, "success", {"employee": created_employee})
 
@@ -83,8 +83,8 @@ class EmployeesRouter:
                     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                                         detail="The provided employee has no hours logged into the system, "
                                                "or the employee is not in the database!")
-            except IntegrityError as e:
-                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+            except IntegrityError as err:
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)) from err
         return ResponseModel(status.HTTP_200_OK, "success", {"hours": total_hours})
 
     @router.post("/api/v1/employees/hours/add", status_code=status.HTTP_201_CREATED)
@@ -105,8 +105,8 @@ class EmployeesRouter:
                     session.commit()
                 else:
                     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Duplicate date entry! The employee already has hours entered for this day!")
-            except IntegrityError as e:
-                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+            except IntegrityError as err:
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)) from err
             created_employee_hours = session.query(EmployeeHours).filter(
                 EmployeeHours.EmployeeID == employee_hours.EmployeeID,
                 EmployeeHours.DateWorked == employee_hours.DateWorked

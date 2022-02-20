@@ -1,4 +1,3 @@
-from typing import Union
 from sqlalchemy import func
 from src.lib.logging_manager import LoggingManager
 from src.lib.service_manager import SharedData
@@ -9,7 +8,7 @@ from passlib.hash import bcrypt
 from src.lib.strings import LOG_ERROR_GENERAL
 
 
-def generate_employee_id(first_name: str, last_name: str) -> Union[str, None]:
+def generate_employee_id(first_name: str, last_name: str) -> str | None:
     shared_data = SharedData()
     if not shared_data.Managers.get_session_manager().db_engine:
         raise RuntimeError(f'Database Error [Error Code: {ERR_DB_SRVCE_INACTIVE}]\n'
