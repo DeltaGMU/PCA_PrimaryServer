@@ -81,7 +81,7 @@ def init():
 
         database_manager = DatabaseManager(args.server_ip, args.server_port, args.db_name,
                                           args.user, args.password)
-        shared_data.Managers.set_session_manager(database_manager)
+        shared_data.Managers.set_database_manager(database_manager)
 
         web_session_manager = WebSessionManager(args.web_ip, int(args.web_port))
         shared_data.Managers.set_web_manager(web_session_manager)

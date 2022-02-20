@@ -15,7 +15,7 @@ class SharedData:
         raise RuntimeError('SharedData has not been initialized, call the constructor instead!')
 
     class Managers:
-        __session_manager: SessionManager
+        __session_manager: DatabaseManager
         __web_manager: WebSessionManager
         __logging_manager: LoggingManager
         __config_manager = None
@@ -26,13 +26,13 @@ class SharedData:
 
 
         @classmethod
-        def set_session_manager(cls, session_manager: SessionManager):
+        def set_database_manager(cls, session_manager: DatabaseManager):
             if session_manager is None:
                 return
             cls.__session_manager = session_manager
 
         @classmethod
-        def get_session_manager(cls) -> SessionManager:
+        def get_database_manager(cls) -> DatabaseManager:
             return cls.__session_manager
 
         @classmethod
