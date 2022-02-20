@@ -66,9 +66,12 @@ class EmployeesRouter:
         if employee_id is None:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Provided request body did not contain a valid employee id!")
         with SharedData().Managers.get_session_manager().make_session() as session:
-            employee = session.query(Employee).filter(Employee.EmployeeID == employee_id).one()
-            session.delete(employee)
-            session.commit()
+            employee = session.query(Employee).filter(Employee.EmployeeID == employee_id).first()
+            if employee:
+                session.delete(employee)
+                session.commit()
+            else:
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Cannot remove an employee that does not exist in the database!")
         return ResponseModel(status.HTTP_200_OK, "success", {"employee": employee})
 
     @router.get("/api/v1/employees/hours", status_code=status.HTTP_200_OK)

@@ -1,8 +1,10 @@
+from typing import Optional
 from pydantic import BaseModel
-from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Date, LargeBinary, VARCHAR, Boolean, sql
+from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Date, LargeBinary, VARCHAR, Boolean, Time, sql
 from sqlalchemy.dialects.mysql import INTEGER
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
+import datetime
 
 Base = declarative_base()
 
@@ -13,9 +15,16 @@ class PydanticStudent(BaseModel):
     StudentEnabled: bool
 
 
-class PydanticStudentCareHours(BaseModel):
+class PydanticStudentCareHoursCheckIn(BaseModel):
     StudentID: str
-    CareHours: int
+    CheckInTime: Optional[str]
+    CareDate: str
+    CareType: bool
+
+
+class PydanticStudentCareHoursCheckOut(BaseModel):
+    StudentID: str
+    CheckOutTime: int
     CareDate: str
 
 
@@ -23,21 +32,28 @@ class StudentCareHours(Base):
     __tablename__ = 'student_care_hours'
     id = Column(Integer, primary_key=True, autoincrement=True, unique=True, nullable=False)
     StudentID = Column(VARCHAR(length=50), ForeignKey('student.id'), nullable=False)
-    CareHours = Column(INTEGER(unsigned=True), nullable=False, default=0)
-    CareDate = Column(Date, nullable=False)
+    CareDate = Column(Date, nullable=False, default=sql.func.current_date())
+    CheckInTime = Column(Time(timezone=False), nullable=False, default=datetime.datetime.now().strftime('%H:%M:%S'))
+    CheckOutTime = Column(Time(timezone=False), nullable=True)
+    CareType = Column(Boolean(), nullable=False, default=False)  # CareType: False = Before Care, True = After Care
     EntryCreated = Column(DateTime, nullable=False, default=sql.func.now())
 
-    # Do not initialize this except for creating blank employee_hours templates!
-    def __init__(self, student_id: str, care_hours: int, care_date: str):
+    # Do not initialize this except for creating blank student_care_hours templates!
+    def __init__(self, student_id: str, care_date: str, care_type: bool, checkin_time: datetime.datetime | None = None, checkout_time: datetime.datetime | None = None):
         self.StudentID = student_id
-        self.CareHours = care_hours
         self.CareDate = care_date
+        self.CareType = care_type
+        self.CheckInTime = checkin_time
+        self.CheckOutTime = checkout_time
 
     def as_dict(self):
         return {
             "StudentID": self.StudentID,
-            "CareHours": self.CareHours,
             "CareDate": self.CareDate,
+            "CheckInTime": self.CheckInTime,
+            "CheckOutTime": self.CheckOutTime,
+            "CareType": self.CareType,
+            "EntryCreated": self.EntryCreated
         }
 
 
