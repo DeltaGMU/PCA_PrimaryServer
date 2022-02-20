@@ -17,10 +17,18 @@ class SharedData:
     class Managers:
         __session_manager: SessionManager
         __web_manager: WebSessionManager
+        __logging_manager: LoggingManager
         __config_manager = None
+
+        def __new__(cls):
+            if cls is Managers:
+                raise TypeError(f'The {cls.__name__} class must not be instantiated!')
+
 
         @classmethod
         def set_session_manager(cls, session_manager: SessionManager):
+            if session_manager is None:
+                return
             cls.__session_manager = session_manager
 
         @classmethod
@@ -29,6 +37,8 @@ class SharedData:
 
         @classmethod
         def set_web_manager(cls, web_session_manager: WebSessionManager):
+            if web_session_manager is None:
+                return
             cls.__web_manager = web_session_manager
 
         @classmethod
@@ -36,7 +46,19 @@ class SharedData:
             return cls.__web_manager
 
         @classmethod
+        def set_logging_manager(cls, logging_manager: LoggingManager):
+            if logging_manager is None:
+                return
+            cls.__logging_manager = logging_manager
+
+        @classmethod
+        def get_logging_manager(cls) -> LoggingManager:
+            return cls.__logging_manager
+
+        @classmethod
         def set_config_manager(cls, config_manager):
+            if config_manager is None:
+                return
             cls.__config_manager = config_manager
 
         @classmethod
@@ -45,21 +67,17 @@ class SharedData:
 
     class Settings:
         __debug_mode: bool = False
-        __logging_mode: str = "info"
+
+        def __new__(cls):
+            if cls is Settings:
+                raise TypeError(f'The {cls.__name__} class must not be instantiated!')
 
         @classmethod
         def set_debug_mode(cls, debug_mode: bool):
+            if debug_mode is None:
+                return
             cls.__debug_mode = debug_mode
 
         @classmethod
         def get_debug_mode(cls) -> bool:
             return cls.__debug_mode
-
-        @classmethod
-        def set_logging_mode(cls, logging_mode: str):
-            cls.__logging_mode = logging_mode
-
-        @classmethod
-        def get_logging_mode(cls) -> str:
-            return cls.__logging_mode
-

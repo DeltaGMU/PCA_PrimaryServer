@@ -11,6 +11,7 @@ class PydanticEmployee(BaseModel):
     RawPassword: str
     FirstName: str
     LastName: str
+    EmployeeEnabled: bool
 
 
 class PydanticEmployeeHours(BaseModel):
@@ -21,7 +22,7 @@ class PydanticEmployeeHours(BaseModel):
 
 class EmployeeHours(Base):
     __tablename__ = 'employee_hours'
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
     EmployeeID = Column(VARCHAR(length=50), ForeignKey('employees.id'), nullable=False)
     HoursWorked = Column(INTEGER(unsigned=True), nullable=False, default=0)
     DateWorked = Column(Date, nullable=False)
@@ -43,7 +44,7 @@ class EmployeeHours(Base):
 
 class Employee(Base):
     __tablename__ = 'employees'
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(Integer, primary_key=True, autoincrement=True, nullable=False)
     EmployeeID = Column(VARCHAR(length=50), nullable=False)
     FirstName = Column(VARCHAR(length=50), nullable=False)
     LastName = Column(VARCHAR(length=50), nullable=False)
@@ -53,11 +54,12 @@ class Employee(Base):
     EntryCreated = Column(DateTime, nullable=False, default=sql.func.now())
 
     # Do not initialize this except for creating blank employee templates!
-    def __init__(self, employee_id: str, fname: str, lname: str, phash: str):
+    def __init__(self, employee_id: str, fname: str, lname: str, phash: str, enabled: bool):
         self.EmployeeID = employee_id
         self.FirstName = fname
         self.LastName = lname
         self.PasswordHash = phash
+        self.EmployeeEnabled = enabled
 
     def as_dict(self):
         return {
@@ -65,5 +67,6 @@ class Employee(Base):
             "FirstName": self.FirstName,
             "LastName": self.LastName,
             "PasswordHash": self.PasswordHash,
+            "EmployeeEnabled": self.EmployeeEnabled,
             "EntryCreated": self.EntryCreated
         }

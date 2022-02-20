@@ -1,9 +1,12 @@
 from typing import Union
+from sqlalchemy import func
+from src.lib.logging_manager import LoggingManager
 from src.lib.service_manager import SharedData
 from src.lib.error_codes import ERR_DB_SRVCE_INACTIVE
 from sqlalchemy.exc import SQLAlchemyError
 from src.lib.data_classes.employee import Employee
 from passlib.hash import bcrypt
+from src.lib.strings import LOG_ERROR_GENERAL
 
 
 def generate_employee_id(first_name: str, last_name: str) -> Union[str, None]:
@@ -15,22 +18,15 @@ def generate_employee_id(first_name: str, last_name: str) -> Union[str, None]:
         return None
     try:
         with shared_data.Managers.get_session_manager().make_session() as session:
-            last_employee = session.query(Employee).order_by(Employee.id.desc()).first()
-            # Generate and add a blank employee template, but flush the statement instead of committing it.
-            # Use the blank employee to get the last id that was auto-generated and increment that by 1.
-            if last_employee is None:
-                blank_employee = Employee("ID00", "BlankEmployee", "BlankEmployee", create_employee_password_hashes("BlankPassword"))
+            highest_id = session.query(func.max(Employee.id)).scalar()
+            if highest_id is None:
+                blank_employee = Employee("ID00", "BlankEmployee", "BlankEmployee", create_employee_password_hashes("BlankPassword"), enabled=False)
                 session.add(blank_employee)
                 session.flush()
-                last_employee_id = blank_employee.id+1
-            # Otherwise, get the last entered employee and increment that index by 1.
-            else:
-                session.add(last_employee)
-                session.flush()
-                last_employee_id = last_employee.id+1
-            new_employee_id = f"PCA{first_name[0].upper()}{last_name[0].upper()}{last_employee_id}"
-    except SQLAlchemyError as e:
-        print(e)
+                highest_id = blank_employee.id
+            new_employee_id = f"PCA{first_name[0].upper()}{last_name[0].upper()}{highest_id+1}"
+    except SQLAlchemyError as err:
+        LoggingManager.log(LoggingManager.LogLevel.LOG_CRITICAL, f"Error: {str(err)}", origin=LOG_ERROR_GENERAL, no_print=False)
         return None
     return new_employee_id
 
@@ -48,4 +44,3 @@ def verify_employee_password(plain_password: str, password_hash: str) -> bool:
     # verify_key = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), employee.PasswordSalt, 100000, dklen=128)
     verify_key = bcrypt.verify(plain_password.encode('utf-8'), password_hash)
     return verify_key
-

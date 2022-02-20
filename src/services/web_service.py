@@ -1,6 +1,6 @@
+import contextlib
 import threading
-from pathlib import Path
-from os import path
+import time
 import uvicorn
 from fastapi import FastAPI, Request, HTTPException, status
 from fastapi.exceptions import RequestValidationError, ValidationError
@@ -8,11 +8,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from src.lib.strings import META_VERSION
+from src.lib.logging_manager import LoggingManager
+from src.lib.strings import META_VERSION, ROOT_DIR, LOG_ORIGIN_API
 from src.web_api.models import ResponseModel
 from src.web_api.routing.v1 import routing as v1_routing
 from src.web_api.routing.v1.employees import routing as employees_routing
-from src.lib.service_manager import SharedData
 
 web_app = FastAPI(
     title="PCA Web API",
@@ -27,7 +27,7 @@ web_app.add_middleware(
     allow_headers=["*"]
 )
 web_app.mount("/static", StaticFiles(
-    directory=f"{Path(path.dirname(__file__)).parent.parent}/src/web_api/static"),
+    directory=f"{ROOT_DIR}/web_api/static"),
     name="static")
 web_app.include_router(v1_routing.router)
 web_app.include_router(employees_routing.router)
@@ -67,72 +67,70 @@ async def general_request_validation_exception(request: Request, exc: RequestVal
 
 @web_app.get("/")
 async def serve_app(request: Request):
-    return Jinja2Templates(directory=f"{Path(path.dirname(__file__)).parent.parent}/src/web_api/static/templates").\
+    return Jinja2Templates(directory=f"{ROOT_DIR}/web_api/static/templates").\
         TemplateResponse("index.html", {"request": request})
 
 
 @web_app.get("/favicon.ico")
 async def serve_favicon():
-    with open(f"{Path(path.dirname(__file__)).parent.parent}/src/web_api/static/favicon.ico", mode="rb") as favicon_file:
+    with open(f"{ROOT_DIR}/web_api/static/favicon.ico", mode="rb") as favicon_file:
         return StreamingResponse(favicon_file, media_type="image/x-icon")
 
 
 class UvicornServer(uvicorn.Server):
+    def install_signal_handlers(self) -> None:
+        pass
+
     def __init__(self, *args, **kwargs):
-        super(UvicornServer, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
-
-class ServerThreadWorker(threading.Thread):
-    def __init__(self, *args, **kwargs):
-        super(ServerThreadWorker, self).__init__(*args, **kwargs)
-        self._stop_event = threading.Event()
-        self.ip = kwargs["kwargs"]["ip"]
-        self.port = int(kwargs["kwargs"]["port"])
-        self.server = UvicornServer(
-            config=uvicorn.Config(
-                web_app,
-                host=self.ip,
-                port=self.port,
-                reload=False,
-                log_level="info" if SharedData().Settings.get_debug_mode() else "critical",
-                loop="asyncio",
-                ssl_certfile=kwargs["kwargs"].get("ssl_cert"),
-                ssl_keyfile=kwargs["kwargs"].get("ssl_key"),
-                timeout_keep_alive=99999,
-                debug=True
-            )
-        )
-
-    def run(self):
-        self.server.run()
-
-    def stop(self):
-        self.server.should_exit = True
+    @contextlib.contextmanager
+    def run_in_thread(self):
+        thread = threading.Thread(target=self.run)
+        thread.start()
+        try:
+            while not self.started:
+                time.sleep(0.01)
+            yield
+        finally:
+            self.should_exit = True
+            thread.join()
 
 
 class WebService:
-    def __init__(self, ip: str, port: str, use_https: bool = False, ssl_cert: bool = None, ssl_key: bool = None):
-        self.ip = ip
+    def __init__(self, ip_addr: str, port: int, use_https: bool = False, ssl_cert: bool = None, ssl_key: bool = None):
+        self.ip_addr = ip_addr
         self.port = port
         self.use_https = use_https
         self.ssl_cert = ssl_cert
         self.ssl_key = ssl_key
         self.web_server = None
+        self.stop_flag = False
 
     def initialize_web(self):
-        self.web_server = ServerThreadWorker(
-            kwargs={
-                "ip": self.ip, "port": self.port,
-                "ssl_cert": self.ssl_cert if self.use_https else None,
-                "ssl_key": self.ssl_key if self.use_https else None
-            },
-            daemon=True
+        config = uvicorn.Config(
+            web_app,
+            host=self.ip_addr,
+            port=self.port,
+            reload=False,
+            loop="asyncio",
+            ssl_certfile=self.ssl_cert,
+            ssl_keyfile=self.ssl_key,
+            timeout_keep_alive=99999,
+            debug=True
         )
-        self.web_server.run()
-        # log(INFO, f"Initialized API Server on: {ip}:{port}/api/", origin=L_WEB_INTERFACE, print_mode=PrintMode.REG_PRINT.value)
-        # log(INFO, f"Server API documentation can be found on: {ip}:{port}/docs/", origin=L_WEB_INTERFACE, print_mode=PrintMode.REG_PRINT.value)
-        # log(INFO, f"Initialized Web Application on: {ip}:{port}/", origin=L_WEB_INTERFACE, print_mode=PrintMode.REG_PRINT.value)
+        self.web_server = UvicornServer(config=config)
+        with self.web_server.run_in_thread():
+            LoggingManager().log(LoggingManager.LogLevel.LOG_INFO, f"Initializing API Server on: {self.ip_addr}:{self.port}/api/v1/", origin=LOG_ORIGIN_API, no_print=False)
+            LoggingManager().log(LoggingManager.LogLevel.LOG_INFO, f"Initializing Server API Documentation on: {self.ip_addr}:{self.port}/docs/", origin=LOG_ORIGIN_API, no_print=False)
+            while not self.stop_flag:
+                try:
+                    time.sleep(0.01)
+                except KeyboardInterrupt:
+                    self.stop_flag = True
+            LoggingManager().log(LoggingManager.LogLevel.LOG_INFO, "Shutting down API Server.", origin=LOG_ORIGIN_API, no_print=False)
+        self.stop_flag = False
 
     def stop_web(self):
         if self.web_server:
-            self.web_server.stop()
+            self.stop_flag = True
