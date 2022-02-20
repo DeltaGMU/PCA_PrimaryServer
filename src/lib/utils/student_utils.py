@@ -9,13 +9,13 @@ from src.lib.strings import LOG_ERROR_GENERAL
 
 def generate_student_id(first_name: str, last_name: str) -> str | None:
     shared_data = SharedData()
-    if not shared_data.Managers.get_session_manager().db_engine:
+    if not shared_data.Managers.get_database_manager().db_engine:
         raise RuntimeError(f'Database Error [Error Code: {ERR_DB_SRVCE_INACTIVE}]\n'
                            'The database was unable to be verified as online and active!')
     if not len(first_name) > 0 and not len(last_name) > 0:
         return None
     try:
-        with shared_data.Managers.get_session_manager().make_session() as session:
+        with shared_data.Managers.get_database_manager().make_session() as session:
             highest_id = session.query(func.max(Student.id)).scalar()
             if highest_id is None:
                 blank_student = Student("IDSTUDENT00", "BlankStudent", "BlankStudent", enabled=False)

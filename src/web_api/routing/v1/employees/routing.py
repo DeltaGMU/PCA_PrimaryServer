@@ -32,7 +32,7 @@ class EmployeesRouter:
         :rtype: ResponseModel
         """
         all_employees = []
-        with SharedData().Managers.get_session_manager().make_session() as session:
+        with SharedData().Managers.get_database_manager().make_session() as session:
             employees = session.query(Employee).all()
             for row in employees:
                 item: Employee = row
@@ -48,7 +48,7 @@ class EmployeesRouter:
         :return: created employee
         :rtype: ResponseModel
         """
-        with SharedData().Managers.get_session_manager().make_session() as session:
+        with SharedData().Managers.get_database_manager().make_session() as session:
             password_hash = create_employee_password_hashes(employee.RawPassword)
             employee_id = generate_employee_id(employee.FirstName.strip(), employee.LastName.strip())
             try:
@@ -65,7 +65,7 @@ class EmployeesRouter:
         employee_id = employee_id.get('employee_id')
         if employee_id is None:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Provided request body did not contain a valid employee id!")
-        with SharedData().Managers.get_session_manager().make_session() as session:
+        with SharedData().Managers.get_database_manager().make_session() as session:
             employee = session.query(Employee).filter(Employee.EmployeeID == employee_id).first()
             if employee:
                 session.delete(employee)
@@ -76,7 +76,7 @@ class EmployeesRouter:
 
     @router.get("/api/v1/employees/hours", status_code=status.HTTP_200_OK)
     def get_employee_hours(self, employee_id: str, date_start: str, date_end: str):
-        with SharedData().Managers.get_session_manager().make_session() as session:
+        with SharedData().Managers.get_database_manager().make_session() as session:
             try:
                 total_hours = session.query(func.sum(EmployeeHours.HoursWorked).label('hours')).filter(
                     EmployeeHours.EmployeeID == employee_id,
@@ -92,7 +92,7 @@ class EmployeesRouter:
 
     @router.post("/api/v1/employees/hours/add", status_code=status.HTTP_201_CREATED)
     def add_employee_hours(self, employee_hours: PydanticEmployeeHours):
-        with SharedData().Managers.get_session_manager().make_session() as session:
+        with SharedData().Managers.get_database_manager().make_session() as session:
             try:
                 work_hours_exists = session.query(EmployeeHours).filter(
                     EmployeeHours.EmployeeID == employee_hours.EmployeeID,
@@ -118,13 +118,13 @@ class EmployeesRouter:
 
     @router.get("/api/v1/employees/count", status_code=status.HTTP_200_OK)
     def get_employees_count(self):
-        with SharedData().Managers.get_session_manager().make_session() as session:
+        with SharedData().Managers.get_database_manager().make_session() as session:
             employees_count = session.query(Employee).count()
         return ResponseModel(status.HTTP_200_OK, "success", {"count": employees_count})
 
     @router.post("/api/v1/employees/verify", status_code=status.HTTP_200_OK)
     def verify_employee_password(self, employee_id: str = Body(""), password_text: str = Body("")):
-        with SharedData().Managers.get_session_manager().make_session() as session:
+        with SharedData().Managers.get_database_manager().make_session() as session:
             employee = session.query(Employee).filter(Employee.EmployeeID == employee_id).one()
             employee_verified = verify_employee_password(password_text, employee.PasswordHash)
         return ResponseModel(status.HTTP_200_OK, "success", {"verified": employee_verified})

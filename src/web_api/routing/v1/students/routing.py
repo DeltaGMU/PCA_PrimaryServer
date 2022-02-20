@@ -33,7 +33,7 @@ class StudentsRouter:
         :rtype: ResponseModel
         """
         all_students = []
-        with SharedData().Managers.get_session_manager().make_session() as session:
+        with SharedData().Managers.get_database_manager().make_session() as session:
             employees = session.query(Student).all()
             for row in employees:
                 item: Student = row
@@ -49,7 +49,7 @@ class StudentsRouter:
         :return: created student
         :rtype: ResponseModel
         """
-        with SharedData().Managers.get_session_manager().make_session() as session:
+        with SharedData().Managers.get_database_manager().make_session() as session:
             student_id = generate_student_id(student.FirstName.strip(), student.LastName.strip())
             try:
                 new_student = Student(student_id, student.FirstName, student.LastName, student.StudentEnabled)
@@ -62,13 +62,13 @@ class StudentsRouter:
 
     @router.get("/api/v1/students/count", status_code=status.HTTP_200_OK)
     def get_students_count(self):
-        with SharedData().Managers.get_session_manager().make_session() as session:
+        with SharedData().Managers.get_database_manager().make_session() as session:
             students_count = session.query(Student).count()
         return ResponseModel(status.HTTP_200_OK, "success", {"count": students_count})
 
     @router.post("/api/v1/students/checkin", status_code=status.HTTP_201_CREATED)
     def check_in_student(self, student_checkin: PydanticStudentCareHoursCheckIn):
-        with SharedData().Managers.get_session_manager().make_session() as session:
+        with SharedData().Managers.get_database_manager().make_session() as session:
             student_care = session.query(StudentCareHours).filter(
                 StudentCareHours.StudentID == student_checkin.StudentID,
                 StudentCareHours.CareDate == student_checkin.CareDate,
@@ -90,5 +90,5 @@ class StudentsRouter:
 
     @router.post("/api/v1/students/checkout", status_code=status.HTTP_200_OK)
     def check_out_student(self, student_checkout: PydanticStudentCareHoursCheckOut):
-        with SharedData().Managers.get_session_manager().make_session() as session:
+        with SharedData().Managers.get_database_manager().make_session() as session:
             pass

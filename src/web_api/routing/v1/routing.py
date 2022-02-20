@@ -13,4 +13,4 @@ class CoreRouter:
 
     @router.get("/api/v1/status")
     def status(self):
-        return ResponseModel(200, "success", {"status": "online" if SharedData().Managers.get_session_manager().is_active() else "offline"}).as_dict()
+        return ResponseModel(200, "success", {"status": "online" if SharedData().Managers.get_database_manager().is_active() else "offline"}).as_dict()
