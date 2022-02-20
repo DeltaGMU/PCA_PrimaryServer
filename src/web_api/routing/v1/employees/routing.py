@@ -25,7 +25,7 @@ class EmployeesRouter:
     """
 
     @router.get("/api/v1/employees", status_code=status.HTTP_200_OK)
-    async def get_all_employees(self):
+    def get_all_employees(self):
         """
         Retrieves all the employees from the database.
         :return: list of all employees in the database
@@ -37,10 +37,10 @@ class EmployeesRouter:
             for row in employees:
                 item: Employee = row
                 all_employees.append(item.as_dict())
-        return ResponseModel(status.HTTP_200_OK, "success", {"employees": all_employees}).as_dict()
+        return ResponseModel(status.HTTP_200_OK, "success", {"employees": all_employees})
 
     @router.post("/api/v1/employees/new", status_code=status.HTTP_201_CREATED)
-    async def create_new_employee(self, employee: PydanticEmployee):
+    def create_new_employee(self, employee: PydanticEmployee):
         """
         Creates a new employee entity and adds it to the employees' table in the database.
         :param employee: pydantic employee class
@@ -52,7 +52,7 @@ class EmployeesRouter:
             password_hash = create_employee_password_hashes(employee.RawPassword)
             employee_id = generate_employee_id(employee.FirstName.strip(), employee.LastName.strip())
             try:
-                new_employee = Employee(employee_id, employee.FirstName, employee.LastName, password_hash)
+                new_employee = Employee(employee_id, employee.FirstName, employee.LastName, password_hash, employee.EmployeeEnabled)
                 session.add(new_employee)
                 session.commit()
             except IntegrityError as err:
@@ -61,7 +61,7 @@ class EmployeesRouter:
         return ResponseModel(status.HTTP_201_CREATED, "success", {"employee": created_employee})
 
     @router.post("/api/v1/employees/remove", status_code=status.HTTP_200_OK)
-    async def remove_employee(self, employee_id: Dict[str, str]):
+    def remove_employee(self, employee_id: Dict[str, str]):
         employee_id = employee_id.get('employee_id')
         if employee_id is None:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Provided request body did not contain a valid employee id!")
@@ -72,7 +72,7 @@ class EmployeesRouter:
         return ResponseModel(status.HTTP_200_OK, "success", {"employee": employee})
 
     @router.get("/api/v1/employees/hours", status_code=status.HTTP_200_OK)
-    async def get_employee_hours(self, employee_id: str, date_start: str, date_end: str):
+    def get_employee_hours(self, employee_id: str, date_start: str, date_end: str):
         with SharedData().Managers.get_session_manager().make_session() as session:
             try:
                 total_hours = session.query(func.sum(EmployeeHours.HoursWorked).label('hours')).filter(
@@ -81,14 +81,14 @@ class EmployeesRouter:
                 ).scalar()
                 if total_hours is None:
                     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                                        detail="The provided employee has no employee hours logged into the system, "
+                                        detail="The provided employee has no hours logged into the system, "
                                                "or the employee is not in the database!")
             except IntegrityError as e:
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
         return ResponseModel(status.HTTP_200_OK, "success", {"hours": total_hours})
 
     @router.post("/api/v1/employees/hours/add", status_code=status.HTTP_201_CREATED)
-    async def add_employee_hours(self, employee_hours: PydanticEmployeeHours):
+    def add_employee_hours(self, employee_hours: PydanticEmployeeHours):
         with SharedData().Managers.get_session_manager().make_session() as session:
             try:
                 work_hours_exists = session.query(EmployeeHours).filter(
@@ -114,13 +114,13 @@ class EmployeesRouter:
         return ResponseModel(status.HTTP_201_CREATED, "success", {"employee_hours": created_employee_hours})
 
     @router.get("/api/v1/employees/count", status_code=status.HTTP_200_OK)
-    async def get_employees_count(self):
+    def get_employees_count(self):
         with SharedData().Managers.get_session_manager().make_session() as session:
             employees_count = session.query(Employee).count()
         return ResponseModel(status.HTTP_200_OK, "success", {"count": employees_count})
 
     @router.post("/api/v1/employees/verify", status_code=status.HTTP_200_OK)
-    async def verify_employee_password(self, employee_id: str = Body(""), password_text: str = Body("")):
+    def verify_employee_password(self, employee_id: str = Body(""), password_text: str = Body("")):
         with SharedData().Managers.get_session_manager().make_session() as session:
             employee = session.query(Employee).filter(Employee.EmployeeID == employee_id).one()
             employee_verified = verify_employee_password(password_text, employee.PasswordHash)

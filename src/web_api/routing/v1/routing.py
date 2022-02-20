@@ -8,9 +8,9 @@ router = InferringRouter()
 @cbv(router)
 class CoreRouter:
     @router.get("/api/v1/")
-    async def main_api(self):
+    def main_api(self):
         return ResponseModel(200, "success").as_dict()
 
     @router.get("/api/v1/status")
-    async def status(self):
+    def status(self):
         return ResponseModel(200, "success", {"status": "online" if SharedData().Managers.get_session_manager().is_active() else "offline"}).as_dict()
