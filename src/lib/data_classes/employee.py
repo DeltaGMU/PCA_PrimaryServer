@@ -23,7 +23,7 @@ class PydanticEmployeeHours(BaseModel):
 class EmployeeHours(Base):
     __tablename__ = 'employee_hours'
     id = Column(Integer, primary_key=True, autoincrement=True, unique=True, nullable=False)
-    EmployeeID = Column(VARCHAR(length=50), ForeignKey('employees.id'), nullable=False)
+    EmployeeID = Column(VARCHAR(length=50), ForeignKey('employee.id'), nullable=False)
     HoursWorked = Column(INTEGER(unsigned=True), nullable=False, default=0)
     DateWorked = Column(Date, nullable=False)
     EntryCreated = Column(DateTime, nullable=False, default=sql.func.now())
