@@ -44,9 +44,7 @@ class WebSessionManager:
                                "If you are a server administrator, please refer to the software manual!")
         # TODO: Add https/ssl certs into the service later.
         self.web_service: WebService = WebService(web_ip, web_port)
-
         LoggingManager().log(LoggingManager.LogLevel.LOG_CRITICAL, "Web session manager initialized.", origin=LOG_ORIGIN_STARTUP, no_print=False)
-        self.start_web_server()
 
     def start_web_server(self):
         if self.web_service:

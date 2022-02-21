@@ -85,6 +85,7 @@ def init():
 
         web_session_manager = WebSessionManager(args.web_ip, int(args.web_port))
         shared_data.Managers.set_web_manager(web_session_manager)
+        web_session_manager.start_web_server()
     except RuntimeError as err:
         LoggingManager().log(LoggingManager.LogLevel.LOG_CRITICAL, f"Runtime Error: {str(err)}\n{traceback.print_exc()}", origin=LOG_ORIGIN_GENERAL, error_type=LOG_ERROR_GENERAL, no_print=False)
         raise RuntimeError("Oh no! Encountered a fatal error!") from err
@@ -92,7 +93,8 @@ def init():
         LoggingManager().log(LoggingManager.LogLevel.LOG_WARNING, f"Runtime Warning: {str(warn)}\n{traceback.print_exc()}", origin=LOG_ORIGIN_GENERAL, error_type=LOG_WARNING_GENERAL, no_print=False)
         raise RuntimeWarning("Warning: Encountered a non-critical error.") from warn
     finally:
-        LoggingManager().log(LoggingManager.LogLevel.LOG_INFO, f'The application has closed.\n{"#"*60}', origin=LOG_ORIGIN_SHUTDOWN, no_print=False)
+        SharedData().Managers.get_web_manager().stop_web_server()
+        LoggingManager().log(LoggingManager.LogLevel.LOG_INFO, f'The application has closed.\n{"#"*140}', origin=LOG_ORIGIN_SHUTDOWN, no_print=False)
 
 
 if __name__ == "__main__":
