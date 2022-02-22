@@ -1,3 +1,4 @@
+from __future__ import annotations
 from sqlalchemy import func
 from sqlalchemy.exc import SQLAlchemyError
 from src.lib.data_classes.student import Student

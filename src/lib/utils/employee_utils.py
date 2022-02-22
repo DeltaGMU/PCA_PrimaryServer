@@ -1,3 +1,4 @@
+from __future__ import annotations
 from sqlalchemy import func
 from src.lib.logging_manager import LoggingManager
 from src.lib.service_manager import SharedData
