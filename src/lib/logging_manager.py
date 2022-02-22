@@ -82,19 +82,18 @@ class LoggingManager:
         if cls._instance.Settings.get_log_trace():
             log_output += f"\n{''.join(traceback.format_stack())}\n"
         # Log the formatted message based on the log level.
-        match log_type:
-            case cls._instance.LogLevel.LOG_INFO:
-                cls._instance.__logger.info(log_output)
-            case cls._instance.LogLevel.LOG_DEBUG:
-                cls._instance.__logger.debug(log_output)
-            case cls._instance.LogLevel.LOG_WARNING:
-                cls._instance.__logger.warning(log_output)
-            case cls._instance.LogLevel.LOG_ERROR:
-                cls._instance.__logger.error(log_output)
-            case cls._instance.LogLevel.LOG_CRITICAL:
-                cls._instance.__logger.critical(log_output)
-            case _:
-                raise RuntimeError('Error: The logger tried to log a message with an invalid log level!')
+        if log_type == cls._instance.LogLevel.LOG_INFO:
+             cls._instance.__logger.info(log_output)
+        elif log_type == cls._instance.LogLevel.LOG_DEBUG:
+            cls._instance.__logger.debug(log_output)
+        elif log_type == cls._instance.LogLevel.LOG_WARNING:
+            cls._instance.__logger.warning(log_output)
+        elif log_type == cls._instance.LogLevel.LOG_ERROR:
+            cls._instance.__logger.error(log_output)
+        elif log_type == cls._instance.LogLevel.LOG_CRITICAL:
+            cls._instance.__logger.critical(log_output)
+        else:
+            raise RuntimeError('Error: The logger tried to log a message with an invalid log level!')
         # After logging the event, print the message to the console if printing is allowed.
         if not no_print:
             debug_print(log_message, origin=origin, error_type=error_type)
