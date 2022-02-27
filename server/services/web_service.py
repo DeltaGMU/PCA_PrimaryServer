@@ -11,6 +11,7 @@ from fastapi.responses import JSONResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.responses import FileResponse
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from server.lib.logging_manager import LoggingManager
 from server.lib.strings import META_VERSION, ROOT_DIR, LOG_ORIGIN_API
@@ -32,15 +33,14 @@ web_app.add_middleware(
     allow_methods=["GET", "POST"],
     allow_headers=["*"]
 )
-web_app.mount("/static", StaticFiles(
-    directory=f"{ROOT_DIR}/web_api/static"),
-    name="static")
-web_app.mount("/wiki", StaticFiles(
-    directory=f"{Path(__file__).parent.parent.parent}/docs/build/html"),
-    name="wiki")
+web_app.mount("/wiki",
+              StaticFiles(directory=f"{ROOT_DIR}/docs/build/html", html=True),
+              name="wiki")
+web_app.mount("/favicon.ico", FileResponse(f"{ROOT_DIR}/web_api/static/favicon.ico"))
 web_app.include_router(v1_routing.router)
 web_app.include_router(employees_routing.router)
 web_app.include_router(students_routing.router)
+templates = Jinja2Templates(directory=f"{ROOT_DIR}/web_api/templates")
 
 
 @web_app.exception_handler(Exception)
@@ -57,6 +57,14 @@ async def general_http_exception(request: Request, exc: HTTPException):
                          {"error_message": f"Failed to execute: {request.method}: {request.url}",
                           "detail_message": str(exc.detail)})
     return JSONResponse(resp.as_dict(), media_type="application/json", status_code=exc.status_code)
+
+
+@web_app.exception_handler(StarletteHTTPException)
+async def starlette_http_exception(request: Request, exc: StarletteHTTPException):
+    if exc.status_code == 404:
+        return templates.TemplateResponse('404.html', {'request': request, 'detail': exc.detail})
+    else:
+        return await general_http_exception(request, exc)
 
 
 @web_app.exception_handler(ValidationError)
@@ -76,14 +84,8 @@ async def general_request_validation_exception(request: Request, exc: RequestVal
 
 
 @web_app.get("/")
-async def serve_app(request: Request):
-    return Jinja2Templates(directory=f"{ROOT_DIR}/web_api/static/templates").\
-        TemplateResponse("index.html", {"request": request})
-
-
-@web_app.get("/favicon.ico")
-async def serve_favicon():
-    return FileResponse(f"{ROOT_DIR}/web_api/static/favicon.ico")
+async def serve_index(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
 
 
 class UvicornServer(uvicorn.Server):

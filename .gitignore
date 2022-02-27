@@ -142,7 +142,7 @@ instance/
 .scrapy
 
 # Sphinx documentation
-docs/_build/
+server/docs/_build/
 
 # PyBuilder
 .pybuilder/
@@ -212,4 +212,4 @@ cython_debug/
 
 # CUSTOM IGNORES
 .idea*
-!docs/*
+!server/docs/*
