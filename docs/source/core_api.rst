@@ -10,3 +10,4 @@ Welcome to the developer documentation for the PCA Project!
    manager_modules
    utility_modules
    data_classes
+   web_modules

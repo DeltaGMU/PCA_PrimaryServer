@@ -7,8 +7,8 @@ Welcome to PCA Project's documentation!
 =======================================
 
 .. toctree::
-   :maxdepth: 4
-   :caption: Documentation:
+   :maxdepth: 2
+   :caption: Table of Contents:
 
    installation
    getting_started
