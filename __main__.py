@@ -2,7 +2,8 @@
 The primary initialization python file that handles command-line arguments and initializes the individual core modules
 for the server to run.
 """
-
+import signal
+import sys
 from os import getenv
 import argparse
 import traceback
@@ -122,12 +123,22 @@ def init():
                              exc_message=traceback.format_exc(), no_print=False)
         raise Exception("Error: Encountered a critical error.") from unknown_err
     finally:
-        # Retrieve the web manager object reference and gracefully shutdown the server.
-        web_manager_reference = SharedData().Managers.get_web_manager()
-        if web_manager_reference:
-            web_manager_reference.stop_web_server()
-        LoggingManager().log(LoggingManager.LogLevel.LOG_INFO, f'The application has closed.\n{"#" * 140}', origin=LOG_ORIGIN_SHUTDOWN, no_print=False)
+        graceful_shutdown()
+
+
+def graceful_shutdown():
+    # Retrieve the web manager object reference and gracefully shutdown the server.
+    web_manager_reference = SharedData().Managers.get_web_manager()
+    if web_manager_reference:
+        web_manager_reference.stop_web_server()
+    LoggingManager().log(LoggingManager.LogLevel.LOG_INFO, f'The application has closed.\n{"#" * 140}', origin=LOG_ORIGIN_SHUTDOWN, no_print=False)
+
+
+def handle_interrupt():
+    print("System interrupt detected, shutting down gracefully.")
+    graceful_shutdown()
 
 
 if __name__ == "__main__":
+    signal.signal(signal.SIGTERM, handle_interrupt)
     init()
