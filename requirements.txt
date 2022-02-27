@@ -6,3 +6,4 @@ fastapi-utils~=0.2.1
 uvicorn~=0.17.5
 python-dotenv~=0.19.2
 mariadb~=1.0.9
+Jinja2~=3.0.3
