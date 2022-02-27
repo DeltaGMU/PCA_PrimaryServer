@@ -1,6 +1,8 @@
 import contextlib
 import threading
 import time
+from pathlib import Path
+
 import uvicorn
 from fastapi import FastAPI, Request, HTTPException, status
 from fastapi.exceptions import RequestValidationError, ValidationError
@@ -8,6 +10,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from starlette.responses import FileResponse
+
 from server.lib.logging_manager import LoggingManager
 from server.lib.strings import META_VERSION, ROOT_DIR, LOG_ORIGIN_API
 from server.web_api.models import ResponseModel
@@ -31,6 +35,9 @@ web_app.add_middleware(
 web_app.mount("/static", StaticFiles(
     directory=f"{ROOT_DIR}/web_api/static"),
     name="static")
+web_app.mount("/wiki", StaticFiles(
+    directory=f"{Path(__file__).parent.parent.parent}/docs/build/html"),
+    name="wiki")
 web_app.include_router(v1_routing.router)
 web_app.include_router(employees_routing.router)
 web_app.include_router(students_routing.router)
@@ -76,8 +83,7 @@ async def serve_app(request: Request):
 
 @web_app.get("/favicon.ico")
 async def serve_favicon():
-    with open(f"{ROOT_DIR}/web_api/static/favicon.ico", mode="rb") as favicon_file:
-        return StreamingResponse(favicon_file, media_type="image/x-icon")
+    return FileResponse(f"{ROOT_DIR}/web_api/static/favicon.ico")
 
 
 class UvicornServer(uvicorn.Server):
