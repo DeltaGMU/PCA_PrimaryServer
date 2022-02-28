@@ -19,7 +19,7 @@ print(os.path.abspath('../../../'))
 # -- Project information -----------------------------------------------------
 
 project = 'PCA Project'
-copyright = '2022, Jason Jerome, Elwis Salinas, Elleni Adhanom, Ramisa Resha, Robert Gryder, Dimitrik Johnson'
+copyright = '2022 - Jason Jerome, Elwis Salinas, Elleni Adhanom, Ramisa Resha, Robert Gryder, Dimitrik Johnson'
 author = 'Jason Jerome, Elwis Salinas, Elleni Adhanom, Ramisa Resha, Robert Gryder, Dimitrik Johnson'
 
 # The full version, including alpha/beta/rc tags

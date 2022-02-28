@@ -1,18 +1,14 @@
 import contextlib
 import threading
 import time
-from pathlib import Path
-
 import uvicorn
 from fastapi import FastAPI, Request, HTTPException, status
 from fastapi.exceptions import RequestValidationError, ValidationError
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse, StreamingResponse
+from fastapi.responses import JSONResponse, FileResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from starlette.responses import FileResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
-
 from server.lib.logging_manager import LoggingManager
 from server.lib.strings import META_VERSION, ROOT_DIR, LOG_ORIGIN_API
 from server.web_api.models import ResponseModel
@@ -62,7 +58,7 @@ async def general_http_exception(request: Request, exc: HTTPException):
 @web_app.exception_handler(StarletteHTTPException)
 async def starlette_http_exception(request: Request, exc: StarletteHTTPException):
     if exc.status_code == 404:
-        return templates.TemplateResponse('404.html', {'request': request, 'detail': exc.detail})
+        return RedirectResponse("/")
     else:
         return await general_http_exception(request, exc)
 
@@ -94,6 +90,7 @@ class UvicornServer(uvicorn.Server):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.should_exit = False
 
     @contextlib.contextmanager
     def run_in_thread(self):
@@ -109,7 +106,29 @@ class UvicornServer(uvicorn.Server):
 
 
 class WebService:
-    def __init__(self, host: str, port: int, use_https: bool = False, ssl_cert: bool = None, ssl_key: bool = None, debug_mode: bool = False):
+    """
+    This web service class manages the state of the web server that serves the REST API endpoints to
+    the web interfaces. Please make sure that this is the last module that is initialized in the application.
+    It contains methods to initialize and stop the Uvicorn web server.
+    """
+    def __init__(self, host: str, port: int, use_https: bool = False, ssl_cert: str = None, ssl_key: str = None, debug_mode: bool = False):
+        """
+        The constructor for the web service class that sets the configuration parameters
+        for the uvicorn web server.
+
+        :param host: The host IP address to use for the uvicorn server. (Example: 0.0.0.0)
+        :type host: str, required
+        :param port: The port to use for the uvicorn server. (Example: 56709)
+        :type port: int, required
+        :param use_https: Enable or disable the use of HTTPS for the uvicorn server. HTTPS is disabled by default and HTTP is used.
+        :type use_https: bool, optional
+        :param ssl_cert: If HTTPS is enabled, provide the SSL Certificate.
+        :type ssl_cert: str, optional
+        :param ssl_key: If HTTPS is enabled, provide the server's SSL Private Key.
+        :type ssl_key: str, optional
+        :param debug_mode: Enable or disable debug message outputs from the uvicorn server. Debug mode is disabled by default.
+        :type debug_mode: bool, optional
+        """
         self.host = host
         self.port = port
         self.use_https = use_https
@@ -120,6 +139,12 @@ class WebService:
         self.debug_mode = debug_mode
 
     def initialize_web(self):
+        """
+        Initializes the uvicorn web server for the FastAPI endpoints with the configuration parameters
+        provided in the class constructor.
+
+        :return: None
+        """
         config = uvicorn.Config(
             web_app,
             host=self.host,
@@ -145,8 +170,7 @@ class WebService:
 
     def stop_web(self):
         """
-        Sets the stop flag for the running API server thread if the web server is currently active.
-        Don't attempt to call this method directly, please use the :func:`~database_manager.DatabaseManager.stop_web_server()` method instead.
+        Sets the stop flag for the running API server thread if the uvicorn web server is currently active.
 
         :return: None
         """
