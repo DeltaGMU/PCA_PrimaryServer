@@ -44,27 +44,27 @@ class StudentsRouter:
         return ResponseModel(status.HTTP_200_OK, "success", {"students": all_students})
 
     @router.post("/api/v1/students/new", status_code=status.HTTP_201_CREATED)
-    def create_new_student(self, student: PydanticStudent):
+    def create_new_student(self, pyd_student: PydanticStudent):
         """
         An endpoint that creates a new student record and adds it to the students' table in the database.
 
-        :param student: The Pydantic Student reference. This means that HTTP requests to this endpoint must include the required fields in the Pydantic Student class.
-        :type student: PydanticStudent
+        :param pyd_student: The Pydantic Student reference. This means that HTTP requests to this endpoint must include the required fields in the Pydantic Student class.
+        :type pyd_student: PydanticStudent
         :return: A response model containing the student object that was created and inserted into the database.
         :rtype: server.web_api.models.ResponseModel
         :raises HTTPException: If the request body contains a student first name or last name that is invalid, or the data provided is formatted incorrectly.
         """
         with SharedData().Managers.get_database_manager().make_session() as session:
-            student_id = generate_student_id(student.first_name.strip(), student.last_name.strip())
+            student_id = generate_student_id(pyd_student.first_name.strip(), pyd_student.last_name.strip())
             if student_id is None:
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The student first name or last name is invalid and cannot be used to create an student ID!")
             try:
-                new_student = Student(student_id, student.first_name, student.last_name)
+                new_student = Student(student_id, pyd_student.first_name, pyd_student.last_name)
                 session.add(new_student)
                 session.commit()
             except IntegrityError as err:
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(err)) from err
-            created_student = session.query(Student).filter(Student.student_id == student_id).one()
+            created_student = session.query(Student).filter(Student.StudentID == student_id).one()
         return ResponseModel(status.HTTP_201_CREATED, "success", {"student": created_student.as_dict()})
 
     @router.get("/api/v1/students/count", status_code=status.HTTP_200_OK)
@@ -80,31 +80,31 @@ class StudentsRouter:
         return ResponseModel(status.HTTP_200_OK, "success", {"count": students_count})
 
     @router.post("/api/v1/students/checkin", status_code=status.HTTP_201_CREATED)
-    def check_in_student(self, student_checkin: PydanticStudentCareHoursCheckIn):
+    def check_in_student(self, pyd_student_checkin: PydanticStudentCareHoursCheckIn):
         """
         An endpoint that checks-in a student into the before-care or after-care service and records the time of check-in.
         Any student checked into before-care is automatically checked out at the end of the before-care service.
         Any student checked into after-care can be checked out at any time after checking in.
         Failure to check out a student from after-care will result in the automatic check-out of the student at the end of after-care.
 
-        :param student_checkin: The Pydantic StudentCareHoursCheckIn reference. This means that HTTP requests to this endpoint must include the required fields in the Pydantic StudentCareHoursCheckIn class.
-        :type student_checkin: PydanticStudentCareHoursCheckIn
+        :param pyd_student_checkin: The Pydantic StudentCareHoursCheckIn reference. This means that HTTP requests to this endpoint must include the required fields in the Pydantic StudentCareHoursCheckIn class.
+        :type pyd_student_checkin: PydanticStudentCareHoursCheckIn
         :return: A response model containing information regarding the student and the check-in time and date that has been registered in the database.
         :rtype: server.web_api.models.ResponseModel
         :raises HTTPException: If the data provided in the request body is invalid, or the student is already checked in to the care service for the provided date.
         """
         with SharedData().Managers.get_database_manager().make_session() as session:
             student_care = session.query(StudentCareHours).filter(
-                StudentCareHours.student_id == student_checkin.student_id,
-                StudentCareHours.check_in_date == student_checkin.check_in_date,
-                StudentCareHours.care_type == student_checkin.care_type
+                StudentCareHours.StudentID == pyd_student_checkin.student_id,
+                StudentCareHours.CareDate == pyd_student_checkin.check_in_date,
+                StudentCareHours.CareType == pyd_student_checkin.care_type
             ).first()
             if student_care is None:
                 try:
-                    new_student_care_hours = StudentCareHours(student_checkin.student_id,
-                                                              student_checkin.check_in_date,
-                                                              student_checkin.care_type,
-                                                              datetime.strptime(time.strftime('%H:%M'), '%H:%M') if student_checkin.check_in_time is None else datetime.strptime(student_checkin.check_in_time, '%H:%M'),
+                    new_student_care_hours = StudentCareHours(pyd_student_checkin.student_id,
+                                                              pyd_student_checkin.check_in_date,
+                                                              pyd_student_checkin.care_type,
+                                                              datetime.strptime(time.strftime('%H:%M'), '%H:%M') if pyd_student_checkin.check_in_time is None else datetime.strptime(pyd_student_checkin.check_in_time, '%H:%M'),
                                                               datetime.strptime((datetime.now() + timedelta(hours=3)).strftime('%H:%M'), '%H:%M'))
                     session.add(new_student_care_hours)
                     session.commit()
@@ -113,7 +113,7 @@ class StudentsRouter:
             else:
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                                     detail=f"This student has already checked-in for {'after' if student_care.care_type else 'before'}-care "
-                                           f"for the provided date: {student_checkin.check_in_date} at {student_checkin.check_in_time}")
+                                           f"for the provided date: {pyd_student_checkin.check_in_date} at {pyd_student_checkin.check_in_time}")
         return ResponseModel(status.HTTP_201_CREATED, "success", {"check-in": new_student_care_hours.as_dict()})
 
     @router.post("/api/v1/students/checkout", status_code=status.HTTP_200_OK)

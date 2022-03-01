@@ -44,30 +44,30 @@ class EmployeesRouter:
         return ResponseModel(status.HTTP_200_OK, "success", {"employees": all_employees})
 
     @router.post("/api/v1/employees/new", status_code=status.HTTP_201_CREATED)
-    def create_new_employee(self, employee: PydanticEmployee):
+    def create_new_employee(self, pyd_employee: PydanticEmployee):
         """
         An endpoint to create a new employee entity and adds it to the employees' table in the database.
 
-        :param employee: The Pydantic Employee reference. This means that HTTP requests to this endpoint must include the required fields in the Pydantic Employee class.
-        :type employee: PydanticEmployee
+        :param pyd_employee: The Pydantic Employee reference. This means that HTTP requests to this endpoint must include the required fields in the Pydantic Employee class.
+        :type pyd_employee: PydanticEmployee
         :return: A response model containing the employee object that was created from the provided information with a generated employee ID and hashed password.
         :rtype: server.web_api.models.ResponseModel
         :raises HTTPException: If the provided request body contains an invalid plain text password, first name, or last name for the employee. This error may also be caused if the employee already exists in the database.
         """
         with SharedData().Managers.get_database_manager().make_session() as session:
-            password_hash = create_employee_password_hashes(employee.RawPassword)
+            password_hash = create_employee_password_hashes(pyd_employee.plain_password)
             if password_hash is None:
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The plain text password provided to be hashed is invalid!")
-            employee_id = generate_employee_id(employee.first_name.strip(), employee.last_name.strip())
+            employee_id = generate_employee_id(pyd_employee.first_name.strip(), pyd_employee.last_name.strip())
             if employee_id is None:
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The employee first name or last name is invalid and cannot be used to create an employee ID!")
             try:
-                new_employee = Employee(employee_id, employee.first_name, employee.last_name, password_hash)
+                new_employee = Employee(employee_id, pyd_employee.first_name, pyd_employee.last_name, password_hash)
                 session.add(new_employee)
                 session.commit()
             except IntegrityError as err:
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(err)) from err
-            created_employee = session.query(Employee).filter(Employee.employee_id == employee_id).one()
+            created_employee = session.query(Employee).filter(Employee.EmployeeID == employee_id).one()
         return ResponseModel(status.HTTP_201_CREATED, "success", {"employee": created_employee})
 
     @router.post("/api/v1/employees/remove", status_code=status.HTTP_200_OK)
@@ -87,7 +87,7 @@ class EmployeesRouter:
         if employee_id is None:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Provided request body did not contain a valid employee id!")
         with SharedData().Managers.get_database_manager().make_session() as session:
-            employee = session.query(Employee).filter(Employee.employee_id == employee_id).first()
+            employee = session.query(Employee).filter(Employee.EmployeeID == employee_id).first()
             if employee:
                 session.delete(employee)
                 session.commit()
@@ -116,9 +116,9 @@ class EmployeesRouter:
         """
         with SharedData().Managers.get_database_manager().make_session() as session:
             try:
-                total_hours = session.query(func.sum(EmployeeHours.hours_worked).label('hours')).filter(
-                    EmployeeHours.employee_id == employee_id,
-                    EmployeeHours.date_worked.between(date_start, date_end)
+                total_hours = session.query(func.sum(EmployeeHours.HoursWorked).label('hours')).filter(
+                    EmployeeHours.EmployeeID == employee_id,
+                    EmployeeHours.DateWorked.between(date_start, date_end)
                 ).scalar()
                 if total_hours is None:
                     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
@@ -129,12 +129,12 @@ class EmployeesRouter:
         return ResponseModel(status.HTTP_200_OK, "success", {"hours": total_hours})
 
     @router.post("/api/v1/employees/hours/add", status_code=status.HTTP_201_CREATED)
-    def add_employee_hours(self, employee_hours: PydanticEmployeeHours):
+    def add_employee_hours(self, pyd_employee_hours: PydanticEmployeeHours):
         """
         An endpoint to add work hours for an employee on a specified date. Work hours cannot be added multiple times for the same day.
 
-        :param employee_hours: The Pydantic EmployeeHours reference. This means that HTTP requests to this endpoint must include the required fields in the Pydantic EmployeeHours class.
-        :type employee_hours: PydanticEmployeeHours
+        :param pyd_employee_hours: The Pydantic EmployeeHours reference. This means that HTTP requests to this endpoint must include the required fields in the Pydantic EmployeeHours class.
+        :type pyd_employee_hours: PydanticEmployeeHours
         :return: A response model containing the employee and employee hours data that has been added to the database.
         :rtype: server.web_api.models.ResponseModel
         :raises HTTPException: If the hours being added on the provided date is a duplicate entry, or the provided data is invalid.
@@ -142,14 +142,14 @@ class EmployeesRouter:
         with SharedData().Managers.get_database_manager().make_session() as session:
             try:
                 work_hours_exists = session.query(EmployeeHours).filter(
-                    EmployeeHours.employee_id == employee_hours.employee_id,
-                    EmployeeHours.date_worked == employee_hours.date_worked
+                    EmployeeHours.EmployeeID == pyd_employee_hours.employee_id,
+                    EmployeeHours.DateWorked == pyd_employee_hours.date_worked
                 ).all()
                 if len(work_hours_exists) == 0:
                     total_employee_hours = EmployeeHours(
-                        employee_hours.employee_id,
-                        employee_hours.hours_worked,
-                        employee_hours.date_worked
+                        pyd_employee_hours.employee_id,
+                        pyd_employee_hours.hours_worked,
+                        pyd_employee_hours.date_worked
                     )
                     session.add(total_employee_hours)
                     session.commit()
@@ -158,8 +158,8 @@ class EmployeesRouter:
             except IntegrityError as err:
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(err)) from err
             created_employee_hours = session.query(EmployeeHours).filter(
-                EmployeeHours.employee_id == employee_hours.employee_id,
-                EmployeeHours.date_worked == employee_hours.date_worked
+                EmployeeHours.EmployeeID == pyd_employee_hours.employee_id,
+                EmployeeHours.DateWorked == pyd_employee_hours.date_worked
             ).one()
         return ResponseModel(status.HTTP_201_CREATED, "success", {"employee_hours": created_employee_hours})
 
@@ -190,7 +190,7 @@ class EmployeesRouter:
         :rtype: server.web_api.models.ResponseModel
         """
         with SharedData().Managers.get_database_manager().make_session() as session:
-            employee = session.query(Employee).filter(Employee.employee_id == employee_id).one()
+            employee = session.query(Employee).filter(Employee.EmployeeID == employee_id).one()
             employee_verified = verify_employee_password(password_text, employee.PasswordHash)
             if employee_verified is None:
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="One or more provided parameters to verify the password hash is invalid!")
