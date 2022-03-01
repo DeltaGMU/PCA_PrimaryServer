@@ -55,6 +55,8 @@ class StudentsRouter:
         :raises HTTPException: If the request body contains a student first name or last name that is invalid, or the data provided is formatted incorrectly.
         """
         with SharedData().Managers.get_database_manager().make_session() as session:
+            if len(pyd_student.first_name) == 0 or len(pyd_student.last_name) == 0:
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The first and last name of the student must not be empty!")
             student_id = generate_student_id(pyd_student.first_name.strip(), pyd_student.last_name.strip())
             if student_id is None:
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The student first name or last name is invalid and cannot be used to create an student ID!")

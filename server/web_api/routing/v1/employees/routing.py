@@ -58,6 +58,8 @@ class EmployeesRouter:
             password_hash = create_employee_password_hashes(pyd_employee.plain_password)
             if password_hash is None:
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The plain text password provided to be hashed is invalid!")
+            if len(pyd_employee.first_name) == 0 or len(pyd_employee.last_name) == 0:
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The first and last name of the employee must not be empty!")
             employee_id = generate_employee_id(pyd_employee.first_name.strip(), pyd_employee.last_name.strip())
             if employee_id is None:
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The employee first name or last name is invalid and cannot be used to create an employee ID!")
