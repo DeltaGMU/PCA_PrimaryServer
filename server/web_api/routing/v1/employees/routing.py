@@ -95,7 +95,7 @@ class EmployeesRouter:
                 session.commit()
             else:
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Cannot remove an employee that does not exist in the database!")
-        return ResponseModel(status.HTTP_200_OK, "success", {"employee": employee})
+        return ResponseModel(status.HTTP_200_OK, "success", {"employee": employee.as_dict()})
 
     @router.get("/api/v1/employees/hours", status_code=status.HTTP_200_OK)
     def get_employee_hours(self, employee_id: str, date_start: str, date_end: str):
