@@ -41,6 +41,19 @@ templates = Jinja2Templates(directory=f"{ROOT_DIR}/web_api/templates")
 
 @web_app.exception_handler(Exception)
 async def general_exception_handler(request: Request, exc: Exception):
+    """
+    The general exception handler that catches server errors from HTTP requests not caught by
+    other specific exception handlers. This is called automatically when an error
+    occurs on the server as a result of a request sent to the server.
+    This exception handler should never be called manually in your code.
+
+    :param request: The HTTP request that failed and resulted in an error.
+    :type request: fastapi.Request
+    :param exc: The exception that occurred as a result of processing the HTTP request.
+    :type exc: Exception
+    :return: A JSON message containing the error code, error message, and a detailed exception description.
+    :rtype: fastapi.responses.JSONResponse
+    """
     resp = ResponseModel(status.HTTP_500_INTERNAL_SERVER_ERROR, "Error: Internal Server Error",
                          {"error_message": f"Failed to execute: {request.method}: {request.url}",
                           "detail_message": str(exc)})
@@ -49,6 +62,18 @@ async def general_exception_handler(request: Request, exc: Exception):
 
 @web_app.exception_handler(HTTPException)
 async def general_http_exception(request: Request, exc: HTTPException):
+    """
+    The general exception handler that catches all HTTP errors from
+    HTTP requests as a result of improper formatting or data provided in the request.
+    This exception handler should never be called manually in your code.
+
+    :param request: The HTTP request that failed and resulted in an error.
+    :type request: fastapi.Request
+    :param exc: The exception that occurred as a result of processing the HTTP request.
+    :type exc: fastapi.HTTPException
+    :return: A JSON message containing the error code, error message, and a detailed exception description.
+    :rtype: fastapi.responses.JSONResponse
+    """
     resp = ResponseModel(exc.status_code, "Error: HTTP Exception Error",
                          {"error_message": f"Failed to execute: {request.method}: {request.url}",
                           "detail_message": str(exc.detail)})
@@ -57,14 +82,40 @@ async def general_http_exception(request: Request, exc: HTTPException):
 
 @web_app.exception_handler(StarletteHTTPException)
 async def starlette_http_exception(request: Request, exc: StarletteHTTPException):
+    """
+    The general exception handler that catches HTTP errors from the uvicorn server.
+    This may include catching specific errors like 404 errors.
+    This exception handler should never be called manually in your code.
+
+    :param request: The HTTP request that failed and resulted in an error.
+    :type request: fastapi.Request
+    :param exc: The exception that occurred as a result of processing the HTTP request.
+    :type exc: starlette.exceptions.HTTPException
+    :return: A JSON message containing the error code, error message, and a detailed exception description.
+    :rtype: fastapi.responses.JSONResponse
+    """
     if exc.status_code == 404:
+        # If a request is received and the page is not found, redirect to the index page.
         return RedirectResponse("/")
     else:
+        # Other errors are redirected to the general http exception handler.
         return await general_http_exception(request, exc)
 
 
 @web_app.exception_handler(ValidationError)
 async def general_validation_exception(request: Request, exc: ValidationError):
+    """
+    The general exception handler that catches validation errors with data sent
+    to the server in an HTTP request. This exception is caused by the HTTP request
+    sent to the server and is the fault of the requester, not the server.
+
+    :param request: HTTP request that failed and resulted in an error.
+    :type request: fastapi.Request
+    :param exc: The exception that occurred as a result of processing the HTTP request.
+    :type exc: fastapi.exceptions.ValidationError
+    :return: A JSON message containing the error code, error message, and a detailed exception description.
+    :rtype: fastapi.responses.JSONResponse
+    """
     resp = ResponseModel(status.HTTP_400_BAD_REQUEST, "Error: Validation Error",
                          {"error_message": f"Failed to execute: {request.method}: {request.url}",
                           "detail_message": str(exc)})
@@ -73,6 +124,18 @@ async def general_validation_exception(request: Request, exc: ValidationError):
 
 @web_app.exception_handler(RequestValidationError)
 async def general_request_validation_exception(request: Request, exc: RequestValidationError):
+    """
+    The general exception handler that catches validation errors with improper formatting of requests
+    sent to the server. This exception is caused by the HTTP request
+    sent to the server and is the fault of the requester, not the server.
+
+    :param request: HTTP request that failed and resulted in an error.
+    :type request: fastapi.Request
+    :param exc: The exception that occurred as a result of processing the HTTP request.
+    :type exc: fastapi.exceptions.RequestValidationError
+    :return: A JSON message containing the error code, error message, and a detailed exception description.
+    :rtype: fastapi.responses.JSONResponse
+    """
     resp = ResponseModel(status.HTTP_400_BAD_REQUEST, "Error: Request Validation Error",
                          {"error_message": f"Failed to execute: {request.method}: {request.url}",
                           "detail_message": str(exc)})
@@ -81,10 +144,23 @@ async def general_request_validation_exception(request: Request, exc: RequestVal
 
 @web_app.get("/")
 async def serve_index(request: Request):
+    """
+    Serves the index page of the uvicorn API server with the original request sent to the server.
+
+    :param request: HTTP request that was sent to the server to retrieve the index page.
+    :type request: fastapi.Request
+    :return: The index page of the uvicorn API server.
+    :rtype: fastapi.templating.Jinja2Templates
+    """
     return templates.TemplateResponse("index.html", {"request": request})
 
 
 class UvicornServer(uvicorn.Server):
+    """
+    The internal uvicorn server handler class that overrides the base uvicorn server
+    configuration with updated thread handling.
+    Do not modify this code!
+    """
     def install_signal_handlers(self) -> None:
         pass
 
