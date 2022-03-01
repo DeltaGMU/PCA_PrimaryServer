@@ -218,9 +218,175 @@
           </label>
         </div>
         <article role="main">
-          <section id="web-service-documentation">
-<h1>Web Service Documentation<a class="headerlink" href="#web-service-documentation" title="Permalink to this headline">#</a></h1>
-<p>Work In Progress</p>
+          <section id="module-server.services.web_service">
+<span id="web-service-documentation"></span><h1>Web Service Documentation<a class="headerlink" href="#module-server.services.web_service" title="Permalink to this headline">#</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="server.services.web_service.UvicornServer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.services.web_service.</span></span><span class="sig-name descname"><span class="pre">UvicornServer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.services.web_service.UvicornServer" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">uvicorn.server.Server</span></code></p>
+<p>The internal uvicorn server handler class that overrides the base uvicorn server
+configuration with updated thread handling.
+Do not modify this code!</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="server.services.web_service.UvicornServer.install_signal_handlers">
+<span class="sig-name descname"><span class="pre">install_signal_handlers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#server.services.web_service.UvicornServer.install_signal_handlers" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="server.services.web_service.UvicornServer.run_in_thread">
+<span class="sig-name descname"><span class="pre">run_in_thread</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#server.services.web_service.UvicornServer.run_in_thread" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+</dd></dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="server.services.web_service.WebService">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.services.web_service.</span></span><span class="sig-name descname"><span class="pre">WebService</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_https</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ssl_cert</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ssl_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.services.web_service.WebService" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This web service class manages the state of the web server that serves the REST API endpoints to
+the web interfaces. Please make sure that this is the last module that is initialized in the application.
+It contains methods to initialize and stop the Uvicorn web server.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="server.services.web_service.WebService.initialize_web">
+<span class="sig-name descname"><span class="pre">initialize_web</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#server.services.web_service.WebService.initialize_web" title="Permalink to this definition">#</a></dt>
+<dd><p>Initializes the uvicorn web server for the FastAPI endpoints with the configuration parameters
+provided in the class constructor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="server.services.web_service.WebService.stop_web">
+<span class="sig-name descname"><span class="pre">stop_web</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#server.services.web_service.WebService.stop_web" title="Permalink to this definition">#</a></dt>
+<dd><p>Sets the stop flag for the running API server thread if the uvicorn web server is currently active.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="server.services.web_service.general_exception_handler">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.services.web_service.</span></span><span class="sig-name descname"><span class="pre">general_exception_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">starlette.requests.Request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Exception</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.services.web_service.general_exception_handler" title="Permalink to this definition">#</a></dt>
+<dd><p>The general exception handler that catches server errors from HTTP requests not caught by
+other specific exception handlers. This is called automatically when an error
+occurs on the server as a result of a request sent to the server.
+This exception handler should never be called manually in your code.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> (<em>fastapi.Request</em>) – The HTTP request that failed and resulted in an error.</p></li>
+<li><p><strong>exc</strong> (<em>Exception</em>) – The exception that occurred as a result of processing the HTTP request.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A JSON message containing the error code, error message, and a detailed exception description.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>fastapi.responses.JSONResponse</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="server.services.web_service.general_http_exception">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.services.web_service.</span></span><span class="sig-name descname"><span class="pre">general_http_exception</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">starlette.requests.Request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">fastapi.exceptions.HTTPException</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.services.web_service.general_http_exception" title="Permalink to this definition">#</a></dt>
+<dd><p>The general exception handler that catches all HTTP errors from
+HTTP requests as a result of improper formatting or data provided in the request.
+This exception handler should never be called manually in your code.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> (<em>fastapi.Request</em>) – The HTTP request that failed and resulted in an error.</p></li>
+<li><p><strong>exc</strong> (<em>fastapi.HTTPException</em>) – The exception that occurred as a result of processing the HTTP request.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A JSON message containing the error code, error message, and a detailed exception description.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>fastapi.responses.JSONResponse</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="server.services.web_service.general_request_validation_exception">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.services.web_service.</span></span><span class="sig-name descname"><span class="pre">general_request_validation_exception</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">starlette.requests.Request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">fastapi.exceptions.RequestValidationError</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.services.web_service.general_request_validation_exception" title="Permalink to this definition">#</a></dt>
+<dd><p>The general exception handler that catches validation errors with improper formatting of requests
+sent to the server. This exception is caused by the HTTP request
+sent to the server and is the fault of the requester, not the server.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> (<em>fastapi.Request</em>) – HTTP request that failed and resulted in an error.</p></li>
+<li><p><strong>exc</strong> (<em>fastapi.exceptions.RequestValidationError</em>) – The exception that occurred as a result of processing the HTTP request.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A JSON message containing the error code, error message, and a detailed exception description.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>fastapi.responses.JSONResponse</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="server.services.web_service.general_validation_exception">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.services.web_service.</span></span><span class="sig-name descname"><span class="pre">general_validation_exception</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">starlette.requests.Request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">pydantic.error_wrappers.ValidationError</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.services.web_service.general_validation_exception" title="Permalink to this definition">#</a></dt>
+<dd><p>The general exception handler that catches validation errors with data sent
+to the server in an HTTP request. This exception is caused by the HTTP request
+sent to the server and is the fault of the requester, not the server.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> (<em>fastapi.Request</em>) – HTTP request that failed and resulted in an error.</p></li>
+<li><p><strong>exc</strong> (<em>fastapi.exceptions.ValidationError</em>) – The exception that occurred as a result of processing the HTTP request.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A JSON message containing the error code, error message, and a detailed exception description.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>fastapi.responses.JSONResponse</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="server.services.web_service.serve_index">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.services.web_service.</span></span><span class="sig-name descname"><span class="pre">serve_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">starlette.requests.Request</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.services.web_service.serve_index" title="Permalink to this definition">#</a></dt>
+<dd><p>Serves the index page of the uvicorn API server with the original request sent to the server.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>request</strong> (<em>fastapi.Request</em>) – HTTP request that was sent to the server to retrieve the index page.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The index page of the uvicorn API server.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>fastapi.templating.Jinja2Templates</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="server.services.web_service.starlette_http_exception">
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.services.web_service.</span></span><span class="sig-name descname"><span class="pre">starlette_http_exception</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">starlette.requests.Request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">starlette.exceptions.HTTPException</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.services.web_service.starlette_http_exception" title="Permalink to this definition">#</a></dt>
+<dd><p>The general exception handler that catches HTTP errors from the uvicorn server.
+This may include catching specific errors like 404 errors.
+This exception handler should never be called manually in your code.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>request</strong> (<em>fastapi.Request</em>) – The HTTP request that failed and resulted in an error.</p></li>
+<li><p><strong>exc</strong> (<em>starlette.exceptions.HTTPException</em>) – The exception that occurred as a result of processing the HTTP request.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A JSON message containing the error code, error message, and a detailed exception description.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>fastapi.responses.JSONResponse</p>
+</dd>
+</dl>
+</dd></dl>
 </section>
 
         </article>
