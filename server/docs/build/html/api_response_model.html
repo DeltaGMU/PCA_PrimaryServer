@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Web API Documentation" href="web_api.html" /><link rel="prev" title="Student Data Class" href="student_data_class.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Web Service Documentation" href="web_service.html" /><link rel="prev" title="Web API Documentation" href="web_api.html" />
 
     <meta name="generator" content="sphinx-4.4.0, furo 2022.02.23"/>
-        <title>Web Modules - PCA Project 0.0.1 documentation</title>
+        <title>API Response Models - PCA Project 0.0.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=3c656993158f05539f962c5cea52a5e6c184bb8c" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=25ceb02ed1c46dc30f2321ff83e92799f69dfdb9" />
@@ -179,9 +179,9 @@
 <li class="toctree-l3"><a class="reference internal" href="student_data_class.html">Student Data Class</a></li>
 </ul>
 </li>
-<li class="toctree-l2 current has-children current-page"><a class="current reference internal" href="#">Web Modules</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3 has-children"><a class="reference internal" href="web_api.html">Web API Documentation</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="api_response_model.html">API Response Models</a></li>
+<li class="toctree-l2 current has-children"><a class="reference internal" href="web_modules.html">Web Modules</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l3 current has-children"><a class="reference internal" href="web_api.html">Web API Documentation</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l4 current current-page"><a class="current reference internal" href="#">API Response Models</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="web_service.html">Web Service Documentation</a></li>
@@ -221,18 +221,64 @@
           </label>
         </div>
         <article role="main">
-          <section id="web-modules">
-<h1>Web Modules<a class="headerlink" href="#web-modules" title="Permalink to this headline">#</a></h1>
-<div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">Web Modules</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="web_api.html">Web API Documentation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="api_response_model.html">API Response Models</a></li>
+          <section id="api-response-models">
+<h1>API Response Models<a class="headerlink" href="#api-response-models" title="Permalink to this headline">#</a></h1>
+<p>This page highlights the different types of response models that are available
+for the API server to use when responding to HTTP requests from a web interface.</p>
+<span class="target" id="module-server.web_api.models"></span><dl class="py class">
+<dt class="sig sig-object py" id="server.web_api.models.ResponseModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.web_api.models.</span></span><span class="sig-name descname"><span class="pre">ResponseModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">status</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.models.ResponseModel" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This class represents the standard HTTP response model that the API server utilizes
+to respond to HTTP requests. All API responses for this project use this model.
+This response model contains an HTTP status code, HTTP success/error message, and a data field to serve content to front-end interfaces.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="server.web_api.models.ResponseModel.add_data_dict">
+<span class="sig-name descname"><span class="pre">add_data_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.models.ResponseModel.add_data_dict" title="Permalink to this definition">#</a></dt>
+<dd><p>A method that adds additional data to an existing data dictionary within the response model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>any</em><em>]</em>) – A data dictionary to append to the existing content of the response model.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="server.web_api.models.ResponseModel.as_dict">
+<span class="sig-name descname"><span class="pre">as_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.models.ResponseModel.as_dict" title="Permalink to this definition">#</a></dt>
+<dd><p>Retrieves a dictionary representation of the fields in the response model.
+This is useful when preparing the response model in a JSON compatible format for HTTP responses.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The dictionary representation of the response model.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Dict[str, any]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="server.web_api.models.ResponseModel.update_data">
+<span class="sig-name descname"><span class="pre">update_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">entry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">any</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.models.ResponseModel.update_data" title="Permalink to this definition">#</a></dt>
+<dd><p>A method that updates a single data entry in an existing data dictionary within the response model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str</em>) – The field name of the data entry which is also the key in the dictionary.</p></li>
+<li><p><strong>entry</strong> (<em>any</em>) – The updated data entry that needs to be inserted to the existing data dictionary.</p></li>
 </ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="web_service.html">Web Service Documentation</a></li>
-</ul>
-</div>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>RuntimeError</strong> – If the provided data field name does not exist as a key in the response model.</p>
+</dd>
+</dl>
+</dd></dl>
+</dd></dl>
 </section>
 
         </article>
@@ -240,23 +286,23 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="web_api.html">
+          <a class="next-page" href="web_service.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Web API Documentation</div>
+                <div class="title">Web Service Documentation</div>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="student_data_class.html">
+          <a class="prev-page" href="web_api.html">
               <svg><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Student Data Class</div>
+                <div class="title">Web API Documentation</div>
                 
               </div>
             </a>

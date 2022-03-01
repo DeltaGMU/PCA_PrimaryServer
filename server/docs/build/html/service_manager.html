@@ -180,7 +180,10 @@
 </ul>
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="web_modules.html">Web Modules</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="web_api.html">Web API Documentation</a></li>
+<li class="toctree-l3 has-children"><a class="reference internal" href="web_api.html">Web API Documentation</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l4"><a class="reference internal" href="api_response_model.html">API Response Models</a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="web_service.html">Web Service Documentation</a></li>
 </ul>
 </li>
@@ -235,6 +238,11 @@ unless the <code class="docutils literal notranslate"><span class="pre">SharedDa
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>This subclass of <code class="docutils literal notranslate"><span class="pre">SharedData</span></code> serves as a container for the manager modules of the application.
 It contains utility methods to set/get the manager references.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>TypeError</strong> – If the Managers class is attempting to be instantiated. This class does not support being instantiated!</p>
+</dd>
+</dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="server.lib.service_manager.SharedData.Managers.get_database_manager">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_database_manager</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="database_manager.html#server.lib.database_manager.DatabaseManager" title="server.lib.database_manager.DatabaseManager"><span class="pre">DatabaseManager</span></a></span></span><a class="headerlink" href="#server.lib.service_manager.SharedData.Managers.get_database_manager" title="Permalink to this definition">#</a></dt>
@@ -298,6 +306,11 @@ The web session manager is responsible for managing and hosting the web server f
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>This subclass of <code class="docutils literal notranslate"><span class="pre">SharedData</span></code> serves as a container for the storing runtime application settings.
 It contains utility methods to set/get runtime settings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>TypeError</strong> – If the Settings class is attempting to be instantiated. This class does not support being instantiated!</p>
+</dd>
+</dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="server.lib.service_manager.SharedData.Settings.get_debug_mode">
 <em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_debug_mode</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#server.lib.service_manager.SharedData.Settings.get_debug_mode" title="Permalink to this definition">#</a></dt>
