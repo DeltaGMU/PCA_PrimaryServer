@@ -59,7 +59,7 @@ class StudentsRouter:
             if student_id is None:
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The student first name or last name is invalid and cannot be used to create an student ID!")
             try:
-                new_student = Student(student_id, student.FirstName, student.LastName, student.StudentEnabled)
+                new_student = Student(student_id, student.FirstName, student.LastName)
                 session.add(new_student)
                 session.commit()
             except IntegrityError as err:

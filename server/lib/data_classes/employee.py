@@ -23,7 +23,6 @@ class PydanticEmployee(BaseModel):
     RawPassword: str
     FirstName: str
     LastName: str
-    EmployeeEnabled: bool
 
 
 class PydanticEmployeeHours(BaseModel):

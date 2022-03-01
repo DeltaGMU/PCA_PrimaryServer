@@ -62,7 +62,7 @@ class EmployeesRouter:
             if employee_id is None:
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The employee first name or last name is invalid and cannot be used to create an employee ID!")
             try:
-                new_employee = Employee(employee_id, employee.FirstName, employee.LastName, password_hash, employee.EmployeeEnabled)
+                new_employee = Employee(employee_id, employee.FirstName, employee.LastName, password_hash)
                 session.add(new_employee)
                 session.commit()
             except IntegrityError as err:

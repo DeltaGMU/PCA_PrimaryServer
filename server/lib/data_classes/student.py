@@ -25,7 +25,6 @@ class PydanticStudent(BaseModel):
     """
     FirstName: str
     LastName: str
-    StudentEnabled: bool
 
 
 class PydanticStudentCareHoursCheckIn(BaseModel):

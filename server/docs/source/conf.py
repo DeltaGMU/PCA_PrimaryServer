@@ -34,6 +34,7 @@ release = '0.0.1'
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.napoleon',
+    'sphinxcontrib.httpdomain'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -51,6 +52,7 @@ exclude_patterns = []
 # a list of builtin themes.
 #
 html_theme = 'furo'
+httpexample_scheme = 'https'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,

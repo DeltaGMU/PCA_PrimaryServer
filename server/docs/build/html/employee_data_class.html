@@ -184,9 +184,9 @@
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="web_modules.html">Web Modules</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3 has-children"><a class="reference internal" href="web_api.html">Web API Documentation</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="api_response_model.html">API Response Models</a></li>
-<li class="toctree-l4"><a class="reference internal" href="api_employees.html">Employees API</a></li>
-<li class="toctree-l4"><a class="reference internal" href="api_students.html">Students API</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api_response_model.html">API Response Models - WORK IN PROGRESS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api_employees.html">Employees API - WORK IN PROGRESS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api_students.html">Students API - WORK IN PROGRESS</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="web_service.html">Web Service Documentation</a></li>
@@ -331,14 +331,10 @@ This is useful for representing the entity in a JSON format for a request respon
 </dd></dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="server.lib.data_classes.employee.PydanticEmployee">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.lib.data_classes.employee.</span></span><span class="sig-name descname"><span class="pre">PydanticEmployee</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">RawPassword</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">FirstName</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">LastName</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">EmployeeEnabled</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.lib.data_classes.employee.PydanticEmployee" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.lib.data_classes.employee.</span></span><span class="sig-name descname"><span class="pre">PydanticEmployee</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">RawPassword</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">FirstName</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">LastName</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.lib.data_classes.employee.PydanticEmployee" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
 <p>A Pydantic class used to represent an employee entity when creating a new employee record from a http request to the API.
 Do not try to initialize this class as an independent entity or extend it into a subclass.</p>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="server.lib.data_classes.employee.PydanticEmployee.EmployeeEnabled">
-<span class="sig-name descname"><span class="pre">EmployeeEnabled</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#server.lib.data_classes.employee.PydanticEmployee.EmployeeEnabled" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="server.lib.data_classes.employee.PydanticEmployee.FirstName">
 <span class="sig-name descname"><span class="pre">FirstName</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#server.lib.data_classes.employee.PydanticEmployee.FirstName" title="Permalink to this definition">#</a></dt>
