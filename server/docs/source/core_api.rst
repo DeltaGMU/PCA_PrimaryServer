@@ -7,6 +7,7 @@ Welcome to the developer documentation for the PCA Project!
    :maxdepth: 2
    :caption: Modules Documentation:
 
+   project_resources
    manager_modules
    utility_modules
    data_classes

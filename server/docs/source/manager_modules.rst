@@ -9,5 +9,3 @@ Manager Modules
    web_manager
    logging_manager
    service_manager
-   error_codes
-   strings
