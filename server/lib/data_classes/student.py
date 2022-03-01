@@ -31,9 +31,10 @@ class PydanticStudentCareHoursCheckIn(BaseModel):
     """
     A Pydantic class used to represent a student entity that is being checked into student care when creating a new student care hours record from a http request to the API.
     Do not try to initialize this class as an independent entity or extend it into a subclass.
+    The check_in_time for this pydantic class is optional since the server can automatically generate the check-in time if one is not provided.
     """
     student_id: str
-    check_in_time: str
+    check_in_time: Optional[str]
     check_in_date: str
     care_type: bool
 

@@ -74,9 +74,14 @@ async def general_http_exception(request: Request, exc: HTTPException):
     :return: A JSON message containing the error code, error message, and a detailed exception description.
     :rtype: fastapi.responses.JSONResponse
     """
+    detail_error_message = str(exc.detail)
+    if exc.status_code == 404:
+        return RedirectResponse("/")
+    if exc.status_code == 405:
+        detail_error_message = "The request to the endpoint is invalid. This endpoint does not exist or is not allowed!"
     resp = ResponseModel(exc.status_code, "Error: HTTP Exception Error",
                          {"error_message": f"Failed to execute: {request.method}: {request.url}",
-                          "detail_message": str(exc.detail)})
+                          "detail_message": detail_error_message})
     return JSONResponse(resp.as_dict(), media_type="application/json", status_code=exc.status_code)
 
 
@@ -84,7 +89,8 @@ async def general_http_exception(request: Request, exc: HTTPException):
 async def starlette_http_exception(request: Request, exc: StarletteHTTPException):
     """
     The general exception handler that catches HTTP errors from the uvicorn server.
-    This may include catching specific errors like 404 errors.
+    If for some reason this exception handler is caught instead of the primary exception handler for all HTTP exceptions,
+    then this handler will redirect the exception to the appropriate handler.
     This exception handler should never be called manually in your code.
 
     :param request: The HTTP request that failed and resulted in an error.
@@ -94,12 +100,7 @@ async def starlette_http_exception(request: Request, exc: StarletteHTTPException
     :return: A JSON message containing the error code, error message, and a detailed exception description.
     :rtype: fastapi.responses.JSONResponse
     """
-    if exc.status_code == 404:
-        # If a request is received and the page is not found, redirect to the index page.
-        return RedirectResponse("/")
-    else:
-        # Other errors are redirected to the general http exception handler.
-        return await general_http_exception(request, exc)
+    return await general_http_exception(request, exc)
 
 
 @web_app.exception_handler(ValidationError)
