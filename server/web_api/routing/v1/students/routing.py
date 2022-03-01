@@ -112,7 +112,7 @@ class StudentsRouter:
                     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(err)) from err
             else:
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                                    detail=f"This student has already checked-in for {'after' if student_care.care_type else 'before'}-care "
+                                    detail=f"This student has already checked-in for {'after' if student_care.CareType else 'before'}-care "
                                            f"for the provided date: {pyd_student_checkin.check_in_date} at {pyd_student_checkin.check_in_time}")
         return ResponseModel(status.HTTP_201_CREATED, "success", {"check-in": new_student_care_hours.as_dict()})
 
