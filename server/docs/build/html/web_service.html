@@ -184,7 +184,8 @@
 </li>
 <li class="toctree-l2 current has-children"><a class="reference internal" href="web_modules.html">Web Modules</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l3 has-children"><a class="reference internal" href="web_api.html">Web API Documentation</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l4"><a class="reference internal" href="api_response_model.html">API Response Models - WORK IN PROGRESS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api_response_model.html">API Response Models</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api_status.html">API Status</a></li>
 <li class="toctree-l4"><a class="reference internal" href="api_employees.html">Employees API - WORK IN PROGRESS</a></li>
 <li class="toctree-l4"><a class="reference internal" href="api_students.html">Students API - WORK IN PROGRESS</a></li>
 </ul>
@@ -378,7 +379,8 @@ sent to the server and is the fault of the requester, not the server.</p>
 <dt class="sig sig-object py" id="server.services.web_service.starlette_http_exception">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.services.web_service.</span></span><span class="sig-name descname"><span class="pre">starlette_http_exception</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">starlette.requests.Request</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">starlette.exceptions.HTTPException</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.services.web_service.starlette_http_exception" title="Permalink to this definition">#</a></dt>
 <dd><p>The general exception handler that catches HTTP errors from the uvicorn server.
-This may include catching specific errors like 404 errors.
+If for some reason this exception handler is caught instead of the primary exception handler for all HTTP exceptions,
+then this handler will redirect the exception to the appropriate handler.
 This exception handler should never be called manually in your code.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>

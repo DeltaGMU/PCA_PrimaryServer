@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Students API - WORK IN PROGRESS" href="api_students.html" /><link rel="prev" title="API Response Models - WORK IN PROGRESS" href="api_response_model.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Students API - WORK IN PROGRESS" href="api_students.html" /><link rel="prev" title="API Status" href="api_status.html" />
 
     <meta name="generator" content="sphinx-4.4.0, furo 2022.02.23"/>
         <title>Employees API - WORK IN PROGRESS - PCA Project 0.0.1 documentation</title>
@@ -184,7 +184,8 @@
 </li>
 <li class="toctree-l2 current has-children"><a class="reference internal" href="web_modules.html">Web Modules</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l3 current has-children"><a class="reference internal" href="web_api.html">Web API Documentation</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="api_response_model.html">API Response Models - WORK IN PROGRESS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api_response_model.html">API Response Models</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api_status.html">API Status</a></li>
 <li class="toctree-l4 current current-page"><a class="current reference internal" href="#">Employees API - WORK IN PROGRESS</a></li>
 <li class="toctree-l4"><a class="reference internal" href="api_students.html">Students API - WORK IN PROGRESS</a></li>
 </ul>
@@ -236,6 +237,13 @@ to the web interface to interact with employee data and employee hours data.</p>
 <dt class="sig sig-object http" id="get--api-v1-employees">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/v1/employees</span></span><a class="headerlink" href="#get--api-v1-employees" title="Permalink to this definition">#</a></dt>
 <dd><p>An endpoint that retrieves all the employees from the database and formats it into a list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Status Codes</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – When the list of employees is successfully retrieved from the database.</p></li>
+</ul>
+</dd>
+</dl>
 <p><strong>Example request</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/v1/employees</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 </pre></div>
@@ -263,10 +271,53 @@ to the web interface to interact with employee data and employee hours data.</p>
 </pre></div>
 </div>
 </dd></dl>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--api-v1-employees-count">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/v1/employees/count</span></span><a class="headerlink" href="#get--api-v1-employees-count" title="Permalink to this definition">#</a></dt>
+<dd><p>An endpoint that counts the number of employees registered in the database and returns it in the response.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Status Codes</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – When the total number of employees is successfully retrieved from the database.</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/v1/employees/count</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="mi">200</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"success"</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">"count"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+</dd></dl>
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-v1-employees-new">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/v1/employees/new</span></span><a class="headerlink" href="#post--api-v1-employees-new" title="Permalink to this definition">#</a></dt>
 <dd><p>An endpoint to create a new employee entity and adds it to the employees’ table in the database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>first_name</strong> – The first name of the new employee.</p></li>
+<li><p><strong>last_name</strong> – The last name of the new employee.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Status Codes</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.2">201 Created</a></span> – When the employee is successfully created and registered in the database.</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – When the request body contains invalid parameters, or the employee already exists in the database.</p></li>
+</ul>
+</dd>
+</dl>
 <p><strong>Example request</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/v1/employees/new</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -301,9 +352,71 @@ to the web interface to interact with employee data and employee hours data.</p>
 </div>
 </dd></dl>
 <dl class="http post">
+<dt class="sig sig-object http" id="post--api-v1-employees-remove">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/v1/employees/remove</span></span><a class="headerlink" href="#post--api-v1-employees-remove" title="Permalink to this definition">#</a></dt>
+<dd><p>An endpoint to delete an existing employee entity from the database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>employee_id</strong> – The employee ID of the employee to be removed.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Status Codes</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.2">201 Created</a></span> – When the employee is successfully deleted from the database.</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – When the request body contains invalid parameters, or the employee does not exist in the database.</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/v1/employees/new</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="nt">"employee_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"jsmith300"</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="mi">200</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"success"</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">"employee"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">300</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">"employee_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"jsmith300"</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">"first_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"John"</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">"last_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Smith"</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">"password_hash"</span><span class="p">:</span><span class="w"> </span><span class="s2">"$2b$12$vS1yUX3qYgrR3PUQhj0/8e55bOiTgU5prMgbaIHxLsD6VkQRtp4kS"</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">"is_enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">"entry_created"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2022-03-01T09:46:58"</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="http post">
 <dt class="sig sig-object http" id="post--api-v1-employees-verify">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/v1/employees/verify</span></span><a class="headerlink" href="#post--api-v1-employees-verify" title="Permalink to this definition">#</a></dt>
 <dd><p>An endpoint to verify the password of an employee with the hashed password stored in the database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>employee_id</strong> – The employee ID of the employee.</p></li>
+<li><p><strong>password_text</strong> – The plain-text password of the employee attempting to verify their credentials.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Status Codes</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – When the verification process is successfully completed.</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – When the employee ID or the provided password is invalid.</p></li>
+</ul>
+</dd>
+</dl>
 <p><strong>Example request</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/v1/employees/verify</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -328,10 +441,62 @@ to the web interface to interact with employee data and employee hours data.</p>
 </pre></div>
 </div>
 </dd></dl>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--api-v1-employees-hours">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/v1/employees/hours</span></span><a class="headerlink" href="#get--api-v1-employees-hours" title="Permalink to this definition">#</a></dt>
+<dd><p>An endpoint that retrieves the total employee work hours from the given date range.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>employee_id</strong> – The employee ID of the employee.</p></li>
+<li><p><strong>date_start</strong> – The start date of the work hours to query in YYYY-MM-DD format.</p></li>
+<li><p><strong>date_end</strong> – The end date of the work hours to query in YYYY-MM-DD format.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Status Codes</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – When the total employee work hours are successfully retrieved and calculated.</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – When the employee ID, start date, or end date is invalid.</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/v1/employees/hours?employee_id=jsmith300&amp;date_start=2022-02-01&amp;date_end=2022-02-22</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="mi">200</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"success"</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">"hours"</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+</dd></dl>
 <dl class="http post">
 <dt class="sig sig-object http" id="post--api-v1-employees-hours-add">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/v1/employees/hours/add</span></span><a class="headerlink" href="#post--api-v1-employees-hours-add" title="Permalink to this definition">#</a></dt>
 <dd><p>An endpoint to add work hours to an employee for a given date in YYYY-MM-DD format.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>employee_id</strong> – The employee ID of the employee.</p></li>
+<li><p><strong>hours_worked</strong> – The hours worked by the employee on the provided date.</p></li>
+<li><p><strong>date_worked</strong> – The date the employee worked for the provided hours.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Status Codes</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.2">201 Created</a></span> – When the employee work hours are successfully added to the database.</p></li>
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – When the request body contains invalid parameters.</p></li>
+</ul>
+</dd>
+</dl>
 <p><strong>Example request</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/v1/employees/hours/add</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
@@ -376,11 +541,11 @@ This handles all the REST API logic for creating, destroying, and updating emplo
 The defined endpoints allow HTTP requests to conduct timesheet-related operations with the employee entity.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="server.web_api.routing.v1.employees.routing.EmployeesRouter.add_employee_hours">
-<span class="sig-name descname"><span class="pre">add_employee_hours</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">employee_hours</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployeeHours" title="server.lib.data_classes.employee.PydanticEmployeeHours"><span class="pre">server.lib.data_classes.employee.PydanticEmployeeHours</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.employees.routing.EmployeesRouter.add_employee_hours" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">add_employee_hours</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pyd_employee_hours</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployeeHours" title="server.lib.data_classes.employee.PydanticEmployeeHours"><span class="pre">server.lib.data_classes.employee.PydanticEmployeeHours</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.employees.routing.EmployeesRouter.add_employee_hours" title="Permalink to this definition">#</a></dt>
 <dd><p>An endpoint to add work hours for an employee on a specified date. Work hours cannot be added multiple times for the same day.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>employee_hours</strong> (<a class="reference internal" href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployeeHours" title="server.lib.data_classes.employee.PydanticEmployeeHours"><em>PydanticEmployeeHours</em></a>) – The Pydantic EmployeeHours reference. This means that HTTP requests to this endpoint must include the required fields in the Pydantic EmployeeHours class.</p>
+<dd class="field-odd"><p><strong>pyd_employee_hours</strong> (<a class="reference internal" href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployeeHours" title="server.lib.data_classes.employee.PydanticEmployeeHours"><em>PydanticEmployeeHours</em></a>) – The Pydantic EmployeeHours reference. This means that HTTP requests to this endpoint must include the required fields in the Pydantic EmployeeHours class.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>A response model containing the employee and employee hours data that has been added to the database.</p>
@@ -395,11 +560,11 @@ The defined endpoints allow HTTP requests to conduct timesheet-related operation
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="server.web_api.routing.v1.employees.routing.EmployeesRouter.create_new_employee">
-<span class="sig-name descname"><span class="pre">create_new_employee</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">employee</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployee" title="server.lib.data_classes.employee.PydanticEmployee"><span class="pre">server.lib.data_classes.employee.PydanticEmployee</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.employees.routing.EmployeesRouter.create_new_employee" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">create_new_employee</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pyd_employee</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployee" title="server.lib.data_classes.employee.PydanticEmployee"><span class="pre">server.lib.data_classes.employee.PydanticEmployee</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.employees.routing.EmployeesRouter.create_new_employee" title="Permalink to this definition">#</a></dt>
 <dd><p>An endpoint to create a new employee entity and adds it to the employees’ table in the database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>employee</strong> (<a class="reference internal" href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployee" title="server.lib.data_classes.employee.PydanticEmployee"><em>PydanticEmployee</em></a>) – The Pydantic Employee reference. This means that HTTP requests to this endpoint must include the required fields in the Pydantic Employee class.</p>
+<dd class="field-odd"><p><strong>pyd_employee</strong> (<a class="reference internal" href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployee" title="server.lib.data_classes.employee.PydanticEmployee"><em>PydanticEmployee</em></a>) – The Pydantic Employee reference. This means that HTTP requests to this endpoint must include the required fields in the Pydantic Employee class.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>A response model containing the employee object that was created from the provided information with a generated employee ID and hashed password.</p>
@@ -525,14 +690,14 @@ and compares it to the stored hashed password in the database. If both hashed pa
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="api_response_model.html">
+          <a class="prev-page" href="api_status.html">
               <svg><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">API Response Models - WORK IN PROGRESS</div>
+                <div class="title">API Status</div>
                 
               </div>
             </a>
