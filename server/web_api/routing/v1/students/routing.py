@@ -59,12 +59,12 @@ class StudentsRouter:
             if student_id is None:
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The student first name or last name is invalid and cannot be used to create an student ID!")
             try:
-                new_student = Student(student_id, student.FirstName, student.LastName)
+                new_student = Student(student_id, student.first_name, student.last_name)
                 session.add(new_student)
                 session.commit()
             except IntegrityError as err:
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(err)) from err
-            created_student = session.query(Student).filter(Student.StudentID == student_id).one()
+            created_student = session.query(Student).filter(Student.student_id == student_id).one()
         return ResponseModel(status.HTTP_201_CREATED, "success", {"student": created_student.as_dict()})
 
     @router.get("/api/v1/students/count", status_code=status.HTTP_200_OK)
@@ -95,16 +95,16 @@ class StudentsRouter:
         """
         with SharedData().Managers.get_database_manager().make_session() as session:
             student_care = session.query(StudentCareHours).filter(
-                StudentCareHours.StudentID == student_checkin.StudentID,
-                StudentCareHours.CareDate == student_checkin.CareDate,
-                StudentCareHours.CareType == student_checkin.CareType
+                StudentCareHours.student_id == student_checkin.student_id,
+                StudentCareHours.check_in_date == student_checkin.check_in_date,
+                StudentCareHours.care_type == student_checkin.care_type
             ).first()
             if student_care is None:
                 try:
-                    new_student_care_hours = StudentCareHours(student_checkin.StudentID,
-                                                              student_checkin.CareDate,
-                                                              student_checkin.CareType,
-                                                              datetime.strptime(time.strftime('%H:%M'), '%H:%M') if student_checkin.CheckInTime is None else datetime.strptime(student_checkin.CheckInTime, '%H:%M'),
+                    new_student_care_hours = StudentCareHours(student_checkin.student_id,
+                                                              student_checkin.check_in_date,
+                                                              student_checkin.care_type,
+                                                              datetime.strptime(time.strftime('%H:%M'), '%H:%M') if student_checkin.check_in_time is None else datetime.strptime(student_checkin.check_in_time, '%H:%M'),
                                                               datetime.strptime((datetime.now() + timedelta(hours=3)).strftime('%H:%M'), '%H:%M'))
                     session.add(new_student_care_hours)
                     session.commit()
@@ -112,8 +112,8 @@ class StudentsRouter:
                     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(err)) from err
             else:
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                                    detail=f"This student has already checked-in for {'after' if student_care.CareType else 'before'}-care "
-                                           f"for the provided date: {student_checkin.CareDate} at {student_checkin.CheckInTime}")
+                                    detail=f"This student has already checked-in for {'after' if student_care.care_type else 'before'}-care "
+                                           f"for the provided date: {student_checkin.check_in_date} at {student_checkin.check_in_time}")
         return ResponseModel(status.HTTP_201_CREATED, "success", {"check-in": new_student_care_hours.as_dict()})
 
     @router.post("/api/v1/students/checkout", status_code=status.HTTP_200_OK)

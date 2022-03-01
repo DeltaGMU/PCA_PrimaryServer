@@ -20,9 +20,9 @@ class PydanticEmployee(BaseModel):
     A Pydantic class used to represent an employee entity when creating a new employee record from a http request to the API.
     Do not try to initialize this class as an independent entity or extend it into a subclass.
     """
-    RawPassword: str
-    FirstName: str
-    LastName: str
+    plain_password: str
+    first_name: str
+    last_name: str
 
 
 class PydanticEmployeeHours(BaseModel):
@@ -30,9 +30,9 @@ class PydanticEmployeeHours(BaseModel):
     A Pydantic class used to represent an employee hours entity when creating a new employee hours record from a http request to the API.
     Do not try to initialize this class as an independent entity or extend it into a subclass.
     """
-    EmployeeID: str
-    HoursWorked: int
-    DateWorked: str
+    employee_id: str
+    hours_worked: int
+    date_worked: str
 
 
 class EmployeeHours(Base):
@@ -73,9 +73,9 @@ class EmployeeHours(Base):
         :rtype: dict
         """
         return {
-            "EmployeeID": self.EmployeeID,
-            "HoursWorked": self.HoursWorked,
-            "DateWorked": self.DateWorked,
+            "employee_id": self.EmployeeID,
+            "hours_worked": self.HoursWorked,
+            "date_worked": self.DateWorked,
         }
 
 
@@ -96,25 +96,25 @@ class Employee(Base):
     EntryCreated = Column(DateTime, nullable=False, default=sql.func.now())
 
     # Do not initialize this except for creating blank employee templates!
-    def __init__(self, employee_id: str, fname: str, lname: str, phash: str, enabled: bool = True):
+    def __init__(self, employee_id: str, first_name: str, last_name: str, phash: str, enabled: bool = True):
         """
         The constructor for the ``Employee`` data class that is utilized internally by the SQLAlchemy library.
         Only manually instantiate this data class to create employee records in the database within database sessions.
 
         :param employee_id: The employee id of the employee.
         :type employee_id: str, required
-        :param fname: The first name of the employee.
-        :type fname: str, required
-        :param lname: The last name of the employee.
-        :type lname: str, required
+        :param first_name: The first name of the employee.
+        :type first_name: str, required
+        :param last_name: The last name of the employee.
+        :type last_name: str, required
         :param phash: The hash representation of the employee password generated from the employee utility module.
         :type phash: str, required
         :param enabled: Determines if the individual is active as an employee of PCA. Disable this if the employee no longer works at PCA or is on indefinite leave.
         :type enabled: bool, optional
         """
         self.EmployeeID = employee_id
-        self.FirstName = fname
-        self.LastName = lname
+        self.FirstName = first_name
+        self.LastName = last_name
         self.PasswordHash = phash
         self.EmployeeEnabled = enabled
 
@@ -127,10 +127,10 @@ class Employee(Base):
         :rtype: dict
         """
         return {
-            "EmployeeID": self.EmployeeID,
-            "FirstName": self.FirstName,
-            "LastName": self.LastName,
-            "PasswordHash": self.PasswordHash,
-            "EmployeeEnabled": self.EmployeeEnabled,
-            "EntryCreated": self.EntryCreated
+            "employee_id": self.EmployeeID,
+            "first_name": self.FirstName,
+            "last_name": self.LastName,
+            "password_hash": self.PasswordHash,
+            "is_enabled": self.EmployeeEnabled,
+            "entry_created": self.EntryCreated
         }

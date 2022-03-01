@@ -23,8 +23,8 @@ class PydanticStudent(BaseModel):
     A Pydantic class used to represent a student entity when creating a new student record from a http request to the API.
     Do not try to initialize this class as an independent entity or extend it into a subclass.
     """
-    FirstName: str
-    LastName: str
+    first_name: str
+    last_name: str
 
 
 class PydanticStudentCareHoursCheckIn(BaseModel):
@@ -32,10 +32,10 @@ class PydanticStudentCareHoursCheckIn(BaseModel):
     A Pydantic class used to represent a student entity that is being checked into student care when creating a new student care hours record from a http request to the API.
     Do not try to initialize this class as an independent entity or extend it into a subclass.
     """
-    StudentID: str
-    CheckInTime: Optional[str]
-    CareDate: str
-    CareType: bool
+    student_id: str
+    check_in_time: str
+    check_in_date: str
+    care_type: bool
 
 
 class PydanticStudentCareHoursCheckOut(BaseModel):
@@ -43,10 +43,10 @@ class PydanticStudentCareHoursCheckOut(BaseModel):
     A Pydantic class used to represent a student entity that is being checked out of student care when updating student care hours record from a http request to the API.
     Do not try to initialize this class as an independent entity or extend it into a subclass.
     """
-    StudentID: str
-    CheckOutTime: str
-    CareDate: str
-    CareType: bool
+    student_id: str
+    check_out_time: str
+    check_out_date: str
+    care_type: bool
 
 
 class StudentCareHours(Base):
@@ -96,12 +96,12 @@ class StudentCareHours(Base):
         :rtype: dict
         """
         return {
-            "StudentID": self.StudentID,
-            "CareDate": self.CareDate,
-            "CheckInTime": self.CheckInTime,
-            "CheckOutTime": self.CheckOutTime,
-            "CareType": self.CareType,
-            "EntryCreated": self.EntryCreated
+            "student_id": self.StudentID,
+            "check_in_time": self.CheckInTime,
+            "check_out_time": self.CheckOutTime,
+            "care_date": self.CareDate,
+            "care_type": self.CareType,
+            "entry_created": self.EntryCreated
         }
 
 
@@ -121,7 +121,7 @@ class Student(Base):
     EntryCreated = Column(DateTime, nullable=False, default=sql.func.now())
 
     # Do not initialize this except for creating blank student templates!
-    def __init__(self, student_id: str, fname: str, lname: str, enabled: bool = True):
+    def __init__(self, student_id: str, first_name: str, last_name: str, enabled: bool = True):
         """
         The constructor for the ``Student`` data class that is utilized internally by the SQLAlchemy library.
         Only manually instantiate this data class to create employee hours records in the database within database sessions.
@@ -129,16 +129,16 @@ class Student(Base):
 
         :param student_id: The student id of the student.
         :type student_id: str, required
-        :param fname: The first name of the student.
-        :type fname: str, required
-        :param lname: The last name of the student.
-        :type lname: str, required
+        :param first_name: The first name of the student.
+        :type first_name: str, required
+        :param last_name: The last name of the student.
+        :type last_name: str, required
         :param enabled: Determines if the individual is active as a student of PCA. Disable this if the student no longer attends PCA or is on indefinite leave.
         :type enabled: bool, optional
         """
         self.StudentID = student_id
-        self.FirstName = fname
-        self.LastName = lname
+        self.FirstName = first_name
+        self.LastName = last_name
         self.StudentEnabled = enabled
 
     def as_dict(self):
@@ -150,9 +150,9 @@ class Student(Base):
         :rtype: dict
         """
         return {
-            "StudentID": self.StudentID,
-            "FirstName": self.FirstName,
-            "LastName": self.LastName,
-            "StudentEnabled": self.StudentEnabled,
-            "EntryCreated": self.EntryCreated
+            "student_id": self.StudentID,
+            "first_name": self.FirstName,
+            "last_name": self.LastName,
+            "is_enabled": self.StudentEnabled,
+            "entry_created": self.EntryCreated
         }

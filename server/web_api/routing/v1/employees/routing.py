@@ -62,12 +62,12 @@ class EmployeesRouter:
             if employee_id is None:
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The employee first name or last name is invalid and cannot be used to create an employee ID!")
             try:
-                new_employee = Employee(employee_id, employee.FirstName, employee.LastName, password_hash)
+                new_employee = Employee(employee_id, employee.first_name, employee.last_name, password_hash)
                 session.add(new_employee)
                 session.commit()
             except IntegrityError as err:
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(err)) from err
-            created_employee = session.query(Employee).filter(Employee.EmployeeID == employee_id).one()
+            created_employee = session.query(Employee).filter(Employee.employee_id == employee_id).one()
         return ResponseModel(status.HTTP_201_CREATED, "success", {"employee": created_employee})
 
     @router.post("/api/v1/employees/remove", status_code=status.HTTP_200_OK)
@@ -87,7 +87,7 @@ class EmployeesRouter:
         if employee_id is None:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Provided request body did not contain a valid employee id!")
         with SharedData().Managers.get_database_manager().make_session() as session:
-            employee = session.query(Employee).filter(Employee.EmployeeID == employee_id).first()
+            employee = session.query(Employee).filter(Employee.employee_id == employee_id).first()
             if employee:
                 session.delete(employee)
                 session.commit()
@@ -116,9 +116,9 @@ class EmployeesRouter:
         """
         with SharedData().Managers.get_database_manager().make_session() as session:
             try:
-                total_hours = session.query(func.sum(EmployeeHours.HoursWorked).label('hours')).filter(
-                    EmployeeHours.EmployeeID == employee_id,
-                    EmployeeHours.DateWorked.between(date_start, date_end)
+                total_hours = session.query(func.sum(EmployeeHours.hours_worked).label('hours')).filter(
+                    EmployeeHours.employee_id == employee_id,
+                    EmployeeHours.date_worked.between(date_start, date_end)
                 ).scalar()
                 if total_hours is None:
                     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
@@ -142,14 +142,14 @@ class EmployeesRouter:
         with SharedData().Managers.get_database_manager().make_session() as session:
             try:
                 work_hours_exists = session.query(EmployeeHours).filter(
-                    EmployeeHours.EmployeeID == employee_hours.EmployeeID,
-                    EmployeeHours.DateWorked == employee_hours.DateWorked
+                    EmployeeHours.employee_id == employee_hours.employee_id,
+                    EmployeeHours.date_worked == employee_hours.date_worked
                 ).all()
                 if len(work_hours_exists) == 0:
                     total_employee_hours = EmployeeHours(
-                        employee_hours.EmployeeID,
-                        employee_hours.HoursWorked,
-                        employee_hours.DateWorked
+                        employee_hours.employee_id,
+                        employee_hours.hours_worked,
+                        employee_hours.date_worked
                     )
                     session.add(total_employee_hours)
                     session.commit()
@@ -158,8 +158,8 @@ class EmployeesRouter:
             except IntegrityError as err:
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(err)) from err
             created_employee_hours = session.query(EmployeeHours).filter(
-                EmployeeHours.EmployeeID == employee_hours.EmployeeID,
-                EmployeeHours.DateWorked == employee_hours.DateWorked
+                EmployeeHours.employee_id == employee_hours.employee_id,
+                EmployeeHours.date_worked == employee_hours.date_worked
             ).one()
         return ResponseModel(status.HTTP_201_CREATED, "success", {"employee_hours": created_employee_hours})
 
@@ -190,7 +190,7 @@ class EmployeesRouter:
         :rtype: server.web_api.models.ResponseModel
         """
         with SharedData().Managers.get_database_manager().make_session() as session:
-            employee = session.query(Employee).filter(Employee.EmployeeID == employee_id).one()
+            employee = session.query(Employee).filter(Employee.employee_id == employee_id).one()
             employee_verified = verify_employee_password(password_text, employee.PasswordHash)
             if employee_verified is None:
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="One or more provided parameters to verify the password hash is invalid!")

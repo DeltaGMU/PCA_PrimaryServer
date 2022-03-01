@@ -56,7 +56,9 @@ class DatabaseManager:
         try:
             self.db_engine = create_engine(
                 f"mariadb+mariadbconnector://{self.server_user}:{self.server_pass}@{self.server_host}:{self.server_port}/{self.server_db}",
-                echo=SharedData().Settings.get_debug_mode())
+                echo=SharedData().Settings.get_debug_mode(),
+                pool_recycle=3600
+            )
             self.session_factory = sessionmaker(bind=self.db_engine, autoflush=False, autocommit=False)
         except NoSuchModuleError as err:
             raise RuntimeError(f"Database Manager Error [Error Code: {ERR_DB_CAUGHT}]\n"

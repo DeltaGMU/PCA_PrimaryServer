@@ -250,12 +250,12 @@ to the web interface to interact with employee data and employee hours data.</p>
 <span class="w">  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">      </span><span class="nt">"employees"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
 <span class="w">          </span><span class="p">{</span><span class="w"></span>
-<span class="w">              </span><span class="nt">"EmployeeID"</span><span class="p">:</span><span class="w"> </span><span class="s2">"jsmith300"</span><span class="p">,</span><span class="w"></span>
-<span class="w">              </span><span class="nt">"FirstName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"John"</span><span class="p">,</span><span class="w"></span>
-<span class="w">              </span><span class="nt">"LastName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Smith"</span><span class="p">,</span><span class="w"></span>
-<span class="w">              </span><span class="nt">"PasswordHash"</span><span class="p">:</span><span class="w"> </span><span class="s2">"$2b$12$vS1yUX3qYgrR3PUQhj0/8e55bOiTgU5prMgbaIHxLsD6VkQRtp4kS"</span><span class="p">,</span><span class="w"></span>
-<span class="w">              </span><span class="nt">"EmployeeEnabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"></span>
-<span class="w">              </span><span class="nt">"EntryCreated"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2022-03-01T09:46:58"</span><span class="w"></span>
+<span class="w">              </span><span class="nt">"employee_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"jsmith300"</span><span class="p">,</span><span class="w"></span>
+<span class="w">              </span><span class="nt">"first_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"John"</span><span class="p">,</span><span class="w"></span>
+<span class="w">              </span><span class="nt">"last_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Smith"</span><span class="p">,</span><span class="w"></span>
+<span class="w">              </span><span class="nt">"password_hash"</span><span class="p">:</span><span class="w"> </span><span class="s2">"$2b$12$vS1yUX3qYgrR3PUQhj0/8e55bOiTgU5prMgbaIHxLsD6VkQRtp4kS"</span><span class="p">,</span><span class="w"></span>
+<span class="w">              </span><span class="nt">"is_enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"></span>
+<span class="w">              </span><span class="nt">"entry_created"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2022-03-01T09:46:58"</span><span class="w"></span>
 <span class="w">          </span><span class="p">}</span><span class="w"></span>
 <span class="w">      </span><span class="p">]</span><span class="w"></span>
 <span class="w">  </span><span class="p">}</span><span class="w"></span>
@@ -263,23 +263,23 @@ to the web interface to interact with employee data and employee hours data.</p>
 </pre></div>
 </div>
 </dd></dl>
-<dl class="http get">
-<dt class="sig sig-object http" id="get--api-v1-employees-new">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/v1/employees/new</span></span><a class="headerlink" href="#get--api-v1-employees-new" title="Permalink to this definition">#</a></dt>
+<dl class="http post">
+<dt class="sig sig-object http" id="post--api-v1-employees-new">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/v1/employees/new</span></span><a class="headerlink" href="#post--api-v1-employees-new" title="Permalink to this definition">#</a></dt>
 <dd><p>An endpoint to create a new employee entity and adds it to the employees’ table in the database.</p>
 <p><strong>Example request</strong>:</p>
-<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/v1/employees/new</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/v1/employees/new</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 
 <span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="nt">"FirstName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"John"</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">"LastName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Smith"</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">"RawPassword"</span><span class="p">:</span><span class="w"> </span><span class="s2">"john123"</span><span class="w"></span>
+<span class="w">  </span><span class="nt">"first_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"John"</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">"last_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Smith"</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">"plain_password"</span><span class="p">:</span><span class="w"> </span><span class="s2">"john123"</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 <p><strong>Example response</strong>:</p>
-<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">201</span> <span class="ne">OK</span>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 
 <span class="p">{</span><span class="w"></span>
@@ -288,12 +288,75 @@ to the web interface to interact with employee data and employee hours data.</p>
 <span class="w">  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">      </span><span class="nt">"employee"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">          </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">300</span><span class="p">,</span><span class="w"></span>
-<span class="w">          </span><span class="nt">"FirstName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"John"</span><span class="p">,</span><span class="w"></span>
-<span class="w">          </span><span class="nt">"PasswordHash"</span><span class="p">:</span><span class="w"> </span><span class="s2">"$2b$12$vS1yUX3qYgrR3PUQhj0/8e55bOiTgU5prMgbaIHxLsD6VkQRtp4kS"</span><span class="p">,</span><span class="w"></span>
-<span class="w">          </span><span class="nt">"EntryCreated"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2022-03-01T09:46:58"</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">"employee_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"jsmith300"</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">"first_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"John"</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">"last_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Smith"</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">"password_hash"</span><span class="p">:</span><span class="w"> </span><span class="s2">"$2b$12$vS1yUX3qYgrR3PUQhj0/8e55bOiTgU5prMgbaIHxLsD6VkQRtp4kS"</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">"is_enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">"entry_created"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2022-03-01T09:46:58"</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="http post">
+<dt class="sig sig-object http" id="post--api-v1-employees-verify">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/v1/employees/verify</span></span><a class="headerlink" href="#post--api-v1-employees-verify" title="Permalink to this definition">#</a></dt>
+<dd><p>An endpoint to verify the password of an employee with the hashed password stored in the database.</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/v1/employees/verify</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="nt">"employee_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"jsmith300"</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">"password_text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"john123"</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="mi">200</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"success"</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">"verified"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w"></span>
+<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="http post">
+<dt class="sig sig-object http" id="post--api-v1-employees-hours-add">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/v1/employees/hours/add</span></span><a class="headerlink" href="#post--api-v1-employees-hours-add" title="Permalink to this definition">#</a></dt>
+<dd><p>An endpoint to add work hours to an employee for a given date in YYYY-MM-DD format.</p>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/v1/employees/hours/add</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="nt">"employee_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"jsmith300"</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">"hours_worked"</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">"date_worked"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2022-02-20"</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">201</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span><span class="w"></span>
+<span class="w">  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="mi">201</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"success"</span><span class="p">,</span><span class="w"></span>
+<span class="w">  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="nt">"employee_hours"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">          </span><span class="nt">"DateWorked"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2022-02-20"</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">"HoursWorked"</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w"></span>
+<span class="w">          </span><span class="nt">"EntryCreated"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2022-03-01T20:22:35"</span><span class="p">,</span><span class="w"></span>
 <span class="w">          </span><span class="nt">"EmployeeID"</span><span class="p">:</span><span class="w"> </span><span class="s2">"jsmith300"</span><span class="p">,</span><span class="w"></span>
-<span class="w">          </span><span class="nt">"LastName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Smith"</span><span class="p">,</span><span class="w"></span>
-<span class="w">          </span><span class="nt">"EmployeeEnabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w"></span>
+<span class="w">          </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">50</span><span class="w"></span>
 <span class="w">      </span><span class="p">}</span><span class="w"></span>
 <span class="w">  </span><span class="p">}</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
