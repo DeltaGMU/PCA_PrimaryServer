@@ -184,6 +184,7 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="web_api.html">Web API Documentation</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="api_response_model.html">API Response Models</a></li>
 <li class="toctree-l4"><a class="reference internal" href="api_employees.html">Employees API</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api_students.html">Students API</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="web_service.html">Web Service Documentation</a></li>
@@ -272,6 +273,10 @@
           <li><a href="student_data_class.html#server.lib.data_classes.student.StudentCareHours.CareType">(server.lib.data_classes.student.StudentCareHours attribute)</a>
 </li>
         </ul></li>
+        <li><a href="api_students.html#server.web_api.routing.v1.students.routing.StudentsRouter.check_in_student">check_in_student() (server.web_api.routing.v1.students.routing.StudentsRouter method)</a>
+</li>
+        <li><a href="api_students.html#server.web_api.routing.v1.students.routing.StudentsRouter.check_out_student">check_out_student() (server.web_api.routing.v1.students.routing.StudentsRouter method)</a>
+</li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="student_data_class.html#server.lib.data_classes.student.PydanticStudentCareHoursCheckIn.CheckInTime">CheckInTime (server.lib.data_classes.student.PydanticStudentCareHoursCheckIn attribute)</a>
@@ -291,6 +296,8 @@
         <li><a href="employee_utils.html#server.lib.utils.employee_utils.create_employee_password_hashes">create_employee_password_hashes() (in module server.lib.utils.employee_utils)</a>
 </li>
         <li><a href="api_employees.html#server.web_api.routing.v1.employees.routing.EmployeesRouter.create_new_employee">create_new_employee() (server.web_api.routing.v1.employees.routing.EmployeesRouter method)</a>
+</li>
+        <li><a href="api_students.html#server.web_api.routing.v1.students.routing.StudentsRouter.create_new_student">create_new_student() (server.web_api.routing.v1.students.routing.StudentsRouter method)</a>
 </li>
     </ul></td>
   </tr></table>
@@ -398,6 +405,8 @@
 </li>
         <li><a href="api_employees.html#server.web_api.routing.v1.employees.routing.EmployeesRouter.get_all_employees">get_all_employees() (server.web_api.routing.v1.employees.routing.EmployeesRouter method)</a>
 </li>
+        <li><a href="api_students.html#server.web_api.routing.v1.students.routing.StudentsRouter.get_all_students">get_all_students() (server.web_api.routing.v1.students.routing.StudentsRouter method)</a>
+</li>
         <li><a href="service_manager.html#server.lib.service_manager.SharedData.Managers.get_database_manager">get_database_manager() (server.lib.service_manager.SharedData.Managers class method)</a>
 </li>
         <li><a href="service_manager.html#server.lib.service_manager.SharedData.Settings.get_debug_mode">get_debug_mode() (server.lib.service_manager.SharedData.Settings class method)</a>
@@ -421,6 +430,8 @@
         <li><a href="logging_manager.html#server.lib.logging_manager.LoggingManager.Settings.get_max_logs">get_max_logs() (server.lib.logging_manager.LoggingManager.Settings class method)</a>
 </li>
         <li><a href="service_manager.html#server.lib.service_manager.SharedData.Settings.get_quiet_mode">get_quiet_mode() (server.lib.service_manager.SharedData.Settings class method)</a>
+</li>
+        <li><a href="api_students.html#server.web_api.routing.v1.students.routing.StudentsRouter.get_students_count">get_students_count() (server.web_api.routing.v1.students.routing.StudentsRouter method)</a>
 </li>
         <li><a href="service_manager.html#server.lib.service_manager.SharedData.Managers.get_web_manager">get_web_manager() (server.lib.service_manager.SharedData.Managers class method)</a>
 </li>
@@ -566,6 +577,8 @@
 </li>
           <li><a href="api_employees.html#module-server.web_api.routing.v1.employees.routing">server.web_api.routing.v1.employees.routing</a>
 </li>
+          <li><a href="api_students.html#module-server.web_api.routing.v1.students.routing">server.web_api.routing.v1.students.routing</a>
+</li>
         </ul></li>
     </ul></td>
   </tr></table>
@@ -708,13 +721,20 @@
           <li><a href="api_response_model.html#module-server.web_api.models">module</a>
 </li>
         </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li>
     server.web_api.routing.v1.employees.routing
 
         <ul>
           <li><a href="api_employees.html#module-server.web_api.routing.v1.employees.routing">module</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li>
+    server.web_api.routing.v1.students.routing
+
+        <ul>
+          <li><a href="api_students.html#module-server.web_api.routing.v1.students.routing">module</a>
 </li>
         </ul></li>
         <li><a href="service_manager.html#server.lib.service_manager.SharedData.Managers.set_database_manager">set_database_manager() (server.lib.service_manager.SharedData.Managers class method)</a>
@@ -769,6 +789,8 @@
           <li><a href="student_data_class.html#server.lib.data_classes.student.StudentCareHours.StudentID">(server.lib.data_classes.student.StudentCareHours attribute)</a>
 </li>
         </ul></li>
+        <li><a href="api_students.html#server.web_api.routing.v1.students.routing.StudentsRouter">StudentsRouter (class in server.web_api.routing.v1.students.routing)</a>
+</li>
     </ul></td>
   </tr></table>
 </section>

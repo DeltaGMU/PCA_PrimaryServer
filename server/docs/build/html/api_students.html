@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Employee Data Class" href="employee_data_class.html" /><link rel="prev" title="Print Utility" href="print_utils.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Web Service Documentation" href="web_service.html" /><link rel="prev" title="Employees API" href="api_employees.html" />
 
     <meta name="generator" content="sphinx-4.4.0, furo 2022.02.23"/>
-        <title>Data Class Modules - PCA Project 0.0.1 documentation</title>
+        <title>Students API - PCA Project 0.0.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=3c656993158f05539f962c5cea52a5e6c184bb8c" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=25ceb02ed1c46dc30f2321ff83e92799f69dfdb9" />
@@ -177,16 +177,16 @@
 <li class="toctree-l3"><a class="reference internal" href="print_utils.html">Print Utility</a></li>
 </ul>
 </li>
-<li class="toctree-l2 current has-children current-page"><a class="current reference internal" href="#">Data Class Modules</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="data_classes.html">Data Class Modules</a><input class="toctree-checkbox" id="toctree-checkbox-6" name="toctree-checkbox-6" role="switch" type="checkbox"/><label for="toctree-checkbox-6"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="employee_data_class.html">Employee Data Class</a></li>
 <li class="toctree-l3"><a class="reference internal" href="student_data_class.html">Student Data Class</a></li>
 </ul>
 </li>
-<li class="toctree-l2 has-children"><a class="reference internal" href="web_modules.html">Web Modules</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3 has-children"><a class="reference internal" href="web_api.html">Web API Documentation</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l2 current has-children"><a class="reference internal" href="web_modules.html">Web Modules</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l3 current has-children"><a class="reference internal" href="web_api.html">Web API Documentation</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="api_response_model.html">API Response Models</a></li>
 <li class="toctree-l4"><a class="reference internal" href="api_employees.html">Employees API</a></li>
-<li class="toctree-l4"><a class="reference internal" href="api_students.html">Students API</a></li>
+<li class="toctree-l4 current current-page"><a class="current reference internal" href="#">Students API</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="web_service.html">Web Service Documentation</a></li>
@@ -226,15 +226,102 @@
           </label>
         </div>
         <article role="main">
-          <section id="data-class-modules">
-<h1>Data Class Modules<a class="headerlink" href="#data-class-modules" title="Permalink to this headline">#</a></h1>
-<div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">Data Class Modules</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="employee_data_class.html">Employee Data Class</a></li>
-<li class="toctree-l1"><a class="reference internal" href="student_data_class.html">Student Data Class</a></li>
-</ul>
-</div>
+          <section id="students-api">
+<h1>Students API<a class="headerlink" href="#students-api" title="Permalink to this headline">#</a></h1>
+<p>This page highlights the different endpoints that are available
+to the web interface to interact with student data and before-care/after-care services data.</p>
+<span class="target" id="module-server.web_api.routing.v1.students.routing"></span><p>This module consists of FastAPI routing for Students.
+This handles all the REST API logic for creating, destroying, and updating student-related data.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="server.web_api.routing.v1.students.routing.StudentsRouter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.web_api.routing.v1.students.routing.</span></span><span class="sig-name descname"><span class="pre">StudentsRouter</span></span><a class="headerlink" href="#server.web_api.routing.v1.students.routing.StudentsRouter" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>The API router responsible for defining endpoints relating to students.
+The defined endpoints allow HTTP requests to conduct childcare-related operations with the student entity.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="server.web_api.routing.v1.students.routing.StudentsRouter.check_in_student">
+<span class="sig-name descname"><span class="pre">check_in_student</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">student_checkin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="student_data_class.html#server.lib.data_classes.student.PydanticStudentCareHoursCheckIn" title="server.lib.data_classes.student.PydanticStudentCareHoursCheckIn"><span class="pre">server.lib.data_classes.student.PydanticStudentCareHoursCheckIn</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.students.routing.StudentsRouter.check_in_student" title="Permalink to this definition">#</a></dt>
+<dd><p>An endpoint that checks-in a student into the before-care or after-care service and records the time of check-in.
+Any student checked into before-care is automatically checked out at the end of the before-care service.
+Any student checked into after-care can be checked out at any time after checking in.
+Failure to check out a student from after-care will result in the automatic check-out of the student at the end of after-care.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>student_checkin</strong> (<a class="reference internal" href="student_data_class.html#server.lib.data_classes.student.PydanticStudentCareHoursCheckIn" title="server.lib.data_classes.student.PydanticStudentCareHoursCheckIn"><em>PydanticStudentCareHoursCheckIn</em></a>) – The Pydantic StudentCareHoursCheckIn reference. This means that HTTP requests to this endpoint must include the required fields in the Pydantic StudentCareHoursCheckIn class.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A response model containing information regarding the student and the check-in time and date that has been registered in the database.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="api_response_model.html#server.web_api.models.ResponseModel" title="server.web_api.models.ResponseModel">server.web_api.models.ResponseModel</a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>HTTPException</strong> – If the data provided in the request body is invalid, or the student is already checked in to the care service for the provided date.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="server.web_api.routing.v1.students.routing.StudentsRouter.check_out_student">
+<span class="sig-name descname"><span class="pre">check_out_student</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">student_checkout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="student_data_class.html#server.lib.data_classes.student.PydanticStudentCareHoursCheckOut" title="server.lib.data_classes.student.PydanticStudentCareHoursCheckOut"><span class="pre">server.lib.data_classes.student.PydanticStudentCareHoursCheckOut</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.students.routing.StudentsRouter.check_out_student" title="Permalink to this definition">#</a></dt>
+<dd><p>Not Implemented!</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>student_checkout</strong> (<em>Not Implemented!</em>) – Not Implemented!</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Not Implemented!</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Not Implemented!</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="server.web_api.routing.v1.students.routing.StudentsRouter.create_new_student">
+<span class="sig-name descname"><span class="pre">create_new_student</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">student</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="student_data_class.html#server.lib.data_classes.student.PydanticStudent" title="server.lib.data_classes.student.PydanticStudent"><span class="pre">server.lib.data_classes.student.PydanticStudent</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.students.routing.StudentsRouter.create_new_student" title="Permalink to this definition">#</a></dt>
+<dd><p>An endpoint that creates a new student record and adds it to the students’ table in the database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>student</strong> (<a class="reference internal" href="student_data_class.html#server.lib.data_classes.student.PydanticStudent" title="server.lib.data_classes.student.PydanticStudent"><em>PydanticStudent</em></a>) – The Pydantic Student reference. This means that HTTP requests to this endpoint must include the required fields in the Pydantic Student class.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A response model containing the student object that was created and inserted into the database.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="api_response_model.html#server.web_api.models.ResponseModel" title="server.web_api.models.ResponseModel">server.web_api.models.ResponseModel</a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>HTTPException</strong> – If the request body contains a student first name or last name that is invalid, or the data provided is formatted incorrectly.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="server.web_api.routing.v1.students.routing.StudentsRouter.get_all_students">
+<span class="sig-name descname"><span class="pre">get_all_students</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.students.routing.StudentsRouter.get_all_students" title="Permalink to this definition">#</a></dt>
+<dd><p>An endpoint that retrieves all the students from the database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of all the students in the database.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="api_response_model.html#server.web_api.models.ResponseModel" title="server.web_api.models.ResponseModel">server.web_api.models.ResponseModel</a></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="server.web_api.routing.v1.students.routing.StudentsRouter.get_students_count">
+<span class="sig-name descname"><span class="pre">get_students_count</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.students.routing.StudentsRouter.get_students_count" title="Permalink to this definition">#</a></dt>
+<dd><p>An endpoint that counts the number of students that are registered in the database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A response model containing the number of students in the database. The count will be 0 if there are no students registered in the database.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="api_response_model.html#server.web_api.models.ResponseModel" title="server.web_api.models.ResponseModel">server.web_api.models.ResponseModel</a></p>
+</dd>
+</dl>
+</dd></dl>
+</dd></dl>
 </section>
 
         </article>
@@ -242,23 +329,23 @@
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="employee_data_class.html">
+          <a class="next-page" href="web_service.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Employee Data Class</div>
+                <div class="title">Web Service Documentation</div>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
-          <a class="prev-page" href="print_utils.html">
+          <a class="prev-page" href="api_employees.html">
               <svg><use href="#svg-arrow-right"></use></svg>
               <div class="page-info">
                 <div class="context">
                   <span>Previous</span>
                 </div>
                 
-                <div class="title">Print Utility</div>
+                <div class="title">Employees API</div>
                 
               </div>
             </a>
