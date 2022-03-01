@@ -34,6 +34,8 @@ class SharedData:
         """
         This subclass of ``SharedData`` serves as a container for the manager modules of the application.
         It contains utility methods to set/get the manager references.
+
+        :raises TypeError: If the Managers class is attempting to be instantiated. This class does not support being instantiated!
         """
         __database_manager: DatabaseManager = None
         __web_manager: WebSessionManager = None
@@ -96,6 +98,8 @@ class SharedData:
         """
         This subclass of ``SharedData`` serves as a container for the storing runtime application settings.
         It contains utility methods to set/get runtime settings.
+
+        :raises TypeError: If the Settings class is attempting to be instantiated. This class does not support being instantiated!
         """
         __debug_mode: bool = False
         __quiet_mode: bool = False
