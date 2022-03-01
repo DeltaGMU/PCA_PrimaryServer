@@ -11,6 +11,8 @@ Usage
 
    An endpoint that retrieves all the students from the database and formats it into a list.
 
+   :status 200: When the list of students is successfully retrieved from the database.
+
    **Example request**:
 
    .. sourcecode:: http
@@ -44,6 +46,11 @@ Usage
 .. http:post:: /api/v1/students/new
 
    An endpoint that creates a new student in the database given a valid first and last name.
+
+   :param first_name: The first name of the new student.
+   :param last_name: The last name of the new student.
+   :status 201: When the new student is successfully added to the database.
+   :status 400: When the first or last name of the new student is invalid, or the student already exists in the database
 
    **Example request**:
 
