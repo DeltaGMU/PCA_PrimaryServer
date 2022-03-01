@@ -183,6 +183,7 @@
 <li class="toctree-l2 has-children"><a class="reference internal" href="web_modules.html">Web Modules</a><input class="toctree-checkbox" id="toctree-checkbox-7" name="toctree-checkbox-7" role="switch" type="checkbox"/><label for="toctree-checkbox-7"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3 has-children"><a class="reference internal" href="web_api.html">Web API Documentation</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="api_response_model.html">API Response Models</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api_employees.html">Employees API</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="web_service.html">Web Service Documentation</a></li>
@@ -232,6 +233,8 @@
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="api_response_model.html#server.web_api.models.ResponseModel.add_data_dict">add_data_dict() (server.web_api.models.ResponseModel method)</a>
+</li>
+        <li><a href="api_employees.html#server.web_api.routing.v1.employees.routing.EmployeesRouter.add_employee_hours">add_employee_hours() (server.web_api.routing.v1.employees.routing.EmployeesRouter method)</a>
 </li>
         <li><a href="employee_data_class.html#server.lib.data_classes.employee.Employee.as_dict">as_dict() (server.lib.data_classes.employee.Employee method)</a>
 
@@ -287,6 +290,8 @@
 </li>
         <li><a href="employee_utils.html#server.lib.utils.employee_utils.create_employee_password_hashes">create_employee_password_hashes() (in module server.lib.utils.employee_utils)</a>
 </li>
+        <li><a href="api_employees.html#server.web_api.routing.v1.employees.routing.EmployeesRouter.create_new_employee">create_new_employee() (server.web_api.routing.v1.employees.routing.EmployeesRouter method)</a>
+</li>
     </ul></td>
   </tr></table>
 </section>
@@ -339,6 +344,8 @@
         </ul></li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_employees.html#server.web_api.routing.v1.employees.routing.EmployeesRouter">EmployeesRouter (class in server.web_api.routing.v1.employees.routing)</a>
+</li>
         <li><a href="logging_manager.html#server.lib.logging_manager.LoggingManager.enable">enable() (server.lib.logging_manager.LoggingManager class method)</a>
 </li>
         <li><a href="employee_data_class.html#server.lib.data_classes.employee.Employee.EntryCreated">EntryCreated (server.lib.data_classes.employee.Employee attribute)</a>
@@ -389,12 +396,18 @@
 </li>
         <li><a href="student_utils.html#server.lib.utils.student_utils.generate_student_id">generate_student_id() (in module server.lib.utils.student_utils)</a>
 </li>
+        <li><a href="api_employees.html#server.web_api.routing.v1.employees.routing.EmployeesRouter.get_all_employees">get_all_employees() (server.web_api.routing.v1.employees.routing.EmployeesRouter method)</a>
+</li>
         <li><a href="service_manager.html#server.lib.service_manager.SharedData.Managers.get_database_manager">get_database_manager() (server.lib.service_manager.SharedData.Managers class method)</a>
 </li>
         <li><a href="service_manager.html#server.lib.service_manager.SharedData.Settings.get_debug_mode">get_debug_mode() (server.lib.service_manager.SharedData.Settings class method)</a>
 </li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_employees.html#server.web_api.routing.v1.employees.routing.EmployeesRouter.get_employee_hours">get_employee_hours() (server.web_api.routing.v1.employees.routing.EmployeesRouter method)</a>
+</li>
+        <li><a href="api_employees.html#server.web_api.routing.v1.employees.routing.EmployeesRouter.get_employees_count">get_employees_count() (server.web_api.routing.v1.employees.routing.EmployeesRouter method)</a>
+</li>
         <li><a href="database_manager.html#server.lib.database_manager.DatabaseManager.get_engine">get_engine() (server.lib.database_manager.DatabaseManager method)</a>
 </li>
         <li><a href="logging_manager.html#server.lib.logging_manager.LoggingManager.Settings.get_log_directory">get_log_directory() (server.lib.logging_manager.LoggingManager.Settings class method)</a>
@@ -551,6 +564,8 @@
 </li>
           <li><a href="api_response_model.html#module-server.web_api.models">server.web_api.models</a>
 </li>
+          <li><a href="api_employees.html#module-server.web_api.routing.v1.employees.routing">server.web_api.routing.v1.employees.routing</a>
+</li>
         </ul></li>
     </ul></td>
   </tr></table>
@@ -583,6 +598,8 @@
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployee.RawPassword">RawPassword (server.lib.data_classes.employee.PydanticEmployee attribute)</a>
+</li>
+        <li><a href="api_employees.html#server.web_api.routing.v1.employees.routing.EmployeesRouter.remove_employee">remove_employee() (server.web_api.routing.v1.employees.routing.EmployeesRouter method)</a>
 </li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
@@ -684,13 +701,20 @@
           <li><a href="web_service.html#module-server.services.web_service">module</a>
 </li>
         </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li>
     server.web_api.models
 
         <ul>
           <li><a href="api_response_model.html#module-server.web_api.models">module</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li>
+    server.web_api.routing.v1.employees.routing
+
+        <ul>
+          <li><a href="api_employees.html#module-server.web_api.routing.v1.employees.routing">module</a>
 </li>
         </ul></li>
         <li><a href="service_manager.html#server.lib.service_manager.SharedData.Managers.set_database_manager">set_database_manager() (server.lib.service_manager.SharedData.Managers class method)</a>
@@ -768,7 +792,11 @@
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="employee_utils.html#server.lib.utils.employee_utils.verify_employee_password">verify_employee_password() (in module server.lib.utils.employee_utils)</a>
+
+        <ul>
+          <li><a href="api_employees.html#server.web_api.routing.v1.employees.routing.EmployeesRouter.verify_employee_password">(server.web_api.routing.v1.employees.routing.EmployeesRouter method)</a>
 </li>
+        </ul></li>
     </ul></td>
   </tr></table>
 </section>

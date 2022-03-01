@@ -6,3 +6,6 @@ Web API Documentation
    :caption: Web API Documentation:
 
    api_response_model
+   api_employees
+
+

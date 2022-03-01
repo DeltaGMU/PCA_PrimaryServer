@@ -17,19 +17,22 @@ from server.lib.service_manager import SharedData
 
 router = InferringRouter()
 
+
 # pylint: disable=R0201
 @cbv(router)
 class EmployeesRouter:
     """
-    Router class for employees api.
+    The API router responsible for defining endpoints relating to employees and employee hours.
+    The defined endpoints allow HTTP requests to conduct timesheet-related operations with the employee entity.
     """
 
     @router.get("/api/v1/employees", status_code=status.HTTP_200_OK)
     def get_all_employees(self):
         """
-        Retrieves all the employees from the database.
-        :return: list of all employees in the database
-        :rtype: ResponseModel
+        An endpoint that retrieves all the employees from the database and formats it into a list.
+
+        :return: List of all employees found in the database. If there are no employees in the database, an empty list is returned.
+        :rtype: server.web_api.models.ResponseModel
         """
         all_employees = []
         with SharedData().Managers.get_database_manager().make_session() as session:
@@ -43,12 +46,13 @@ class EmployeesRouter:
     @router.post("/api/v1/employees/new", status_code=status.HTTP_201_CREATED)
     def create_new_employee(self, employee: PydanticEmployee):
         """
-        Creates a new employee entity and adds it to the employees' table in the database.
+        An endpoint to create a new employee entity and adds it to the employees' table in the database.
 
-        :param employee: The Pydantic employee reference.
+        :param employee: The Pydantic Employee reference. This means that HTTP requests to this endpoint must include the required fields in the Pydantic Employee class.
         :type employee: PydanticEmployee
-        :return: created employee
-        :rtype: ResponseModel
+        :return: A response model containing the employee object that was created from the provided information with a generated employee ID and hashed password.
+        :rtype: server.web_api.models.ResponseModel
+        :raises HTTPException: If the provided request body contains an invalid plain text password, first name, or last name for the employee. This error may also be caused if the employee already exists in the database.
         """
         with SharedData().Managers.get_database_manager().make_session() as session:
             password_hash = create_employee_password_hashes(employee.RawPassword)
@@ -68,6 +72,17 @@ class EmployeesRouter:
 
     @router.post("/api/v1/employees/remove", status_code=status.HTTP_200_OK)
     def remove_employee(self, employee_id: Dict[str, str]):
+        """
+        An endpoint to remove an employee entity from the employee's table in the database.
+        Removal of an employee using this endpoint will permanently delete the employee record from the database
+        and all records related to the employee record in other tables through a cascading delete.
+
+        :param employee_id: The ID of the employee that needs to be deleted, provided as a single entry. (Example: {"employee_id": jsmith123})
+        :type employee_id: Dict[str, str]
+        :return: A response model containing the employee object that was deleted from the database.
+        :rtype: server.web_api.models.ResponseModel
+        :raises HTTPException: If the provided request body contains an invalid employee ID, or if the employee does not exist in the database.
+        """
         employee_id = employee_id.get('employee_id')
         if employee_id is None:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Provided request body did not contain a valid employee id!")
@@ -82,6 +97,23 @@ class EmployeesRouter:
 
     @router.get("/api/v1/employees/hours", status_code=status.HTTP_200_OK)
     def get_employee_hours(self, employee_id: str, date_start: str, date_end: str):
+        """
+        An endpoint to accumulate and return the total work hours for an employee within a provided date range.
+        The total work hours calculated by this process only consists of the work hours for the days within the date range,
+        and does not include leave hours, PTO, and extra/overtime hours.
+        Front-end interaction can send requests to this endpoint with any valid date range, which would
+        be useful for presenting total work hours over the course of a week, 2 weeks, a month, or a year.
+
+        :param employee_id: The ID of the employee that the work hours should be calculated for.
+        :type employee_id: str
+        :param date_start: The starting date of the work hours to be calculated, provided in YYYY-MM-DD format.
+        :type date_start: str
+        :param date_end: The ending date of the work hours to be calculated, provided in YYYY-MM-DD format.
+        :type date_end: str
+        :return: A response model containing the total number of work hours from the days within the provided date range.
+        :rtype: server.web_api.models.ResponseModel
+        :raises HTTPException: If the provided employee has no hours logged into the system, or the employee does not exist in the database.
+        """
         with SharedData().Managers.get_database_manager().make_session() as session:
             try:
                 total_hours = session.query(func.sum(EmployeeHours.HoursWorked).label('hours')).filter(
@@ -93,11 +125,20 @@ class EmployeesRouter:
                                         detail="The provided employee has no hours logged into the system, "
                                                "or the employee is not in the database!")
             except IntegrityError as err:
-                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)) from err
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(err)) from err
         return ResponseModel(status.HTTP_200_OK, "success", {"hours": total_hours})
 
     @router.post("/api/v1/employees/hours/add", status_code=status.HTTP_201_CREATED)
     def add_employee_hours(self, employee_hours: PydanticEmployeeHours):
+        """
+        An endpoint to add work hours for an employee on a specified date. Work hours cannot be added multiple times for the same day.
+
+        :param employee_hours: The Pydantic EmployeeHours reference. This means that HTTP requests to this endpoint must include the required fields in the Pydantic EmployeeHours class.
+        :type employee_hours: PydanticEmployeeHours
+        :return: A response model containing the employee and employee hours data that has been added to the database.
+        :rtype: server.web_api.models.ResponseModel
+        :raises HTTPException: If the hours being added on the provided date is a duplicate entry, or the provided data is invalid.
+        """
         with SharedData().Managers.get_database_manager().make_session() as session:
             try:
                 work_hours_exists = session.query(EmployeeHours).filter(
@@ -115,7 +156,7 @@ class EmployeesRouter:
                 else:
                     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Duplicate date entry! The employee already has hours entered for this day!")
             except IntegrityError as err:
-                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e)) from err
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(err)) from err
             created_employee_hours = session.query(EmployeeHours).filter(
                 EmployeeHours.EmployeeID == employee_hours.EmployeeID,
                 EmployeeHours.DateWorked == employee_hours.DateWorked
@@ -124,12 +165,30 @@ class EmployeesRouter:
 
     @router.get("/api/v1/employees/count", status_code=status.HTTP_200_OK)
     def get_employees_count(self):
+        """
+        An endpoint that counts the number of employees that are registered in the database.
+
+        :return: A response model containing the number of employees in the database. The count will be 0 if there are no employees registered in the database.
+        :rtype: server.web_api.models.ResponseModel
+        """
         with SharedData().Managers.get_database_manager().make_session() as session:
             employees_count = session.query(Employee).count()
         return ResponseModel(status.HTTP_200_OK, "success", {"count": employees_count})
 
     @router.post("/api/v1/employees/verify", status_code=status.HTTP_200_OK)
     def verify_employee_password(self, employee_id: str = Body(""), password_text: str = Body("")):
+        """
+        An endpoint that is used to authenticate an employee by verifying the password provided in the request body is valid.
+        This validation process is done by hashing and salting the plain text password provided in the request body from the web interface
+        and compares it to the stored hashed password in the database. If both hashed passwords are equal, then the employee has successfully entered the correct credentials.
+
+        :param employee_id: The ID of the employee that is attempting to authenticate their credentials with the server.
+        :type employee_id: str
+        :param password_text: The plain text password of the employee provided in the request body .
+        :type password_text: str
+        :return: A response model containing the validation of the password check. It will contain 'True' if the credentials were correct, or 'False' if they were incorrect.
+        :rtype: server.web_api.models.ResponseModel
+        """
         with SharedData().Managers.get_database_manager().make_session() as session:
             employee = session.query(Employee).filter(Employee.EmployeeID == employee_id).one()
             employee_verified = verify_employee_password(password_text, employee.PasswordHash)
