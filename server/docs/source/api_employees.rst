@@ -12,7 +12,7 @@ Usage
 
    An endpoint that retrieves all the employees from the database and formats it into a list.
 
-   :status 200: When the list of employees is successfully retrieves from the database.
+   :status 200: When the list of employees is successfully retrieved from the database.
 
    **Example request**:
 
@@ -41,6 +41,34 @@ Usage
                     "entry_created": "2022-03-01T09:46:58"
                 }
             ]
+        }
+      }
+
+
+.. http:get:: /api/v1/employees/count
+
+   An endpoint that counts the number of employees registered in the database and returns it in the response.
+
+   :status 200: When the total number of employees is successfully retrieved from the database.
+
+   **Example request**:
+
+   .. sourcecode:: http
+
+      GET /api/v1/employees/count HTTP/1.1
+
+   **Example response**:
+
+   .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "status": 200,
+        "message": "success",
+        "data": {
+            "count": 1
         }
       }
 
@@ -90,6 +118,48 @@ Usage
         }
       }
 
+
+.. http:post:: /api/v1/employees/remove
+
+   An endpoint to delete an existing employee entity from the database.
+
+   :param employee_id: The employee ID of the employee to be removed.
+   :status 201: When the employee is successfully deleted from the database.
+   :status 400: When the request body contains invalid parameters, or the employee does not exist in the database.
+
+   **Example request**:
+
+   .. sourcecode:: http
+
+      POST /api/v1/employees/new HTTP/1.1
+      Content-Type: application/json
+
+      {
+        "employee_id": "jsmith300"
+      }
+
+   **Example response**:
+
+   .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "status": 200,
+        "message": "success",
+        "data": {
+            "employee": {
+                "id": 300,
+                "employee_id": "jsmith300",
+                "first_name": "John",
+                "last_name": "Smith",
+                "password_hash": "$2b$12$vS1yUX3qYgrR3PUQhj0/8e55bOiTgU5prMgbaIHxLsD6VkQRtp4kS",
+                "is_enabled": true,
+                "entry_created": "2022-03-01T09:46:58"
+            }
+        }
+      }
 
 .. http:post:: /api/v1/employees/verify
 
