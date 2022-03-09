@@ -1,10 +1,10 @@
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
 from fastapi import status, Depends, HTTPException
-from lib.database_functions.employee_hours_interface import get_employee_hours
-from lib.database_manager import get_db_session
-from web_api.models import ResponseModel
-from web_api.web_security import oauth_scheme, token_is_valid
+from server.lib.database_functions.employee_hours_interface import get_employee_hours
+from server.lib.database_manager import get_db_session
+from server.web_api.models import ResponseModel
+from server.web_api.web_security import oauth_scheme, token_is_valid
 
 router = InferringRouter()
 

@@ -1,6 +1,5 @@
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
-
 from config import ENV_SETTINGS
 from server.web_api.models import ResponseModel
 from server.lib.database_manager import is_active
