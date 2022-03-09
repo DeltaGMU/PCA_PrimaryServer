@@ -2,7 +2,7 @@ import contextlib
 import threading
 import time
 import uvicorn
-from web_api.web_app import web_app
+from server.web_api.web_app import web_app
 from server.lib.logging_manager import LoggingManager
 from server.lib.strings import LOG_ORIGIN_API
 
