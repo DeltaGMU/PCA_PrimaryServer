@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import Tuple
 from sqlalchemy.orm import Session
 from sqlalchemy.sql.functions import func
-from lib.data_classes.employee_hours import EmployeeHours
+from server.lib.data_classes.employee_hours import EmployeeHours
 from server.lib.database_manager import get_db_session
 from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException, status
