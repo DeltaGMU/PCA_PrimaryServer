@@ -7,7 +7,8 @@ from config import ENV_SETTINGS
 from server.lib.data_classes.employee import Employee
 from server.lib.data_classes.access_token import TokenBlacklist
 from server.lib.database_functions.employee_interface import get_employee_role, get_employee
-from server.lib.token_manager import get_blacklist_session
+# from server.lib.token_manager import get_blacklist_session
+from server.lib.database_manager import get_db_session
 from server.web_api.security_config import TOKEN_EXPIRY_MINUTES
 
 oauth_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
@@ -49,7 +50,7 @@ def token_is_valid(token: str) -> bool:
 
     # Remove expired tokens before checking validity.
     cur_time = int(datetime.utcnow().timestamp())
-    session = next(get_blacklist_session())
+    session = next(get_db_session())
     session.query(TokenBlacklist).filter(
         TokenBlacklist.token == token,
         TokenBlacklist.exp <= cur_time
@@ -73,7 +74,7 @@ def add_token_to_blacklist(token: str) -> bool | None:
         return None
     # token_db[token] = decoded_token['exp']
     blacklist_token = TokenBlacklist(token, decoded_token['iat'], decoded_token['exp'])
-    session = next(get_blacklist_session())
+    session = next(get_db_session())
     session.add(blacklist_token)
     session.commit()
     return True

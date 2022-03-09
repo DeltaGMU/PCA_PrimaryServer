@@ -3,8 +3,8 @@ from server.web_api.models import ResponseModel
 from server.web_api.routing.v1 import core_routing, employee_routing, employee_hours_routing, student_routing
 from server.web_api.web_security import add_token_to_blacklist, create_access_token, get_user_from_token, oauth_scheme
 from server.lib.database_functions.employee_interface import get_employee
-from fastapi import FastAPI, Depends, status, Security, HTTPException, Request
-from fastapi.middleware.cors import CORSMiddleware
+from fastapi import FastAPI, Depends, status, Security, HTTPException, Request, Response
+from starlette.middleware.cors import CORSMiddleware
 from pydantic import ValidationError
 from fastapi.responses import FileResponse, JSONResponse, RedirectResponse
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm
@@ -26,7 +26,7 @@ web_app.add_middleware(
     allow_origins=["http://localhost:8080", "http://localhost"],
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE"],
-    allow_headers=["*"]
+    allow_headers=["Origin", "Accept", "Content-Type", "Authorization", "Access-Control-Allow-Origin"]
 )
 web_app.mount("/wiki",
               StaticFiles(directory=f"{ROOT_DIR}/docs/build/html", html=True),
@@ -36,6 +36,16 @@ web_app.include_router(core_routing.router)
 web_app.include_router(employee_routing.router)
 web_app.include_router(employee_hours_routing.router)
 # web_app.include_router(student_routing.router)
+
+
+# Manually handle CORS preflight requests
+@web_app.options('/{rest_of_path:path}')
+async def preflight_handler(request: Request, rest_of_path: str) -> Response:
+    response = Response()
+    response.headers['Access-Control-Allow-Origin'] = 'http://localhost:8080, http://localhost'
+    response.headers['Access-Control-Allow-Methods'] = 'POST, GET, PUT, DELETE, OPTIONS'
+    response.headers['Access-Control-Allow-Headers'] = 'Origin, Accept, Access-Control-Allow-Origin, Authorization, Content-Type'
+    return response
 
 
 @web_app.get(ENV_SETTINGS.API_ROUTES.index, status_code=status.HTTP_200_OK)

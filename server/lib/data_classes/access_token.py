@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, VARCHAR
-from server.lib.database_functions.sqlalchemy_base import MemoryEngineBase as Base
+from server.lib.database_functions.sqlalchemy_base import MainEngineBase as Base, main_engine
 
 
 class TokenBlacklist(Base):
@@ -21,3 +21,8 @@ class TokenBlacklist(Base):
             "iss": self.iss,
             "exp": self.exp
         }
+
+
+Base.metadata.drop_all(bind=main_engine, tables=[TokenBlacklist.__table__])
+# TokenBlacklist.__table__.drop(main_engine)
+TokenBlacklist.__table__.create(main_engine)

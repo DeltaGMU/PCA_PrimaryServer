@@ -108,6 +108,10 @@ def graceful_shutdown(web_session_manager=None):
     # Retrieve the web manager object reference and gracefully shutdown the server.
     if web_session_manager:
         web_session_manager.stop_web_server()
+    # Delete the access token database if the server is being shutdown.
+    from server.lib.database_manager import MainEngineBase as Base, main_engine
+    from server.lib.data_classes.access_token import TokenBlacklist
+    Base.metadata.drop_all(bind=main_engine, tables=[TokenBlacklist.__table__])
     LoggingManager().log(LoggingManager.LogLevel.LOG_INFO, f'The application has closed.\n{"#" * 140}', origin=LOG_ORIGIN_SHUTDOWN, no_print=False)
 
 

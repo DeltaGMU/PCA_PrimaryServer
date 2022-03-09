@@ -1,5 +1,5 @@
-from sqlalchemy.orm.scoping import scoped_session
 
+'''
 from server.lib.database_functions.sqlalchemy_base import MemoryEngineBase, memory_engine, memory_db_session
 
 
@@ -48,3 +48,5 @@ def is_active() -> bool:
     :rtype: bool
     """
     return memory_engine is not None
+
+'''
