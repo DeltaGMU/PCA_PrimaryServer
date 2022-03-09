@@ -168,7 +168,6 @@
 <li class="toctree-l3"><a class="reference internal" href="database_manager.html">Database Manager</a></li>
 <li class="toctree-l3"><a class="reference internal" href="web_manager.html">Web Session Manager</a></li>
 <li class="toctree-l3"><a class="reference internal" href="logging_manager.html">Logging Manager</a></li>
-<li class="toctree-l3"><a class="reference internal" href="service_manager.html">Service Manager</a></li>
 </ul>
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="utility_modules.html">Utility Modules</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -236,11 +235,15 @@ For example, creating a new employee record through a request to the API will re
 to create the employee entity in the database and validate the data that is sent in the request.</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="server.lib.data_classes.employee.Employee">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.lib.data_classes.employee.</span></span><span class="sig-name descname"><span class="pre">Employee</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">employee_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phash</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enabled</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.lib.data_classes.employee.Employee" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.lib.data_classes.employee.</span></span><span class="sig-name descname"><span class="pre">Employee</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">employee_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phash</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">role_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contact_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enabled</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.lib.data_classes.employee.Employee" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.orm.decl_api.Base</span></code></p>
 <p>A MariaDB data class that represents the table structure of the employee table in the database server.
 This is replicated in the server code to ensure that the data being sent to and received from the database are valid.
 Do not attempt to manually modify this class or extend it into a subclass.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="server.lib.data_classes.employee.Employee.ContactInfoID">
+<span class="sig-name descname"><span class="pre">ContactInfoID</span></span><a class="headerlink" href="#server.lib.data_classes.employee.Employee.ContactInfoID" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="server.lib.data_classes.employee.Employee.EmployeeEnabled">
 <span class="sig-name descname"><span class="pre">EmployeeEnabled</span></span><a class="headerlink" href="#server.lib.data_classes.employee.Employee.EmployeeEnabled" title="Permalink to this definition">#</a></dt>
@@ -252,6 +255,10 @@ Do not attempt to manually modify this class or extend it into a subclass.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="server.lib.data_classes.employee.Employee.EmployeeID">
 <span class="sig-name descname"><span class="pre">EmployeeID</span></span><a class="headerlink" href="#server.lib.data_classes.employee.Employee.EmployeeID" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="server.lib.data_classes.employee.Employee.EmployeeRoleID">
+<span class="sig-name descname"><span class="pre">EmployeeRoleID</span></span><a class="headerlink" href="#server.lib.data_classes.employee.Employee.EmployeeRoleID" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="server.lib.data_classes.employee.Employee.EntryCreated">
@@ -270,8 +277,8 @@ Do not attempt to manually modify this class or extend it into a subclass.</p>
 <span class="sig-name descname"><span class="pre">PasswordHash</span></span><a class="headerlink" href="#server.lib.data_classes.employee.Employee.PasswordHash" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="server.lib.data_classes.employee.Employee.as_dict">
-<span class="sig-name descname"><span class="pre">as_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#server.lib.data_classes.employee.Employee.as_dict" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="server.lib.data_classes.employee.Employee.as_detail_dict">
+<span class="sig-name descname"><span class="pre">as_detail_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#server.lib.data_classes.employee.Employee.as_detail_dict" title="Permalink to this definition">#</a></dt>
 <dd><p>A utility method to convert the class attributes into a dictionary format.
 This is useful for representing the entity in a JSON format for a request response.</p>
 <dl class="field-list simple">
@@ -279,7 +286,21 @@ This is useful for representing the entity in a JSON format for a request respon
 <dd class="field-odd"><p>Dictionary representation of the data class attributes.</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p>dict</p>
+<dd class="field-even"><p>Dict[str, any]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="server.lib.data_classes.employee.Employee.as_dict">
+<span class="sig-name descname"><span class="pre">as_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#server.lib.data_classes.employee.Employee.as_dict" title="Permalink to this definition">#</a></dt>
+<dd><p>A utility method to convert the class attributes into a dictionary format.
+The web friendly version hides the internal IDs, password hash, and other metadata information.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Web-safe dictionary representation of the data class attributes.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Dict[str, any]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -289,83 +310,92 @@ This is useful for representing the entity in a JSON format for a request respon
 <dd></dd></dl>
 </dd></dl>
 <dl class="py class">
-<dt class="sig sig-object py" id="server.lib.data_classes.employee.EmployeeHours">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.lib.data_classes.employee.</span></span><span class="sig-name descname"><span class="pre">EmployeeHours</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">employee_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hours_worked</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date_worked</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.lib.data_classes.employee.EmployeeHours" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.orm.decl_api.Base</span></code></p>
-<p>A MariaDB data class that represents the table structure of the employee hours table in the database server.
-This is replicated in the server code to ensure that the data being sent to and received from the database are valid.
-Do not attempt to manually modify this class or extend it into a subclass.</p>
+<dt class="sig sig-object py" id="server.lib.data_classes.employee.PydanticEmployeeRegistration">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.lib.data_classes.employee.</span></span><span class="sig-name descname"><span class="pre">PydanticEmployeeRegistration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plain_password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">primary_email</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">secondary_email</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">role</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_enabled</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_notifications</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.lib.data_classes.employee.PydanticEmployeeRegistration" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
+<p>A Pydantic class used to represent an employee entity when creating a new employee record from an HTTP request to the API.
+Do not try to initialize this class as an independent entity or extend it into a subclass.</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="server.lib.data_classes.employee.EmployeeHours.DateWorked">
-<span class="sig-name descname"><span class="pre">DateWorked</span></span><a class="headerlink" href="#server.lib.data_classes.employee.EmployeeHours.DateWorked" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="server.lib.data_classes.employee.PydanticEmployeeRegistration.enable_notifications">
+<span class="sig-name descname"><span class="pre">enable_notifications</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#server.lib.data_classes.employee.PydanticEmployeeRegistration.enable_notifications" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="server.lib.data_classes.employee.EmployeeHours.EmployeeID">
-<span class="sig-name descname"><span class="pre">EmployeeID</span></span><a class="headerlink" href="#server.lib.data_classes.employee.EmployeeHours.EmployeeID" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="server.lib.data_classes.employee.PydanticEmployeeRegistration.first_name">
+<span class="sig-name descname"><span class="pre">first_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#server.lib.data_classes.employee.PydanticEmployeeRegistration.first_name" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="server.lib.data_classes.employee.EmployeeHours.EntryCreated">
-<span class="sig-name descname"><span class="pre">EntryCreated</span></span><a class="headerlink" href="#server.lib.data_classes.employee.EmployeeHours.EntryCreated" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="server.lib.data_classes.employee.PydanticEmployeeRegistration.is_enabled">
+<span class="sig-name descname"><span class="pre">is_enabled</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#server.lib.data_classes.employee.PydanticEmployeeRegistration.is_enabled" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="server.lib.data_classes.employee.EmployeeHours.HoursWorked">
-<span class="sig-name descname"><span class="pre">HoursWorked</span></span><a class="headerlink" href="#server.lib.data_classes.employee.EmployeeHours.HoursWorked" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="server.lib.data_classes.employee.PydanticEmployeeRegistration.last_name">
+<span class="sig-name descname"><span class="pre">last_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#server.lib.data_classes.employee.PydanticEmployeeRegistration.last_name" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="server.lib.data_classes.employee.EmployeeHours.as_dict">
-<span class="sig-name descname"><span class="pre">as_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#server.lib.data_classes.employee.EmployeeHours.as_dict" title="Permalink to this definition">#</a></dt>
-<dd><p>A utility method to convert the class attributes into a dictionary format.
-This is useful for representing the entity in a JSON format for a request response.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>Dictionary representation of the data class attributes.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>dict</p>
-</dd>
-</dl>
-</dd></dl>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="server.lib.data_classes.employee.EmployeeHours.id">
-<span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#server.lib.data_classes.employee.EmployeeHours.id" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="server.lib.data_classes.employee.PydanticEmployeeRegistration.plain_password">
+<span class="sig-name descname"><span class="pre">plain_password</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#server.lib.data_classes.employee.PydanticEmployeeRegistration.plain_password" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="server.lib.data_classes.employee.PydanticEmployeeRegistration.primary_email">
+<span class="sig-name descname"><span class="pre">primary_email</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#server.lib.data_classes.employee.PydanticEmployeeRegistration.primary_email" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="server.lib.data_classes.employee.PydanticEmployeeRegistration.role">
+<span class="sig-name descname"><span class="pre">role</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#server.lib.data_classes.employee.PydanticEmployeeRegistration.role" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="server.lib.data_classes.employee.PydanticEmployeeRegistration.secondary_email">
+<span class="sig-name descname"><span class="pre">secondary_email</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#server.lib.data_classes.employee.PydanticEmployeeRegistration.secondary_email" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 </dd></dl>
 <dl class="py class">
-<dt class="sig sig-object py" id="server.lib.data_classes.employee.PydanticEmployee">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.lib.data_classes.employee.</span></span><span class="sig-name descname"><span class="pre">PydanticEmployee</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plain_password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.lib.data_classes.employee.PydanticEmployee" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="server.lib.data_classes.employee.PydanticEmployeeUpdate">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.lib.data_classes.employee.</span></span><span class="sig-name descname"><span class="pre">PydanticEmployeeUpdate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plain_password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">primary_email</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">secondary_email</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">role</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_enabled</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_notifications</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.lib.data_classes.employee.PydanticEmployeeUpdate" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
-<p>A Pydantic class used to represent an employee entity when creating a new employee record from a http request to the API.
+<p>A Pydantic class used to represent an employee entity when updating an existing employee record from an HTTP request to the API.
 Do not try to initialize this class as an independent entity or extend it into a subclass.</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="server.lib.data_classes.employee.PydanticEmployee.first_name">
-<span class="sig-name descname"><span class="pre">first_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#server.lib.data_classes.employee.PydanticEmployee.first_name" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="server.lib.data_classes.employee.PydanticEmployeeUpdate.enable_notifications">
+<span class="sig-name descname"><span class="pre">enable_notifications</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#server.lib.data_classes.employee.PydanticEmployeeUpdate.enable_notifications" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="server.lib.data_classes.employee.PydanticEmployee.last_name">
-<span class="sig-name descname"><span class="pre">last_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#server.lib.data_classes.employee.PydanticEmployee.last_name" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="server.lib.data_classes.employee.PydanticEmployeeUpdate.first_name">
+<span class="sig-name descname"><span class="pre">first_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#server.lib.data_classes.employee.PydanticEmployeeUpdate.first_name" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="server.lib.data_classes.employee.PydanticEmployee.plain_password">
-<span class="sig-name descname"><span class="pre">plain_password</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#server.lib.data_classes.employee.PydanticEmployee.plain_password" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="server.lib.data_classes.employee.PydanticEmployeeUpdate.is_enabled">
+<span class="sig-name descname"><span class="pre">is_enabled</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#server.lib.data_classes.employee.PydanticEmployeeUpdate.is_enabled" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="server.lib.data_classes.employee.PydanticEmployeeUpdate.last_name">
+<span class="sig-name descname"><span class="pre">last_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#server.lib.data_classes.employee.PydanticEmployeeUpdate.last_name" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="server.lib.data_classes.employee.PydanticEmployeeUpdate.plain_password">
+<span class="sig-name descname"><span class="pre">plain_password</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#server.lib.data_classes.employee.PydanticEmployeeUpdate.plain_password" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="server.lib.data_classes.employee.PydanticEmployeeUpdate.primary_email">
+<span class="sig-name descname"><span class="pre">primary_email</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#server.lib.data_classes.employee.PydanticEmployeeUpdate.primary_email" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="server.lib.data_classes.employee.PydanticEmployeeUpdate.role">
+<span class="sig-name descname"><span class="pre">role</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#server.lib.data_classes.employee.PydanticEmployeeUpdate.role" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="server.lib.data_classes.employee.PydanticEmployeeUpdate.secondary_email">
+<span class="sig-name descname"><span class="pre">secondary_email</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#server.lib.data_classes.employee.PydanticEmployeeUpdate.secondary_email" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 </dd></dl>
 <dl class="py class">
-<dt class="sig sig-object py" id="server.lib.data_classes.employee.PydanticEmployeeHours">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.lib.data_classes.employee.</span></span><span class="sig-name descname"><span class="pre">PydanticEmployeeHours</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">employee_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hours_worked</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date_worked</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.lib.data_classes.employee.PydanticEmployeeHours" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="server.lib.data_classes.employee.PydanticEmployeesRemoval">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.lib.data_classes.employee.</span></span><span class="sig-name descname"><span class="pre">PydanticEmployeesRemoval</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">employee_ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.lib.data_classes.employee.PydanticEmployeesRemoval" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
-<p>A Pydantic class used to represent an employee hours entity when creating a new employee hours record from a http request to the API.
+<p>A Pydantic class used to represent an employee entity when deleting an existing employee record from an HTTP request to the API.
 Do not try to initialize this class as an independent entity or extend it into a subclass.</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="server.lib.data_classes.employee.PydanticEmployeeHours.date_worked">
-<span class="sig-name descname"><span class="pre">date_worked</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#server.lib.data_classes.employee.PydanticEmployeeHours.date_worked" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="server.lib.data_classes.employee.PydanticEmployeeHours.employee_id">
-<span class="sig-name descname"><span class="pre">employee_id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#server.lib.data_classes.employee.PydanticEmployeeHours.employee_id" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-<dl class="py attribute">
-<dt class="sig sig-object py" id="server.lib.data_classes.employee.PydanticEmployeeHours.hours_worked">
-<span class="sig-name descname"><span class="pre">hours_worked</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#server.lib.data_classes.employee.PydanticEmployeeHours.hours_worked" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="server.lib.data_classes.employee.PydanticEmployeesRemoval.employee_ids">
+<span class="sig-name descname"><span class="pre">employee_ids</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#server.lib.data_classes.employee.PydanticEmployeesRemoval.employee_ids" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 </dd></dl>
 </section>

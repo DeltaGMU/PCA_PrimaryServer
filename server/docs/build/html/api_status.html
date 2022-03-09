@@ -168,7 +168,6 @@
 <li class="toctree-l3"><a class="reference internal" href="database_manager.html">Database Manager</a></li>
 <li class="toctree-l3"><a class="reference internal" href="web_manager.html">Web Session Manager</a></li>
 <li class="toctree-l3"><a class="reference internal" href="logging_manager.html">Logging Manager</a></li>
-<li class="toctree-l3"><a class="reference internal" href="service_manager.html">Service Manager</a></li>
 </ul>
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="utility_modules.html">Utility Modules</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -290,15 +289,15 @@ to the web interface to interact with the status of the web API.</p>
 </div>
 </dd></dl>
 </section>
-<section id="module-server.web_api.routing.v1.routing">
-<span id="implementation-documentation"></span><h2>Implementation Documentation<a class="headerlink" href="#module-server.web_api.routing.v1.routing" title="Permalink to this headline">#</a></h2>
+<section id="module-server.web_api.routing.v1.core_routing">
+<span id="implementation-documentation"></span><h2>Implementation Documentation<a class="headerlink" href="#module-server.web_api.routing.v1.core_routing" title="Permalink to this headline">#</a></h2>
 <dl class="py class">
-<dt class="sig sig-object py" id="server.web_api.routing.v1.routing.CoreRouter">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.web_api.routing.v1.routing.</span></span><span class="sig-name descname"><span class="pre">CoreRouter</span></span><a class="headerlink" href="#server.web_api.routing.v1.routing.CoreRouter" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="server.web_api.routing.v1.core_routing.CoreRouter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.web_api.routing.v1.core_routing.</span></span><span class="sig-name descname"><span class="pre">CoreRouter</span></span><a class="headerlink" href="#server.web_api.routing.v1.core_routing.CoreRouter" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py method">
-<dt class="sig sig-object py" id="server.web_api.routing.v1.routing.CoreRouter.main_api">
-<span class="sig-name descname"><span class="pre">main_api</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.routing.CoreRouter.main_api" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="server.web_api.routing.v1.core_routing.CoreRouter.main_api">
+<span class="sig-name descname"><span class="pre">main_api</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.core_routing.CoreRouter.main_api" title="Permalink to this definition">#</a></dt>
 <dd><p>An endpoint that checks the status of the v1 segment of the API service.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -310,8 +309,8 @@ to the web interface to interact with the status of the web API.</p>
 </dl>
 </dd></dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="server.web_api.routing.v1.routing.CoreRouter.status">
-<span class="sig-name descname"><span class="pre">status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.routing.CoreRouter.status" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="server.web_api.routing.v1.core_routing.CoreRouter.status">
+<span class="sig-name descname"><span class="pre">status</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.core_routing.CoreRouter.status" title="Permalink to this definition">#</a></dt>
 <dd><p>An endpoint that checks the status of the database connection in the server.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -385,7 +384,7 @@ to the web interface to interact with the status of the web API.</p>
             <ul>
 <li><a class="reference internal" href="#">API Status</a><ul>
 <li><a class="reference internal" href="#usage">Usage</a></li>
-<li><a class="reference internal" href="#module-server.web_api.routing.v1.routing">Implementation Documentation</a></li>
+<li><a class="reference internal" href="#module-server.web_api.routing.v1.core_routing">Implementation Documentation</a></li>
 </ul>
 </li>
 </ul>

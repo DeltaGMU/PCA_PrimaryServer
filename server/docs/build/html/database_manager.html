@@ -168,7 +168,6 @@
 <li class="toctree-l3 current current-page"><a class="current reference internal" href="#">Database Manager</a></li>
 <li class="toctree-l3"><a class="reference internal" href="web_manager.html">Web Session Manager</a></li>
 <li class="toctree-l3"><a class="reference internal" href="logging_manager.html">Logging Manager</a></li>
-<li class="toctree-l3"><a class="reference internal" href="service_manager.html">Service Manager</a></li>
 </ul>
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="utility_modules.html">Utility Modules</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -230,30 +229,15 @@
           <section id="module-server.lib.database_manager">
 <span id="database-manager"></span><h1>Database Manager<a class="headerlink" href="#module-server.lib.database_manager" title="Permalink to this headline">#</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="server.lib.database_manager.DatabaseManager">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.lib.database_manager.</span></span><span class="sig-name descname"><span class="pre">DatabaseManager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">server_host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">server_port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">server_db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">server_user</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">server_pass</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.lib.database_manager.DatabaseManager" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="server.lib.database_manager.SessionContext">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.lib.database_manager.</span></span><span class="sig-name descname"><span class="pre">SessionContext</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scoped_session_maker</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.lib.database_manager.SessionContext" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>This class contains the logic to establish a connection to a mariadb database server and
-create sessions where queries can be sent to the database.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>server_host</strong> (<em>str</em><em>, </em><em>required</em>) – The server IP address of the mariadb database server. (Example: 127.0.0.1)</p></li>
-<li><p><strong>server_port</strong> (<em>str</em><em>, </em><em>required</em>) – The port on which the mariadb database server is hosted. (MariaDB Default: 29955)</p></li>
-<li><p><strong>server_db</strong> (<em>str</em><em>, </em><em>required</em>) – The name of the database that the database manager should connect to. (Example: my_database)</p></li>
-<li><p><strong>server_user</strong> (<em>str</em><em>, </em><em>required</em>) – The username that the database manager should use to establish a connection to the mariadb database server.</p></li>
-<li><p><strong>server_pass</strong> (<em>str</em><em>, </em><em>required</em>) – The password that the database manager should use to establish a connection to the mariadb database server.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><p><strong>RuntimeError</strong> – If any of the parameters passed through to the constructor is None.</p>
-</dd>
-</dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="server.lib.database_manager.DatabaseManager.get_engine">
-<span class="sig-name descname"><span class="pre">get_engine</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#server.lib.database_manager.DatabaseManager.get_engine" title="Permalink to this definition">#</a></dt>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="server.lib.database_manager.get_db_engine">
+<span class="sig-prename descclassname"><span class="pre">server.lib.database_manager.</span></span><span class="sig-name descname"><span class="pre">get_db_engine</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#server.lib.database_manager.get_db_engine" title="Permalink to this definition">#</a></dt>
 <dd><p>Retrieves the database engine.
-Don’t use this to make queries to the database, use <code class="xref py py-func docutils literal notranslate"><span class="pre">make_session()</span></code> instead.</p>
+Don’t use this to make queries to the database, use <code class="xref py py-func docutils literal notranslate"><span class="pre">get_db_session()</span></code> instead.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Reference to the database engine.</p>
@@ -263,36 +247,9 @@ Don’t use this to make queries to the database, use <code class="xref py py-fu
 </dd>
 </dl>
 </dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="server.lib.database_manager.DatabaseManager.initialize">
-<span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#server.lib.database_manager.DatabaseManager.initialize" title="Permalink to this definition">#</a></dt>
-<dd><p>Initializes the database manager with the connection information provided in the class constructor.
-During the initialization, the database connection is made and the session factory is established.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>None</p>
-</dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><p><strong>RuntimeError</strong> – If the database connection cannot be established due to invalid connection parameters.</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="server.lib.database_manager.DatabaseManager.is_active">
-<span class="sig-name descname"><span class="pre">is_active</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#server.lib.database_manager.DatabaseManager.is_active" title="Permalink to this definition">#</a></dt>
-<dd><p>Checks if the database engine exists.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>True if the database engine exists.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="server.lib.database_manager.DatabaseManager.make_session">
-<span class="sig-name descname"><span class="pre">make_session</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#server.lib.database_manager.DatabaseManager.make_session" title="Permalink to this definition">#</a></dt>
+<dl class="py function">
+<dt class="sig sig-object py" id="server.lib.database_manager.get_db_session">
+<span class="sig-prename descclassname"><span class="pre">server.lib.database_manager.</span></span><span class="sig-name descname"><span class="pre">get_db_session</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#server.lib.database_manager.get_db_session" title="Permalink to this definition">#</a></dt>
 <dd><p>Creates a session to interface with the database and returns that session.
 Please make sure to close any sessions after finishing queries.</p>
 <dl class="field-list simple">
@@ -304,6 +261,18 @@ Please make sure to close any sessions after finishing queries.</p>
 </dd>
 </dl>
 </dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="server.lib.database_manager.is_active">
+<span class="sig-prename descclassname"><span class="pre">server.lib.database_manager.</span></span><span class="sig-name descname"><span class="pre">is_active</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#server.lib.database_manager.is_active" title="Permalink to this definition">#</a></dt>
+<dd><p>Checks if the database engine exists.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if the database engine exists.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 </section>
 

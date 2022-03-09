@@ -166,7 +166,6 @@
 <li class="toctree-l3"><a class="reference internal" href="database_manager.html">Database Manager</a></li>
 <li class="toctree-l3"><a class="reference internal" href="web_manager.html">Web Session Manager</a></li>
 <li class="toctree-l3"><a class="reference internal" href="logging_manager.html">Logging Manager</a></li>
-<li class="toctree-l3"><a class="reference internal" href="service_manager.html">Service Manager</a></li>
 </ul>
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="utility_modules.html">Utility Modules</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -236,16 +235,14 @@
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="api_response_model.html#server.web_api.models.ResponseModel.add_data_dict">add_data_dict() (server.web_api.models.ResponseModel method)</a>
 </li>
-        <li><a href="api_employees.html#server.web_api.routing.v1.employees.routing.EmployeesRouter.add_employee_hours">add_employee_hours() (server.web_api.routing.v1.employees.routing.EmployeesRouter method)</a>
+        <li><a href="employee_data_class.html#server.lib.data_classes.employee.Employee.as_detail_dict">as_detail_dict() (server.lib.data_classes.employee.Employee method)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="employee_data_class.html#server.lib.data_classes.employee.Employee.as_dict">as_dict() (server.lib.data_classes.employee.Employee method)</a>
 
         <ul>
-          <li><a href="employee_data_class.html#server.lib.data_classes.employee.EmployeeHours.as_dict">(server.lib.data_classes.employee.EmployeeHours method)</a>
-</li>
           <li><a href="student_data_class.html#server.lib.data_classes.student.Student.as_dict">(server.lib.data_classes.student.Student method)</a>
-</li>
-          <li><a href="student_data_class.html#server.lib.data_classes.student.StudentCareHours.as_dict">(server.lib.data_classes.student.StudentCareHours method)</a>
 </li>
           <li><a href="api_response_model.html#server.web_api.models.ResponseModel.as_dict">(server.web_api.models.ResponseModel method)</a>
 </li>
@@ -258,43 +255,21 @@
   <h2>C</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="student_data_class.html#server.lib.data_classes.student.PydanticStudentCareHoursCheckIn.care_type">care_type (server.lib.data_classes.student.PydanticStudentCareHoursCheckIn attribute)</a>
-
-        <ul>
-          <li><a href="student_data_class.html#server.lib.data_classes.student.PydanticStudentCareHoursCheckOut.care_type">(server.lib.data_classes.student.PydanticStudentCareHoursCheckOut attribute)</a>
+        <li><a href="api_students.html#server.web_api.routing.v1.student_routing.StudentsRouter.check_in_student">check_in_student() (server.web_api.routing.v1.student_routing.StudentsRouter method)</a>
 </li>
-        </ul></li>
-        <li><a href="student_data_class.html#server.lib.data_classes.student.StudentCareHours.CareDate">CareDate (server.lib.data_classes.student.StudentCareHours attribute)</a>
-</li>
-        <li><a href="student_data_class.html#server.lib.data_classes.student.StudentCareHours.CareType">CareType (server.lib.data_classes.student.StudentCareHours attribute)</a>
-</li>
-        <li><a href="student_data_class.html#server.lib.data_classes.student.PydanticStudentCareHoursCheckIn.check_in_date">check_in_date (server.lib.data_classes.student.PydanticStudentCareHoursCheckIn attribute)</a>
-</li>
-        <li><a href="api_students.html#server.web_api.routing.v1.students.routing.StudentsRouter.check_in_student">check_in_student() (server.web_api.routing.v1.students.routing.StudentsRouter method)</a>
-</li>
-        <li><a href="student_data_class.html#server.lib.data_classes.student.PydanticStudentCareHoursCheckIn.check_in_time">check_in_time (server.lib.data_classes.student.PydanticStudentCareHoursCheckIn attribute)</a>
-</li>
-        <li><a href="student_data_class.html#server.lib.data_classes.student.PydanticStudentCareHoursCheckOut.check_out_date">check_out_date (server.lib.data_classes.student.PydanticStudentCareHoursCheckOut attribute)</a>
-</li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="api_students.html#server.web_api.routing.v1.students.routing.StudentsRouter.check_out_student">check_out_student() (server.web_api.routing.v1.students.routing.StudentsRouter method)</a>
-</li>
-        <li><a href="student_data_class.html#server.lib.data_classes.student.PydanticStudentCareHoursCheckOut.check_out_time">check_out_time (server.lib.data_classes.student.PydanticStudentCareHoursCheckOut attribute)</a>
-</li>
-        <li><a href="student_data_class.html#server.lib.data_classes.student.StudentCareHours.CheckInTime">CheckInTime (server.lib.data_classes.student.StudentCareHours attribute)</a>
-</li>
-        <li><a href="student_data_class.html#server.lib.data_classes.student.StudentCareHours.CheckOutTime">CheckOutTime (server.lib.data_classes.student.StudentCareHours attribute)</a>
+        <li><a href="api_students.html#server.web_api.routing.v1.student_routing.StudentsRouter.check_out_student">check_out_student() (server.web_api.routing.v1.student_routing.StudentsRouter method)</a>
 </li>
         <li><a href="print_utils.html#server.lib.utils.print_utils.console_print">console_print() (in module server.lib.utils.print_utils)</a>
 </li>
-        <li><a href="api_status.html#server.web_api.routing.v1.routing.CoreRouter">CoreRouter (class in server.web_api.routing.v1.routing)</a>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="employee_data_class.html#server.lib.data_classes.employee.Employee.ContactInfoID">ContactInfoID (server.lib.data_classes.employee.Employee attribute)</a>
+</li>
+        <li><a href="api_status.html#server.web_api.routing.v1.core_routing.CoreRouter">CoreRouter (class in server.web_api.routing.v1.core_routing)</a>
 </li>
         <li><a href="employee_utils.html#server.lib.utils.employee_utils.create_employee_password_hashes">create_employee_password_hashes() (in module server.lib.utils.employee_utils)</a>
 </li>
-        <li><a href="api_employees.html#server.web_api.routing.v1.employees.routing.EmployeesRouter.create_new_employee">create_new_employee() (server.web_api.routing.v1.employees.routing.EmployeesRouter method)</a>
-</li>
-        <li><a href="api_students.html#server.web_api.routing.v1.students.routing.StudentsRouter.create_new_student">create_new_student() (server.web_api.routing.v1.students.routing.StudentsRouter method)</a>
+        <li><a href="api_students.html#server.web_api.routing.v1.student_routing.StudentsRouter.create_new_student">create_new_student() (server.web_api.routing.v1.student_routing.StudentsRouter method)</a>
 </li>
     </ul></td>
   </tr></table>
@@ -304,15 +279,13 @@
   <h2>D</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="database_manager.html#server.lib.database_manager.DatabaseManager">DatabaseManager (class in server.lib.database_manager)</a>
+        <li><a href="print_utils.html#server.lib.utils.print_utils.debug_print">debug_print() (in module server.lib.utils.print_utils)</a>
 </li>
-        <li><a href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployeeHours.date_worked">date_worked (server.lib.data_classes.employee.PydanticEmployeeHours attribute)</a>
+        <li><a href="api_employees.html#server.web_api.routing.v1.employee_routing.delete_employee">delete_employee() (in module server.web_api.routing.v1.employee_routing)</a>
 </li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="employee_data_class.html#server.lib.data_classes.employee.EmployeeHours.DateWorked">DateWorked (server.lib.data_classes.employee.EmployeeHours attribute)</a>
-</li>
-        <li><a href="print_utils.html#server.lib.utils.print_utils.debug_print">debug_print() (in module server.lib.utils.print_utils)</a>
+        <li><a href="api_employees.html#server.web_api.routing.v1.employee_routing.delete_employees">delete_employees() (in module server.web_api.routing.v1.employee_routing)</a>
 </li>
         <li><a href="logging_manager.html#server.lib.logging_manager.LoggingManager.disable">disable() (server.lib.logging_manager.LoggingManager class method)</a>
 </li>
@@ -326,34 +299,40 @@
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="employee_data_class.html#server.lib.data_classes.employee.Employee">Employee (class in server.lib.data_classes.employee)</a>
 </li>
-        <li><a href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployeeHours.employee_id">employee_id (server.lib.data_classes.employee.PydanticEmployeeHours attribute)</a>
+        <li><a href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployeesRemoval.employee_ids">employee_ids (server.lib.data_classes.employee.PydanticEmployeesRemoval attribute)</a>
 </li>
         <li><a href="employee_data_class.html#server.lib.data_classes.employee.Employee.EmployeeEnabled">EmployeeEnabled (server.lib.data_classes.employee.Employee attribute)</a>
-</li>
-        <li><a href="employee_data_class.html#server.lib.data_classes.employee.EmployeeHours">EmployeeHours (class in server.lib.data_classes.employee)</a>
 </li>
         <li><a href="employee_data_class.html#server.lib.data_classes.employee.Employee.EmployeeHoursRelationship">EmployeeHoursRelationship (server.lib.data_classes.employee.Employee attribute)</a>
 </li>
         <li><a href="employee_data_class.html#server.lib.data_classes.employee.Employee.EmployeeID">EmployeeID (server.lib.data_classes.employee.Employee attribute)</a>
-
-        <ul>
-          <li><a href="employee_data_class.html#server.lib.data_classes.employee.EmployeeHours.EmployeeID">(server.lib.data_classes.employee.EmployeeHours attribute)</a>
 </li>
-        </ul></li>
+        <li><a href="employee_data_class.html#server.lib.data_classes.employee.Employee.EmployeeRoleID">EmployeeRoleID (server.lib.data_classes.employee.Employee attribute)</a>
+</li>
+        <li><a href="api_employees.html#server.web_api.routing.v1.employee_hours_routing.EmployeesRouter">EmployeesRouter (class in server.web_api.routing.v1.employee_hours_routing)</a>
+</li>
+        <li><a href="api_employees.html#server.web_api.routing.v1.employee_hours_routing.EmployeesRouter.Create">EmployeesRouter.Create (class in server.web_api.routing.v1.employee_hours_routing)</a>
+</li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="api_employees.html#server.web_api.routing.v1.employees.routing.EmployeesRouter">EmployeesRouter (class in server.web_api.routing.v1.employees.routing)</a>
+        <li><a href="api_employees.html#server.web_api.routing.v1.employee_hours_routing.EmployeesRouter.Delete">EmployeesRouter.Delete (class in server.web_api.routing.v1.employee_hours_routing)</a>
+</li>
+        <li><a href="api_employees.html#server.web_api.routing.v1.employee_hours_routing.EmployeesRouter.Read">EmployeesRouter.Read (class in server.web_api.routing.v1.employee_hours_routing)</a>
+</li>
+        <li><a href="api_employees.html#server.web_api.routing.v1.employee_hours_routing.EmployeesRouter.Update">EmployeesRouter.Update (class in server.web_api.routing.v1.employee_hours_routing)</a>
 </li>
         <li><a href="logging_manager.html#server.lib.logging_manager.LoggingManager.enable">enable() (server.lib.logging_manager.LoggingManager class method)</a>
 </li>
+        <li><a href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployeeRegistration.enable_notifications">enable_notifications (server.lib.data_classes.employee.PydanticEmployeeRegistration attribute)</a>
+
+        <ul>
+          <li><a href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployeeUpdate.enable_notifications">(server.lib.data_classes.employee.PydanticEmployeeUpdate attribute)</a>
+</li>
+        </ul></li>
         <li><a href="employee_data_class.html#server.lib.data_classes.employee.Employee.EntryCreated">EntryCreated (server.lib.data_classes.employee.Employee attribute)</a>
 
         <ul>
-          <li><a href="employee_data_class.html#server.lib.data_classes.employee.EmployeeHours.EntryCreated">(server.lib.data_classes.employee.EmployeeHours attribute)</a>
-</li>
           <li><a href="student_data_class.html#server.lib.data_classes.student.Student.EntryCreated">(server.lib.data_classes.student.Student attribute)</a>
-</li>
-          <li><a href="student_data_class.html#server.lib.data_classes.student.StudentCareHours.EntryCreated">(server.lib.data_classes.student.StudentCareHours attribute)</a>
 </li>
         </ul></li>
     </ul></td>
@@ -364,9 +343,11 @@
   <h2>F</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployee.first_name">first_name (server.lib.data_classes.employee.PydanticEmployee attribute)</a>
+        <li><a href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployeeRegistration.first_name">first_name (server.lib.data_classes.employee.PydanticEmployeeRegistration attribute)</a>
 
         <ul>
+          <li><a href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployeeUpdate.first_name">(server.lib.data_classes.employee.PydanticEmployeeUpdate attribute)</a>
+</li>
           <li><a href="student_data_class.html#server.lib.data_classes.student.PydanticStudent.first_name">(server.lib.data_classes.student.PydanticStudent attribute)</a>
 </li>
         </ul></li>
@@ -386,34 +367,18 @@
   <h2>G</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="web_service.html#server.services.web_service.general_exception_handler">general_exception_handler() (in module server.services.web_service)</a>
-</li>
-        <li><a href="web_service.html#server.services.web_service.general_http_exception">general_http_exception() (in module server.services.web_service)</a>
-</li>
-        <li><a href="web_service.html#server.services.web_service.general_request_validation_exception">general_request_validation_exception() (in module server.services.web_service)</a>
-</li>
-        <li><a href="web_service.html#server.services.web_service.general_validation_exception">general_validation_exception() (in module server.services.web_service)</a>
-</li>
         <li><a href="employee_utils.html#server.lib.utils.employee_utils.generate_employee_id">generate_employee_id() (in module server.lib.utils.employee_utils)</a>
 </li>
         <li><a href="student_utils.html#server.lib.utils.student_utils.generate_student_id">generate_student_id() (in module server.lib.utils.student_utils)</a>
 </li>
-        <li><a href="api_employees.html#server.web_api.routing.v1.employees.routing.EmployeesRouter.get_all_employees">get_all_employees() (server.web_api.routing.v1.employees.routing.EmployeesRouter method)</a>
+        <li><a href="api_students.html#server.web_api.routing.v1.student_routing.StudentsRouter.get_all_students">get_all_students() (server.web_api.routing.v1.student_routing.StudentsRouter method)</a>
 </li>
-        <li><a href="api_students.html#server.web_api.routing.v1.students.routing.StudentsRouter.get_all_students">get_all_students() (server.web_api.routing.v1.students.routing.StudentsRouter method)</a>
+        <li><a href="database_manager.html#server.lib.database_manager.get_db_engine">get_db_engine() (in module server.lib.database_manager)</a>
 </li>
-        <li><a href="service_manager.html#server.lib.service_manager.SharedData.Managers.get_database_manager">get_database_manager() (server.lib.service_manager.SharedData.Managers class method)</a>
-</li>
-        <li><a href="service_manager.html#server.lib.service_manager.SharedData.Settings.get_debug_mode">get_debug_mode() (server.lib.service_manager.SharedData.Settings class method)</a>
+        <li><a href="database_manager.html#server.lib.database_manager.get_db_session">get_db_session() (in module server.lib.database_manager)</a>
 </li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="api_employees.html#server.web_api.routing.v1.employees.routing.EmployeesRouter.get_employee_hours">get_employee_hours() (server.web_api.routing.v1.employees.routing.EmployeesRouter method)</a>
-</li>
-        <li><a href="api_employees.html#server.web_api.routing.v1.employees.routing.EmployeesRouter.get_employees_count">get_employees_count() (server.web_api.routing.v1.employees.routing.EmployeesRouter method)</a>
-</li>
-        <li><a href="database_manager.html#server.lib.database_manager.DatabaseManager.get_engine">get_engine() (server.lib.database_manager.DatabaseManager method)</a>
-</li>
         <li><a href="logging_manager.html#server.lib.logging_manager.LoggingManager.Settings.get_log_directory">get_log_directory() (server.lib.logging_manager.LoggingManager.Settings class method)</a>
 </li>
         <li><a href="logging_manager.html#server.lib.logging_manager.LoggingManager.Settings.get_log_level">get_log_level() (server.lib.logging_manager.LoggingManager.Settings class method)</a>
@@ -424,11 +389,7 @@
 </li>
         <li><a href="logging_manager.html#server.lib.logging_manager.LoggingManager.Settings.get_max_logs">get_max_logs() (server.lib.logging_manager.LoggingManager.Settings class method)</a>
 </li>
-        <li><a href="service_manager.html#server.lib.service_manager.SharedData.Settings.get_quiet_mode">get_quiet_mode() (server.lib.service_manager.SharedData.Settings class method)</a>
-</li>
-        <li><a href="api_students.html#server.web_api.routing.v1.students.routing.StudentsRouter.get_students_count">get_students_count() (server.web_api.routing.v1.students.routing.StudentsRouter method)</a>
-</li>
-        <li><a href="service_manager.html#server.lib.service_manager.SharedData.Managers.get_web_manager">get_web_manager() (server.lib.service_manager.SharedData.Managers class method)</a>
+        <li><a href="api_students.html#server.web_api.routing.v1.student_routing.StudentsRouter.get_students_count">get_students_count() (server.web_api.routing.v1.student_routing.StudentsRouter method)</a>
 </li>
     </ul></td>
   </tr></table>
@@ -440,13 +401,9 @@
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="logging_manager.html#server.lib.logging_manager.LoggingManager.LogLevel.has_value_id">has_value_id() (server.lib.logging_manager.LoggingManager.LogLevel class method)</a>
 </li>
-        <li><a href="logging_manager.html#server.lib.logging_manager.LoggingManager.LogLevel.has_value_label">has_value_label() (server.lib.logging_manager.LoggingManager.LogLevel class method)</a>
-</li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployeeHours.hours_worked">hours_worked (server.lib.data_classes.employee.PydanticEmployeeHours attribute)</a>
-</li>
-        <li><a href="employee_data_class.html#server.lib.data_classes.employee.EmployeeHours.HoursWorked">HoursWorked (server.lib.data_classes.employee.EmployeeHours attribute)</a>
+        <li><a href="logging_manager.html#server.lib.logging_manager.LoggingManager.LogLevel.has_value_label">has_value_label() (server.lib.logging_manager.LoggingManager.LogLevel class method)</a>
 </li>
     </ul></td>
   </tr></table>
@@ -459,35 +416,29 @@
         <li><a href="employee_data_class.html#server.lib.data_classes.employee.Employee.id">id (server.lib.data_classes.employee.Employee attribute)</a>
 
         <ul>
-          <li><a href="employee_data_class.html#server.lib.data_classes.employee.EmployeeHours.id">(server.lib.data_classes.employee.EmployeeHours attribute)</a>
-</li>
           <li><a href="student_data_class.html#server.lib.data_classes.student.Student.id">(server.lib.data_classes.student.Student attribute)</a>
 </li>
-          <li><a href="student_data_class.html#server.lib.data_classes.student.StudentCareHours.id">(server.lib.data_classes.student.StudentCareHours attribute)</a>
-</li>
         </ul></li>
-        <li><a href="database_manager.html#server.lib.database_manager.DatabaseManager.initialize">initialize() (server.lib.database_manager.DatabaseManager method)</a>
-
-        <ul>
-          <li><a href="web_manager.html#server.lib.web_manager.WebSessionManager.initialize">(server.lib.web_manager.WebSessionManager method)</a>
+        <li><a href="web_manager.html#server.lib.web_manager.WebSessionManager.initialize">initialize() (server.lib.web_manager.WebSessionManager method)</a>
 </li>
-        </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="logging_manager.html#server.lib.logging_manager.LoggingManager.initialize_logging">initialize_logging() (server.lib.logging_manager.LoggingManager class method)</a>
 </li>
         <li><a href="web_service.html#server.services.web_service.WebService.initialize_web">initialize_web() (server.services.web_service.WebService method)</a>
 </li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="web_service.html#server.services.web_service.UvicornServer.install_signal_handlers">install_signal_handlers() (server.services.web_service.UvicornServer method)</a>
 </li>
         <li><a href="logging_manager.html#server.lib.logging_manager.LoggingManager.instance">instance() (server.lib.logging_manager.LoggingManager class method)</a>
+</li>
+        <li><a href="database_manager.html#server.lib.database_manager.is_active">is_active() (in module server.lib.database_manager)</a>
+</li>
+        <li><a href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployeeRegistration.is_enabled">is_enabled (server.lib.data_classes.employee.PydanticEmployeeRegistration attribute)</a>
 
         <ul>
-          <li><a href="service_manager.html#server.lib.service_manager.SharedData.instance">(server.lib.service_manager.SharedData class method)</a>
+          <li><a href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployeeUpdate.is_enabled">(server.lib.data_classes.employee.PydanticEmployeeUpdate attribute)</a>
 </li>
         </ul></li>
-        <li><a href="database_manager.html#server.lib.database_manager.DatabaseManager.is_active">is_active() (server.lib.database_manager.DatabaseManager method)</a>
-</li>
         <li><a href="logging_manager.html#server.lib.logging_manager.LoggingManager.is_enabled">is_enabled() (server.lib.logging_manager.LoggingManager class method)</a>
 </li>
     </ul></td>
@@ -498,9 +449,11 @@
   <h2>L</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployee.last_name">last_name (server.lib.data_classes.employee.PydanticEmployee attribute)</a>
+        <li><a href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployeeRegistration.last_name">last_name (server.lib.data_classes.employee.PydanticEmployeeRegistration attribute)</a>
 
         <ul>
+          <li><a href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployeeUpdate.last_name">(server.lib.data_classes.employee.PydanticEmployeeUpdate attribute)</a>
+</li>
           <li><a href="student_data_class.html#server.lib.data_classes.student.PydanticStudent.last_name">(server.lib.data_classes.student.PydanticStudent attribute)</a>
 </li>
         </ul></li>
@@ -538,9 +491,7 @@
   <h2>M</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="api_status.html#server.web_api.routing.v1.routing.CoreRouter.main_api">main_api() (server.web_api.routing.v1.routing.CoreRouter method)</a>
-</li>
-        <li><a href="database_manager.html#server.lib.database_manager.DatabaseManager.make_session">make_session() (server.lib.database_manager.DatabaseManager method)</a>
+        <li><a href="api_status.html#server.web_api.routing.v1.core_routing.CoreRouter.main_api">main_api() (server.web_api.routing.v1.core_routing.CoreRouter method)</a>
 </li>
         <li>
     module
@@ -556,8 +507,6 @@
 </li>
           <li><a href="logging_manager.html#module-server.lib.logging_manager">server.lib.logging_manager</a>
 </li>
-          <li><a href="service_manager.html#module-server.lib.service_manager">server.lib.service_manager</a>
-</li>
           <li><a href="strings.html#module-server.lib.strings">server.lib.strings</a>
 </li>
           <li><a href="employee_utils.html#module-server.lib.utils.employee_utils">server.lib.utils.employee_utils</a>
@@ -572,11 +521,13 @@
 </li>
           <li><a href="api_response_model.html#module-server.web_api.models">server.web_api.models</a>
 </li>
-          <li><a href="api_employees.html#module-server.web_api.routing.v1.employees.routing">server.web_api.routing.v1.employees.routing</a>
+          <li><a href="api_status.html#module-server.web_api.routing.v1.core_routing">server.web_api.routing.v1.core_routing</a>
 </li>
-          <li><a href="api_status.html#module-server.web_api.routing.v1.routing">server.web_api.routing.v1.routing</a>
+          <li><a href="api_employees.html#module-server.web_api.routing.v1.employee_hours_routing">server.web_api.routing.v1.employee_hours_routing</a>
 </li>
-          <li><a href="api_students.html#module-server.web_api.routing.v1.students.routing">server.web_api.routing.v1.students.routing</a>
+          <li><a href="api_employees.html#module-server.web_api.routing.v1.employee_routing">server.web_api.routing.v1.employee_routing</a>
+</li>
+          <li><a href="api_students.html#module-server.web_api.routing.v1.student_routing">server.web_api.routing.v1.student_routing</a>
 </li>
         </ul></li>
     </ul></td>
@@ -589,19 +540,27 @@
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="employee_data_class.html#server.lib.data_classes.employee.Employee.PasswordHash">PasswordHash (server.lib.data_classes.employee.Employee attribute)</a>
 </li>
-        <li><a href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployee.plain_password">plain_password (server.lib.data_classes.employee.PydanticEmployee attribute)</a>
+        <li><a href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployeeRegistration.plain_password">plain_password (server.lib.data_classes.employee.PydanticEmployeeRegistration attribute)</a>
+
+        <ul>
+          <li><a href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployeeUpdate.plain_password">(server.lib.data_classes.employee.PydanticEmployeeUpdate attribute)</a>
 </li>
-        <li><a href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployee">PydanticEmployee (class in server.lib.data_classes.employee)</a>
+        </ul></li>
+        <li><a href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployeeRegistration.primary_email">primary_email (server.lib.data_classes.employee.PydanticEmployeeRegistration attribute)</a>
+
+        <ul>
+          <li><a href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployeeUpdate.primary_email">(server.lib.data_classes.employee.PydanticEmployeeUpdate attribute)</a>
 </li>
+        </ul></li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployeeHours">PydanticEmployeeHours (class in server.lib.data_classes.employee)</a>
+        <li><a href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployeeRegistration">PydanticEmployeeRegistration (class in server.lib.data_classes.employee)</a>
+</li>
+        <li><a href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployeesRemoval">PydanticEmployeesRemoval (class in server.lib.data_classes.employee)</a>
+</li>
+        <li><a href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployeeUpdate">PydanticEmployeeUpdate (class in server.lib.data_classes.employee)</a>
 </li>
         <li><a href="student_data_class.html#server.lib.data_classes.student.PydanticStudent">PydanticStudent (class in server.lib.data_classes.student)</a>
-</li>
-        <li><a href="student_data_class.html#server.lib.data_classes.student.PydanticStudentCareHoursCheckIn">PydanticStudentCareHoursCheckIn (class in server.lib.data_classes.student)</a>
-</li>
-        <li><a href="student_data_class.html#server.lib.data_classes.student.PydanticStudentCareHoursCheckOut">PydanticStudentCareHoursCheckOut (class in server.lib.data_classes.student)</a>
 </li>
     </ul></td>
   </tr></table>
@@ -611,12 +570,28 @@
   <h2>R</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="api_employees.html#server.web_api.routing.v1.employees.routing.EmployeesRouter.remove_employee">remove_employee() (server.web_api.routing.v1.employees.routing.EmployeesRouter method)</a>
+        <li><a href="api_employees.html#server.web_api.routing.v1.employee_routing.read_all_employees">read_all_employees() (in module server.web_api.routing.v1.employee_routing)</a>
+</li>
+        <li><a href="api_employees.html#server.web_api.routing.v1.employee_routing.read_employee_from_token">read_employee_from_token() (in module server.web_api.routing.v1.employee_routing)</a>
+</li>
+        <li><a href="api_employees.html#server.web_api.routing.v1.employee_hours_routing.EmployeesRouter.Read.read_employee_work_hours">read_employee_work_hours() (server.web_api.routing.v1.employee_hours_routing.EmployeesRouter.Read method)</a>
+</li>
+        <li><a href="api_employees.html#server.web_api.routing.v1.employee_routing.read_employees_count">read_employees_count() (in module server.web_api.routing.v1.employee_routing)</a>
+</li>
+        <li><a href="api_employees.html#server.web_api.routing.v1.employee_routing.read_one_employee">read_one_employee() (in module server.web_api.routing.v1.employee_routing)</a>
 </li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_employees.html#server.web_api.routing.v1.employee_routing.register_new_employee">register_new_employee() (in module server.web_api.routing.v1.employee_routing)</a>
+</li>
         <li><a href="api_response_model.html#server.web_api.models.ResponseModel">ResponseModel (class in server.web_api.models)</a>
 </li>
+        <li><a href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployeeRegistration.role">role (server.lib.data_classes.employee.PydanticEmployeeRegistration attribute)</a>
+
+        <ul>
+          <li><a href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployeeUpdate.role">(server.lib.data_classes.employee.PydanticEmployeeUpdate attribute)</a>
+</li>
+        </ul></li>
         <li><a href="web_service.html#server.services.web_service.UvicornServer.run_in_thread">run_in_thread() (server.services.web_service.UvicornServer method)</a>
 </li>
     </ul></td>
@@ -627,8 +602,12 @@
   <h2>S</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="web_service.html#server.services.web_service.serve_index">serve_index() (in module server.services.web_service)</a>
+        <li><a href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployeeRegistration.secondary_email">secondary_email (server.lib.data_classes.employee.PydanticEmployeeRegistration attribute)</a>
+
+        <ul>
+          <li><a href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployeeUpdate.secondary_email">(server.lib.data_classes.employee.PydanticEmployeeUpdate attribute)</a>
 </li>
+        </ul></li>
         <li>
     server.lib.data_classes.employee
 
@@ -662,13 +641,6 @@
 
         <ul>
           <li><a href="logging_manager.html#module-server.lib.logging_manager">module</a>
-</li>
-        </ul></li>
-        <li>
-    server.lib.service_manager
-
-        <ul>
-          <li><a href="service_manager.html#module-server.lib.service_manager">module</a>
 </li>
         </ul></li>
         <li>
@@ -713,6 +685,8 @@
           <li><a href="web_service.html#module-server.services.web_service">module</a>
 </li>
         </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li>
     server.web_api.models
 
@@ -721,31 +695,34 @@
 </li>
         </ul></li>
         <li>
-    server.web_api.routing.v1.employees.routing
+    server.web_api.routing.v1.core_routing
 
         <ul>
-          <li><a href="api_employees.html#module-server.web_api.routing.v1.employees.routing">module</a>
-</li>
-        </ul></li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
-        <li>
-    server.web_api.routing.v1.routing
-
-        <ul>
-          <li><a href="api_status.html#module-server.web_api.routing.v1.routing">module</a>
+          <li><a href="api_status.html#module-server.web_api.routing.v1.core_routing">module</a>
 </li>
         </ul></li>
         <li>
-    server.web_api.routing.v1.students.routing
+    server.web_api.routing.v1.employee_hours_routing
 
         <ul>
-          <li><a href="api_students.html#module-server.web_api.routing.v1.students.routing">module</a>
+          <li><a href="api_employees.html#module-server.web_api.routing.v1.employee_hours_routing">module</a>
 </li>
         </ul></li>
-        <li><a href="service_manager.html#server.lib.service_manager.SharedData.Managers.set_database_manager">set_database_manager() (server.lib.service_manager.SharedData.Managers class method)</a>
+        <li>
+    server.web_api.routing.v1.employee_routing
+
+        <ul>
+          <li><a href="api_employees.html#module-server.web_api.routing.v1.employee_routing">module</a>
 </li>
-        <li><a href="service_manager.html#server.lib.service_manager.SharedData.Settings.set_debug_mode">set_debug_mode() (server.lib.service_manager.SharedData.Settings class method)</a>
+        </ul></li>
+        <li>
+    server.web_api.routing.v1.student_routing
+
+        <ul>
+          <li><a href="api_students.html#module-server.web_api.routing.v1.student_routing">module</a>
+</li>
+        </ul></li>
+        <li><a href="database_manager.html#server.lib.database_manager.SessionContext">SessionContext (class in server.lib.database_manager)</a>
 </li>
         <li><a href="logging_manager.html#server.lib.logging_manager.LoggingManager.Settings.set_log_directory">set_log_directory() (server.lib.logging_manager.LoggingManager.Settings class method)</a>
 </li>
@@ -755,21 +732,9 @@
 </li>
         <li><a href="logging_manager.html#server.lib.logging_manager.LoggingManager.Settings.set_max_logs">set_max_logs() (server.lib.logging_manager.LoggingManager.Settings class method)</a>
 </li>
-        <li><a href="service_manager.html#server.lib.service_manager.SharedData.Settings.set_quiet_mode">set_quiet_mode() (server.lib.service_manager.SharedData.Settings class method)</a>
-</li>
-        <li><a href="service_manager.html#server.lib.service_manager.SharedData.Managers.set_web_manager">set_web_manager() (server.lib.service_manager.SharedData.Managers class method)</a>
-</li>
-        <li><a href="service_manager.html#server.lib.service_manager.SharedData">SharedData (class in server.lib.service_manager)</a>
-</li>
-        <li><a href="service_manager.html#server.lib.service_manager.SharedData.Managers">SharedData.Managers (class in server.lib.service_manager)</a>
-</li>
-        <li><a href="service_manager.html#server.lib.service_manager.SharedData.Settings">SharedData.Settings (class in server.lib.service_manager)</a>
-</li>
-        <li><a href="web_service.html#server.services.web_service.starlette_http_exception">starlette_http_exception() (in module server.services.web_service)</a>
-</li>
         <li><a href="web_manager.html#server.lib.web_manager.WebSessionManager.start_web_server">start_web_server() (server.lib.web_manager.WebSessionManager method)</a>
 </li>
-        <li><a href="api_status.html#server.web_api.routing.v1.routing.CoreRouter.status">status() (server.web_api.routing.v1.routing.CoreRouter method)</a>
+        <li><a href="api_status.html#server.web_api.routing.v1.core_routing.CoreRouter.status">status() (server.web_api.routing.v1.core_routing.CoreRouter method)</a>
 </li>
         <li><a href="web_service.html#server.services.web_service.WebService.stop_web">stop_web() (server.services.web_service.WebService method)</a>
 </li>
@@ -777,25 +742,13 @@
 </li>
         <li><a href="student_data_class.html#server.lib.data_classes.student.Student">Student (class in server.lib.data_classes.student)</a>
 </li>
-        <li><a href="student_data_class.html#server.lib.data_classes.student.PydanticStudentCareHoursCheckIn.student_id">student_id (server.lib.data_classes.student.PydanticStudentCareHoursCheckIn attribute)</a>
-
-        <ul>
-          <li><a href="student_data_class.html#server.lib.data_classes.student.PydanticStudentCareHoursCheckOut.student_id">(server.lib.data_classes.student.PydanticStudentCareHoursCheckOut attribute)</a>
-</li>
-        </ul></li>
-        <li><a href="student_data_class.html#server.lib.data_classes.student.StudentCareHours">StudentCareHours (class in server.lib.data_classes.student)</a>
-</li>
         <li><a href="student_data_class.html#server.lib.data_classes.student.Student.StudentCareHoursRelationship">StudentCareHoursRelationship (server.lib.data_classes.student.Student attribute)</a>
 </li>
         <li><a href="student_data_class.html#server.lib.data_classes.student.Student.StudentEnabled">StudentEnabled (server.lib.data_classes.student.Student attribute)</a>
 </li>
         <li><a href="student_data_class.html#server.lib.data_classes.student.Student.StudentID">StudentID (server.lib.data_classes.student.Student attribute)</a>
-
-        <ul>
-          <li><a href="student_data_class.html#server.lib.data_classes.student.StudentCareHours.StudentID">(server.lib.data_classes.student.StudentCareHours attribute)</a>
 </li>
-        </ul></li>
-        <li><a href="api_students.html#server.web_api.routing.v1.students.routing.StudentsRouter">StudentsRouter (class in server.web_api.routing.v1.students.routing)</a>
+        <li><a href="api_students.html#server.web_api.routing.v1.student_routing.StudentsRouter">StudentsRouter (class in server.web_api.routing.v1.student_routing)</a>
 </li>
     </ul></td>
   </tr></table>
@@ -809,6 +762,8 @@
 </li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_employees.html#server.web_api.routing.v1.employee_routing.update_one_employee">update_one_employee() (in module server.web_api.routing.v1.employee_routing)</a>
+</li>
         <li><a href="web_service.html#server.services.web_service.UvicornServer">UvicornServer (class in server.services.web_service)</a>
 </li>
     </ul></td>
@@ -820,11 +775,7 @@
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="employee_utils.html#server.lib.utils.employee_utils.verify_employee_password">verify_employee_password() (in module server.lib.utils.employee_utils)</a>
-
-        <ul>
-          <li><a href="api_employees.html#server.web_api.routing.v1.employees.routing.EmployeesRouter.verify_employee_password">(server.web_api.routing.v1.employees.routing.EmployeesRouter method)</a>
 </li>
-        </ul></li>
     </ul></td>
   </tr></table>
 </section>

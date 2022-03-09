@@ -168,7 +168,6 @@
 <li class="toctree-l3"><a class="reference internal" href="database_manager.html">Database Manager</a></li>
 <li class="toctree-l3"><a class="reference internal" href="web_manager.html">Web Session Manager</a></li>
 <li class="toctree-l3"><a class="reference internal" href="logging_manager.html">Logging Manager</a></li>
-<li class="toctree-l3"><a class="reference internal" href="service_manager.html">Service Manager</a></li>
 </ul>
 </li>
 <li class="toctree-l2 has-children"><a class="reference internal" href="utility_modules.html">Utility Modules</a><input class="toctree-checkbox" id="toctree-checkbox-5" name="toctree-checkbox-5" role="switch" type="checkbox"/><label for="toctree-checkbox-5"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -402,26 +401,26 @@ KNOWN ERRORS: Currently a successful student check in returns a status 500 error
 </div>
 </dd></dl>
 </section>
-<section id="module-server.web_api.routing.v1.students.routing">
-<span id="implementation-documentation"></span><h2>Implementation Documentation<a class="headerlink" href="#module-server.web_api.routing.v1.students.routing" title="Permalink to this headline">#</a></h2>
+<section id="module-server.web_api.routing.v1.student_routing">
+<span id="implementation-documentation"></span><h2>Implementation Documentation<a class="headerlink" href="#module-server.web_api.routing.v1.student_routing" title="Permalink to this headline">#</a></h2>
 <p>This module consists of FastAPI routing for Students.
 This handles all the REST API logic for creating, destroying, and updating student-related data.</p>
 <dl class="py class">
-<dt class="sig sig-object py" id="server.web_api.routing.v1.students.routing.StudentsRouter">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.web_api.routing.v1.students.routing.</span></span><span class="sig-name descname"><span class="pre">StudentsRouter</span></span><a class="headerlink" href="#server.web_api.routing.v1.students.routing.StudentsRouter" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="server.web_api.routing.v1.student_routing.StudentsRouter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.web_api.routing.v1.student_routing.</span></span><span class="sig-name descname"><span class="pre">StudentsRouter</span></span><a class="headerlink" href="#server.web_api.routing.v1.student_routing.StudentsRouter" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>The API router responsible for defining endpoints relating to students.
 The defined endpoints allow HTTP requests to conduct childcare-related operations with the student entity.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="server.web_api.routing.v1.students.routing.StudentsRouter.check_in_student">
-<span class="sig-name descname"><span class="pre">check_in_student</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pyd_student_checkin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="student_data_class.html#server.lib.data_classes.student.PydanticStudentCareHoursCheckIn" title="server.lib.data_classes.student.PydanticStudentCareHoursCheckIn"><span class="pre">server.lib.data_classes.student.PydanticStudentCareHoursCheckIn</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.students.routing.StudentsRouter.check_in_student" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="server.web_api.routing.v1.student_routing.StudentsRouter.check_in_student">
+<span class="sig-name descname"><span class="pre">check_in_student</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pyd_student_checkin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">server.lib.data_classes.student_care_hours.PydanticStudentCareHoursCheckIn</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_db_session)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.student_routing.StudentsRouter.check_in_student" title="Permalink to this definition">#</a></dt>
 <dd><p>An endpoint that checks-in a student into the before-care or after-care service and records the time of check-in.
 Any student checked into before-care is automatically checked out at the end of the before-care service.
 Any student checked into after-care can be checked out at any time after checking in.
 Failure to check out a student from after-care will result in the automatic check-out of the student at the end of after-care.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>pyd_student_checkin</strong> (<a class="reference internal" href="student_data_class.html#server.lib.data_classes.student.PydanticStudentCareHoursCheckIn" title="server.lib.data_classes.student.PydanticStudentCareHoursCheckIn"><em>PydanticStudentCareHoursCheckIn</em></a>) – The Pydantic StudentCareHoursCheckIn reference. This means that HTTP requests to this endpoint must include the required fields in the Pydantic StudentCareHoursCheckIn class.</p>
+<dd class="field-odd"><p><strong>pyd_student_checkin</strong> (<em>PydanticStudentCareHoursCheckIn</em>) – The Pydantic StudentCareHoursCheckIn reference. This means that HTTP requests to this endpoint must include the required fields in the Pydantic StudentCareHoursCheckIn class.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>A response model containing information regarding the student and the check-in time and date that has been registered in the database.</p>
@@ -435,8 +434,8 @@ Failure to check out a student from after-care will result in the automatic chec
 </dl>
 </dd></dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="server.web_api.routing.v1.students.routing.StudentsRouter.check_out_student">
-<span class="sig-name descname"><span class="pre">check_out_student</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">student_checkout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="student_data_class.html#server.lib.data_classes.student.PydanticStudentCareHoursCheckOut" title="server.lib.data_classes.student.PydanticStudentCareHoursCheckOut"><span class="pre">server.lib.data_classes.student.PydanticStudentCareHoursCheckOut</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.students.routing.StudentsRouter.check_out_student" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="server.web_api.routing.v1.student_routing.StudentsRouter.check_out_student">
+<span class="sig-name descname"><span class="pre">check_out_student</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">student_checkout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">server.lib.data_classes.student_care_hours.PydanticStudentCareHoursCheckOut</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_db_session)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.student_routing.StudentsRouter.check_out_student" title="Permalink to this definition">#</a></dt>
 <dd><p>Not Implemented!</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -451,8 +450,8 @@ Failure to check out a student from after-care will result in the automatic chec
 </dl>
 </dd></dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="server.web_api.routing.v1.students.routing.StudentsRouter.create_new_student">
-<span class="sig-name descname"><span class="pre">create_new_student</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pyd_student</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="student_data_class.html#server.lib.data_classes.student.PydanticStudent" title="server.lib.data_classes.student.PydanticStudent"><span class="pre">server.lib.data_classes.student.PydanticStudent</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.students.routing.StudentsRouter.create_new_student" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="server.web_api.routing.v1.student_routing.StudentsRouter.create_new_student">
+<span class="sig-name descname"><span class="pre">create_new_student</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pyd_student</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="student_data_class.html#server.lib.data_classes.student.PydanticStudent" title="server.lib.data_classes.student.PydanticStudent"><span class="pre">server.lib.data_classes.student.PydanticStudent</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_db_session)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.student_routing.StudentsRouter.create_new_student" title="Permalink to this definition">#</a></dt>
 <dd><p>An endpoint that creates a new student record and adds it to the students’ table in the database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -470,8 +469,8 @@ Failure to check out a student from after-care will result in the automatic chec
 </dl>
 </dd></dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="server.web_api.routing.v1.students.routing.StudentsRouter.get_all_students">
-<span class="sig-name descname"><span class="pre">get_all_students</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.students.routing.StudentsRouter.get_all_students" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="server.web_api.routing.v1.student_routing.StudentsRouter.get_all_students">
+<span class="sig-name descname"><span class="pre">get_all_students</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_db_session)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.student_routing.StudentsRouter.get_all_students" title="Permalink to this definition">#</a></dt>
 <dd><p>An endpoint that retrieves all the students from the database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -483,8 +482,8 @@ Failure to check out a student from after-care will result in the automatic chec
 </dl>
 </dd></dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="server.web_api.routing.v1.students.routing.StudentsRouter.get_students_count">
-<span class="sig-name descname"><span class="pre">get_students_count</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.students.routing.StudentsRouter.get_students_count" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="server.web_api.routing.v1.student_routing.StudentsRouter.get_students_count">
+<span class="sig-name descname"><span class="pre">get_students_count</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_db_session)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.student_routing.StudentsRouter.get_students_count" title="Permalink to this definition">#</a></dt>
 <dd><p>An endpoint that counts the number of students that are registered in the database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
@@ -558,7 +557,7 @@ Failure to check out a student from after-care will result in the automatic chec
             <ul>
 <li><a class="reference internal" href="#">Students API - WORK IN PROGRESS</a><ul>
 <li><a class="reference internal" href="#usage">Usage</a></li>
-<li><a class="reference internal" href="#module-server.web_api.routing.v1.students.routing">Implementation Documentation</a></li>
+<li><a class="reference internal" href="#module-server.web_api.routing.v1.student_routing">Implementation Documentation</a></li>
 </ul>
 </li>
 </ul>

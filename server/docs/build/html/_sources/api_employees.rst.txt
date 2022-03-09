@@ -277,7 +277,12 @@ Usage
 Implementation Documentation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. automodule:: server.web_api.routing.v1.employees.routing
+.. automodule:: server.web_api.routing.v1.employee_routing
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+.. automodule:: server.web_api.routing.v1.employee_hours_routing
    :members:
    :undoc-members:
    :show-inheritance:
