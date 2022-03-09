@@ -8,7 +8,7 @@ from server.lib.data_classes.employee import Employee
 from server.lib.data_classes.access_token import TokenBlacklist
 from server.lib.database_functions.employee_interface import get_employee_role, get_employee
 from server.lib.token_manager import get_blacklist_session
-from web_api.security_config import TOKEN_EXPIRY_MINUTES
+from server.web_api.security_config import TOKEN_EXPIRY_MINUTES
 
 oauth_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
 
