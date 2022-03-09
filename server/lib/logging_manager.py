@@ -1,9 +1,10 @@
 from __future__ import annotations
 import logging
 from typing import Union, List
-from enum import Enum, unique, EnumMeta
-from os import listdir, path, makedirs, unlink
+from enum import Enum, unique
+from os import path, makedirs
 from logging.handlers import RotatingFileHandler
+from config import ENV_SETTINGS
 from server.lib.utils.print_utils import debug_print
 from server.lib.strings import ROOT_DIR, META_NAME, META_VERSION, LOG_ORIGIN_GENERAL, LOG_ORIGIN_STARTUP
 from server.lib.error_codes import ERR_LOGGING_MNGR_INCORRECT_PARAMS
@@ -61,6 +62,11 @@ class LoggingManager:
         :return: None
         :raises RuntimeError: If the logging manager has not been initialized.
         """
+        cls._instance.Settings.set_log_level(ENV_SETTINGS.log_level)
+        cls._instance.Settings.set_max_logs(ENV_SETTINGS.max_logs)
+        cls._instance.Settings.set_max_log_size(ENV_SETTINGS.max_log_size)
+        cls._instance.Settings.set_log_directory(ENV_SETTINGS.log_directory)
+
         if not cls._instance:
             raise RuntimeError('Logging Manager class has not been instantiated, please instantiate the class first!')
         if not cls._instance.is_enabled():
@@ -76,6 +82,7 @@ class LoggingManager:
         )
         handler.setFormatter(logging.Formatter('[%(asctime)s]-[%(levelname)s]-%(message)s'))
         cls._instance.__logger.addHandler(handler)
+        cls._instance.log(cls._instance.LogLevel.LOG_INFO, 'Initializing PCA Project Server...', origin=LOG_ORIGIN_STARTUP, no_print=False)
         cls._instance.log(cls._instance.LogLevel.LOG_INFO, 'Logging manager initialized.', origin=LOG_ORIGIN_STARTUP, no_print=False)
 
     @classmethod
@@ -350,3 +357,8 @@ class LoggingManager:
             :rtype: int
             """
             return cls.__max_log_size
+
+
+# Create and initialize the logging manager with the provided parameters.
+logging_manager = LoggingManager(ENV_SETTINGS.enable_logs)
+logging_manager.initialize_logging()

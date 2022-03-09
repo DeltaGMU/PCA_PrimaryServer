@@ -3,20 +3,11 @@ The primary initialization python file that handles command-line arguments and i
 for the server to run.
 """
 import signal
-import sys
-from os import getenv
-import argparse
 import traceback
-from dotenv import load_dotenv
-from server.lib.service_manager import SharedData
-from server.lib.database_manager import DatabaseManager
+from config import ENV_SETTINGS
 from server.lib.web_manager import WebSessionManager
 from server.lib.logging_manager import LoggingManager
-from server.lib.strings import ENV_MARIADB_HOST, ENV_MARIADB_PORT, ENV_MARIADB_USER, ENV_MARIADB_PASS, \
-    ENV_MARIADB_DATABASE, ENV_WEB_HOST, ENV_WEB_PORT, ENV_DEBUG_MODE, ENV_ENABLE_LOGS, ENV_MAX_LOGS, \
-    ENV_LOG_LEVEL, ENV_LOG_DIRECTORY, ENV_MAX_LOG_SIZE, LOG_ORIGIN_SHUTDOWN, LOG_ORIGIN_GENERAL, LOG_ERROR_GENERAL, LOG_WARNING_GENERAL, LOG_ERROR_UNKNOWN, ENV_QUIET_MODE, LOG_ORIGIN_STARTUP
-
-load_dotenv()
+from server.lib.strings import LOG_ORIGIN_SHUTDOWN, LOG_ORIGIN_GENERAL, LOG_ERROR_GENERAL, LOG_WARNING_GENERAL, LOG_ERROR_UNKNOWN, LOG_ORIGIN_STARTUP
 
 
 def init():
@@ -25,6 +16,8 @@ def init():
     After initializing all the modules, the server is started.
 
     :return: None
+    """
+
     """
     parser = argparse.ArgumentParser(
         description="A python-based timesheet/childcare solution with an integrated REST api server "
@@ -84,31 +77,16 @@ def init():
     if debug_mode and quiet_mode:
         print("Debug mode and Quiet mode are both enabled, this is a mistake!\nPlease make sure only one or the other is enabled. Defaulting to Quiet mode for this session.")
         debug_mode = False
-
+    """
+    web_session_manager = None
     try:
-        # Create the project data store for project-related settings and object references.
-        shared_data = SharedData()
-        shared_data.Settings.set_debug_mode(debug_mode)
-        shared_data.Settings.set_quiet_mode(quiet_mode)
-
-        # Create and initialize the logging manager with the provided parameters.
-        logging_manager = LoggingManager(bool(args.enable_logs))
-        logging_manager.Settings.set_log_level(args.log_level)
-        logging_manager.Settings.set_max_logs(int(args.max_logs))
-        logging_manager.Settings.set_max_log_size(int(args.max_log_size))
-        logging_manager.Settings.set_log_directory(args.log_directory)
-        logging_manager.initialize_logging()
-        LoggingManager().log(LoggingManager.LogLevel.LOG_INFO, 'Initializing PCA Project Server...', origin=LOG_ORIGIN_STARTUP, no_print=False)
-
-        # Create and initialize the database manager with the provided parameters.
-        database_manager = DatabaseManager(args.server_ip, args.server_port, args.db_name,
-                                           args.user, args.password)
-        shared_data.Managers.set_database_manager(database_manager)
-
+        # Ensure that debug mode and quiet mode are both not enabled at the same time.
+        if ENV_SETTINGS.debug_mode and ENV_SETTINGS.quiet_mode:
+            print("Debug mode and Quiet mode are both enabled, this is a mistake!\nPlease make sure only one or the other is enabled. Defaulting to Quiet mode for this session.")
+            debug_mode = False
         # Create and initialize the web session manager with the provided parameters.
-        web_session_manager = WebSessionManager(args.web_ip, int(args.web_port))
-        shared_data.Managers.set_web_manager(web_session_manager)
-        # Start the primary web server after all the modules have successfully loaded.
+        web_session_manager = WebSessionManager(ENV_SETTINGS.web_host, ENV_SETTINGS.web_port)
+        # Start the primary web server after all the modules have successfully been configured.
         web_session_manager.start_web_server()
     except RuntimeError as err:
         LoggingManager().log(LoggingManager.LogLevel.LOG_CRITICAL, f"{str(err)}", origin=LOG_ORIGIN_GENERAL, error_type=LOG_ERROR_GENERAL,
@@ -123,14 +101,13 @@ def init():
                              exc_message=traceback.format_exc(), no_print=False)
         raise Exception("Error: Encountered a critical error.") from unknown_err
     finally:
-        graceful_shutdown()
+        graceful_shutdown(web_session_manager)
 
 
-def graceful_shutdown():
+def graceful_shutdown(web_session_manager=None):
     # Retrieve the web manager object reference and gracefully shutdown the server.
-    web_manager_reference = SharedData().Managers.get_web_manager()
-    if web_manager_reference:
-        web_manager_reference.stop_web_server()
+    if web_session_manager:
+        web_session_manager.stop_web_server()
     LoggingManager().log(LoggingManager.LogLevel.LOG_INFO, f'The application has closed.\n{"#" * 140}', origin=LOG_ORIGIN_SHUTDOWN, no_print=False)
 
 

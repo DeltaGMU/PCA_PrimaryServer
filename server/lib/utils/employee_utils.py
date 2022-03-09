@@ -6,16 +6,19 @@ a new employee record is being added to the database.
 
 from __future__ import annotations
 from sqlalchemy import func
+from sqlalchemy.orm import Session
+from server.lib.data_classes.contact_info import ContactInfo
 from server.lib.logging_manager import LoggingManager
-from server.lib.service_manager import SharedData
 from server.lib.error_codes import ERR_DB_SERVICE_INACTIVE
 from sqlalchemy.exc import SQLAlchemyError
 from server.lib.data_classes.employee import Employee
+from server.lib.data_classes.employee_role import EmployeeRole
 from passlib.hash import bcrypt
 from server.lib.strings import LOG_ERROR_GENERAL
+from server.lib.database_manager import main_engine as db_engine, get_db_session
 
 
-def generate_employee_id(first_name: str, last_name: str) -> str | None:
+def generate_employee_id(first_name: str, last_name: str, session: Session = None) -> str | None:
     """
     This utility method is used to generate an employee ID from the given first name and last name.
     The ID format for employees is: ``<first_name_initial><full_last_name><unique_record_id>``
@@ -24,28 +27,40 @@ def generate_employee_id(first_name: str, last_name: str) -> str | None:
     :type first_name: str, required
     :param last_name: The last name of the employee.
     :type last_name: str, required
+    :param session: The database session to use for generating an employee id.
+    :type session: Session, optional
     :return: The newly created employee ID if successful, otherwise None.
     :rtype: str | None
     """
     # Get the instance of the application shared data and ensure the database engine is initialized.
-    shared_data = SharedData()
-    if not shared_data.Managers.get_database_manager().db_engine:
+    if db_engine is None:
         raise RuntimeError(f'Database Error [Error Code: {ERR_DB_SERVICE_INACTIVE}]\n'
                            'The database was unable to be verified as online and active!')
+    # Ensure that a session is retrieved if not provided.
+    if session is None:
+        session = get_db_session()
     # Ensure that the provided first and last names are a valid length.
     if not len(first_name) > 0 and not len(last_name) > 0:
         return None
     try:
-        with shared_data.Managers.get_database_manager().make_session() as session:
-            # Query the last record with the highest ID that was inserted into the database to calculate the employee's new unique record ID.
-            highest_id = session.query(func.max(Employee.id)).scalar()
-            if highest_id is None:
-                blank_employee = Employee("ID00", "BlankEmployee", "BlankEmployee", create_employee_password_hashes("BlankPassword"), enabled=False)
-                session.add(blank_employee)
-                session.flush()
-                highest_id = blank_employee.id
-            # Generate the ID using the first name, last name, and unique record ID.
-            new_employee_id = f"{first_name[0].lower()}{last_name.lower()}{highest_id+1}"
+        # Query the last record with the highest ID that was inserted into the database to calculate the employee's new unique record ID.
+        highest_id = session.query(func.max(Employee.id)).scalar()
+        if highest_id is None:
+            blank_role = EmployeeRole('BlankRole')
+            session.add(blank_role)
+            session.flush()
+            blank_contact_info = ContactInfo("BlankID", "BlankName", "blank@name.com")
+            session.add(blank_contact_info)
+            session.flush()
+            blank_employee = Employee("BlankID", "BlankEmployee", "BlankEmployee", "BlankPasswordHash", blank_role.id, blank_contact_info.id, enabled=False)
+            session.add(blank_employee)
+            session.flush()
+            session.delete(blank_employee)
+            session.delete(blank_role)
+            session.delete(blank_contact_info)
+            highest_id = blank_employee.id
+        # Generate the ID using the first name, last name, and unique record ID.
+        new_employee_id = f"{first_name[0].lower()}{last_name.lower()}{highest_id+1}"
     except SQLAlchemyError as err:
         LoggingManager.log(LoggingManager.LogLevel.LOG_CRITICAL, f"Error: {str(err)}", origin=LOG_ERROR_GENERAL, no_print=False)
         return None

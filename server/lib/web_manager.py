@@ -1,8 +1,8 @@
 from server.lib.logging_manager import LoggingManager
-from server.lib.service_manager import SharedData
 from server.lib.strings import LOG_ORIGIN_STARTUP
 from server.services.web_service import WebService
 from server.lib.error_codes import ERR_WEB_SESSION_MNGR_INCORRECT_PARAMS
+from config import ENV_SETTINGS
 
 
 class WebSessionManager:
@@ -13,6 +13,7 @@ class WebSessionManager:
     :param web_ip: The IP address should be used for the web server. (Example: 127.0.0.1)
     :type web_ip: str, required
     :param web_port: The port that should be used for the web server. (Example: 56709)
+    :type web_port: int, required
     :raises RuntimeError: If the provided ``web_ip`` or ``web_port`` is null.
     """
 
@@ -34,7 +35,7 @@ class WebSessionManager:
         :return: None
         """
         # TODO: Add https/ssl certs into the service later.
-        self.web_service: WebService = WebService(self.web_ip, self.web_port, debug_mode=SharedData().Settings.get_debug_mode())
+        self.web_service: WebService = WebService(self.web_ip, self.web_port, debug_mode=ENV_SETTINGS.debug_mode)
         LoggingManager().log(LoggingManager.LogLevel.LOG_INFO, "Web session manager initialized.", origin=LOG_ORIGIN_STARTUP, no_print=False)
 
     def start_web_server(self):

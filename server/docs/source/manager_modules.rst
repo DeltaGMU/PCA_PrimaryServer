@@ -8,4 +8,3 @@ Manager Modules
    database_manager
    web_manager
    logging_manager
-   service_manager

@@ -1,7 +1,11 @@
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
+
+from config import ENV_SETTINGS
 from server.web_api.models import ResponseModel
-from server.lib.service_manager import SharedData
+from server.lib.database_manager import is_active
+from fastapi import status
+
 
 router = InferringRouter()
 
@@ -9,7 +13,7 @@ router = InferringRouter()
 # pylint: disable=R0201
 @cbv(router)
 class CoreRouter:
-    @router.get("/api/v1/")
+    @router.get(ENV_SETTINGS.API_ROUTES.core, status_code=status.HTTP_200_OK)
     def main_api(self):
         """
         An endpoint that checks the status of the v1 segment of the API service.
@@ -17,9 +21,9 @@ class CoreRouter:
         :return: A response model containing the online status of the v1 segment of the API service.
         :rtype: server.web_api.models.ResponseModel
         """
-        return ResponseModel(200, "success").as_dict()
+        return ResponseModel(status.HTTP_200_OK, "success")
 
-    @router.get("/api/v1/status")
+    @router.get(ENV_SETTINGS.API_ROUTES.status, status_code=status.HTTP_200_OK)
     def status(self):
         """
         An endpoint that checks the status of the database connection in the server.
@@ -27,4 +31,4 @@ class CoreRouter:
         :return: A response model containing the online status of the database connection.
         :rtype: server.web_api.models.ResponseModel
         """
-        return ResponseModel(200, "success", {"status": "online" if SharedData().Managers.get_database_manager().is_active() else "offline"}).as_dict()
+        return ResponseModel(status.HTTP_200_OK, "success", {"status": "online" if is_active() else "offline"})

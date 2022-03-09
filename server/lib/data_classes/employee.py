@@ -6,77 +6,49 @@ For example, creating a new employee record through a request to the API will re
 to create the employee entity in the database and validate the data that is sent in the request.
 """
 
+from typing import Optional, Union, List
 from pydantic import BaseModel
-from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Date, LargeBinary, VARCHAR, Boolean, sql
-from sqlalchemy.dialects.mysql import INTEGER
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
-
-Base = declarative_base()
+from sqlalchemy import Column, ForeignKey, Integer, DateTime, Date, VARCHAR, Boolean, sql
+from sqlalchemy.orm import relationship, backref
+from server.lib.database_functions.sqlalchemy_base import MainEngineBase as Base
 
 
-class PydanticEmployee(BaseModel):
+class PydanticEmployeeRegistration(BaseModel):
     """
-    A Pydantic class used to represent an employee entity when creating a new employee record from a http request to the API.
+    A Pydantic class used to represent an employee entity when creating a new employee record from an HTTP request to the API.
     Do not try to initialize this class as an independent entity or extend it into a subclass.
     """
     plain_password: str
     first_name: str
     last_name: str
+    primary_email: str
+    secondary_email: Optional[str]
+    role: str
+    is_enabled: Optional[bool]
+    enable_notifications: Optional[bool]
 
 
-class PydanticEmployeeHours(BaseModel):
+class PydanticEmployeeUpdate(BaseModel):
     """
-    A Pydantic class used to represent an employee hours entity when creating a new employee hours record from a http request to the API.
+    A Pydantic class used to represent an employee entity when updating an existing employee record from an HTTP request to the API.
     Do not try to initialize this class as an independent entity or extend it into a subclass.
     """
-    employee_id: str
-    hours_worked: int
-    date_worked: str
+    plain_password: Optional[str]
+    first_name: Optional[str]
+    last_name: Optional[str]
+    primary_email: Optional[str]
+    secondary_email: Optional[str]
+    role: Optional[str]
+    is_enabled: Optional[bool]
+    enable_notifications: Optional[bool]
 
 
-class EmployeeHours(Base):
+class PydanticEmployeesRemoval(BaseModel):
     """
-    A MariaDB data class that represents the table structure of the employee hours table in the database server.
-    This is replicated in the server code to ensure that the data being sent to and received from the database are valid.
-    Do not attempt to manually modify this class or extend it into a subclass.
+    A Pydantic class used to represent an employee entity when deleting an existing employee record from an HTTP request to the API.
+    Do not try to initialize this class as an independent entity or extend it into a subclass.
     """
-    __tablename__ = 'employee_hours'
-    id = Column(Integer, primary_key=True, autoincrement=True, unique=True, nullable=False)
-    EmployeeID = Column(VARCHAR(length=50), ForeignKey('employee.id'), nullable=False)
-    HoursWorked = Column(INTEGER(unsigned=True), nullable=False, default=0)
-    DateWorked = Column(Date, nullable=False)
-    EntryCreated = Column(DateTime, nullable=False, default=sql.func.now())
-
-    def __init__(self, employee_id: str, hours_worked: int, date_worked: str):
-        """
-        The constructor for the ``EmployeeHours`` data class that is utilized internally by the SQLAlchemy library.
-        Only manually instantiate this data class to create employee hours records in the database within database sessions.
-
-        :param employee_id: The employee id that references the employee id key in the employees table.
-        :type employee_id: str, required
-        :param hours_worked: The hours worked by the employee on the given date.
-        :type hours_worked: int, required
-        :param date_worked: The date that the employee hours were worked on represented in YYYY-MM-DD format.
-        :type date_worked: str, required
-        """
-        self.EmployeeID = employee_id
-        self.HoursWorked = hours_worked
-        self.DateWorked = date_worked
-
-    def as_dict(self):
-        """
-        A utility method to convert the class attributes into a dictionary format.
-        This is useful for representing the entity in a JSON format for a request response.
-
-        :return: Dictionary representation of the data class attributes.
-        :rtype: dict
-        """
-        return {
-            "employee_id": self.EmployeeID,
-            "hours_worked": self.HoursWorked,
-            "date_worked": self.DateWorked,
-        }
+    employee_ids: Union[List[str], str]
 
 
 class Employee(Base):
@@ -92,11 +64,13 @@ class Employee(Base):
     LastName = Column(VARCHAR(length=50), nullable=False)
     PasswordHash = Column(VARCHAR(length=60), nullable=False)
     EmployeeEnabled = Column(Boolean(), nullable=False, default=True)
+    EmployeeRoleID = Column(Integer, ForeignKey('employee_role.id'), nullable=False)
+    ContactInfoID = Column(Integer, ForeignKey('contact_info.id'), nullable=False)
     EmployeeHoursRelationship = relationship('EmployeeHours', cascade='all, delete')
     EntryCreated = Column(DateTime, nullable=False, default=sql.func.now())
 
     # Do not initialize this except for creating blank employee templates!
-    def __init__(self, employee_id: str, first_name: str, last_name: str, phash: str, enabled: bool = True):
+    def __init__(self, employee_id: str, first_name: str, last_name: str, phash: str, role_id: int, contact_id: int, enabled: bool = True):
         """
         The constructor for the ``Employee`` data class that is utilized internally by the SQLAlchemy library.
         Only manually instantiate this data class to create employee records in the database within database sessions.
@@ -116,18 +90,37 @@ class Employee(Base):
         self.FirstName = first_name
         self.LastName = last_name
         self.PasswordHash = phash
+        self.EmployeeRoleID = role_id
+        self.ContactInfoID = contact_id
         self.EmployeeEnabled = enabled
 
     def as_dict(self):
         """
         A utility method to convert the class attributes into a dictionary format.
-        This is useful for representing the entity in a JSON format for a request response.
+        The web friendly version hides the internal IDs, password hash, and other metadata information.
 
-        :return: Dictionary representation of the data class attributes.
-        :rtype: dict
+        :return: Web-safe dictionary representation of the data class attributes.
+        :rtype: Dict[str, any]
         """
         return {
             "employee_id": self.EmployeeID,
+            "first_name": self.FirstName,
+            "last_name": self.LastName,
+            "is_enabled": self.EmployeeEnabled
+        }
+
+    def as_detail_dict(self):
+        """
+        A utility method to convert the class attributes into a dictionary format.
+        This is useful for representing the entity in a JSON format for a request response.
+
+        :return: Dictionary representation of the data class attributes.
+        :rtype: Dict[str, any]
+        """
+        return {
+            "employee_id": self.EmployeeID,
+            "role_id": self.EmployeeRoleID,
+            "contact_id": self.ContactInfoID,
             "first_name": self.FirstName,
             "last_name": self.LastName,
             "password_hash": self.PasswordHash,
