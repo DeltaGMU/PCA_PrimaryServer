@@ -7,7 +7,7 @@ load_dotenv()
 
 class APIRoutes:
     index = '/'
-    core = '/api/v1/'
+    core = '/api/v1'
     status = '/api/v1/status'
     me = '/api/v1/me'
     login = '/api/v1/login'
