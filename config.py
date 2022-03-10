@@ -49,7 +49,9 @@ class Settings(BaseSettings):
     web_host: str
     web_port: int
     server_secret: str
-    debug_mode: Optional[bool] = False
+    sys_debug_mode: Optional[bool] = False
+    api_debug_mode: Optional[bool] = False
+    db_debug_mode: Optional[bool] = False
     quiet_mode: Optional[bool] = False
     enable_logs: Optional[bool] = True
     log_level: Optional[str] = 'info'

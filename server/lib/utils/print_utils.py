@@ -22,7 +22,7 @@ def debug_print(message: str, origin: str = None, error_type: str = None):
     :type error_type: str, optional
     :return: None
     """
-    if ENV_SETTINGS.debug_mode and not ENV_SETTINGS.quiet_mode:
+    if ENV_SETTINGS.sys_debug_mode and not ENV_SETTINGS.quiet_mode:
         print(f'[{META_NAME}({META_VERSION}).{origin if origin else LOG_ORIGIN_GENERAL}]'
               f'{f"<{error_type}>:" if error_type else ""} {message}')
 
@@ -42,6 +42,6 @@ def console_print(message: str, origin: str = None, error_type: str = None):
     :type error_type: str, optional
     :return: None
     """
-    if not ENV_SETTINGS.debug_mode and not ENV_SETTINGS.quiet_mode:
+    if not ENV_SETTINGS.sys_debug_mode and not ENV_SETTINGS.quiet_mode:
         print(f'[{META_NAME}({META_VERSION}).{origin if origin else LOG_ORIGIN_GENERAL}]'
               f'{f"<{error_type}>:" if error_type else ""} {message}')

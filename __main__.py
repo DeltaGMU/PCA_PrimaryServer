@@ -47,7 +47,7 @@ def init():
     optional_args.add_argument('--enable-logs', dest='enable_logs', action='store_true',
                                required=False, default=getenv(ENV_ENABLE_LOGS, 'True'),
                                help='Enables event logging which is useful to locate errors and audit the system.')
-    optional_args.add_argument('--debug', dest='debug_mode', action='store_true',
+    optional_args.add_argument('--debug', dest='sys_debug_mode', action='store_true',
                                required=False, default=getenv(ENV_DEBUG_MODE, 'False'),
                                help='Enables debug mode which prints event messages to the console.')
     optional_args.add_argument('--quiet', dest='quiet_mode', action='store_true',
@@ -68,20 +68,20 @@ def init():
 
     args = parser.parse_args()
     args.enable_logs = args.enable_logs.lower() in ('true', '1', 't', 'yes', 'y') if isinstance(args.enable_logs, str) else args.enable_logs
-    args.debug_mode = args.debug_mode.lower() in ('true', '1', 't', 'yes', 'y') if isinstance(args.debug_mode, str) else args.debug_mode
+    args.sys_debug_mode = args.sys_debug_mode.lower() in ('true', '1', 't', 'yes', 'y') if isinstance(args.sys_debug_mode, str) else args.sys_debug_mode
     args.quiet_mode = args.quiet_mode.lower() in ('true', '1', 't', 'yes', 'y') if isinstance(args.quiet_mode, str) else args.quiet_mode
 
     # Ensure that debug mode and quiet mode are both not enabled at the same time.
-    debug_mode = bool(args.debug_mode)
+    sys_debug_mode = bool(args.sys_debug_mode)
     quiet_mode = bool(args.quiet_mode)
-    if debug_mode and quiet_mode:
+    if sys_debug_mode and quiet_mode:
         print("Debug mode and Quiet mode are both enabled, this is a mistake!\nPlease make sure only one or the other is enabled. Defaulting to Quiet mode for this session.")
-        debug_mode = False
+        sys_debug_mode = False
     """
     web_session_manager = None
     try:
         # Ensure that debug mode and quiet mode are both not enabled at the same time.
-        if ENV_SETTINGS.debug_mode and ENV_SETTINGS.quiet_mode:
+        if ENV_SETTINGS.sys_debug_mode and ENV_SETTINGS.quiet_mode:
             print("Debug mode and Quiet mode are both enabled, this is a mistake!\nPlease make sure only one or the other is enabled. Defaulting to Quiet mode for this session.")
             debug_mode = False
 
