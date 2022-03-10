@@ -16,9 +16,27 @@ class APIRoutes:
 
     class Employees:
         count = '/api/v1/employees/count'
+        all_employees = '/api/v1/employees/all'
+        one_employee = '/api/v1/employees/{employee_id}'
         employees = '/api/v1/employees'
-        employee = '/api/v1/employees/{employee_id}'
         employee_token = '/api/v1/employees/token'
+
+    class Students:
+        count = '/api/v1/students/count'
+        students = '/api/v1/students'
+        student = '/api/v1/students/{student_id}'
+
+    class StudentCare:
+        count = 'api/v1/care/count'
+        care = 'api/v1/care'
+        check_in = 'api/v1/care/checkin'
+        check_out = 'api/v1/care/checkout'
+        report = 'api/v1/care/report'
+
+    class Timesheet:
+        count = 'api/v1/timesheet/count'
+        timesheet = 'api/v1/timesheet'
+        report = 'api/v1/timesheet/report'
 
 
 class Settings(BaseSettings):
