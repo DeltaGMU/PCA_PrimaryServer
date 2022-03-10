@@ -1,6 +1,6 @@
 from pydantic.main import BaseModel
 from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Date, LargeBinary, VARCHAR, Boolean, sql
-from server.lib.database_functions.sqlalchemy_base import MainEngineBase as Base
+from server.lib.database_access.sqlalchemy_base import MainEngineBase as Base
 from sqlalchemy.orm import relationship
 
 

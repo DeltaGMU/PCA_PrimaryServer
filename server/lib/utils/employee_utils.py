@@ -18,7 +18,7 @@ from server.lib.strings import LOG_ERROR_GENERAL
 from server.lib.database_manager import main_engine as db_engine, get_db_session
 
 
-def generate_employee_id(first_name: str, last_name: str, session: Session = None) -> str | None:
+async def generate_employee_id(first_name: str, last_name: str, session: Session = None) -> str | None:
     """
     This utility method is used to generate an employee ID from the given first name and last name.
     The ID format for employees is: ``<first_name_initial><full_last_name><unique_record_id>``
@@ -44,7 +44,7 @@ def generate_employee_id(first_name: str, last_name: str, session: Session = Non
         return None
     try:
         # Query the last record with the highest ID that was inserted into the database to calculate the employee's new unique record ID.
-        highest_id = session.query(func.max(Employee.id)).scalar()
+        highest_id = await session.query(func.max(Employee.id)).scalar()
         if highest_id is None:
             blank_role = EmployeeRole('BlankRole')
             session.add(blank_role)
@@ -67,7 +67,7 @@ def generate_employee_id(first_name: str, last_name: str, session: Session = Non
     return new_employee_id
 
 
-def create_employee_password_hashes(password: str) -> str | None:
+async def create_employee_password_hashes(password: str) -> str | None:
     """
     This utility method creates a hashed and salted digest of a provided plain text password using BCrypt.
 
@@ -78,11 +78,11 @@ def create_employee_password_hashes(password: str) -> str | None:
     """
     if password is None or len(password) == 0:
         return None
-    employee_password_hash = bcrypt.hash(password.encode('utf-8'))
+    employee_password_hash = await bcrypt.hash(password.encode('utf-8'))
     return employee_password_hash
 
 
-def verify_employee_password(plain_password: str, password_hash: str) -> bool | None:
+async def verify_employee_password(plain_password: str, password_hash: str) -> bool | None:
     """
     This utility method verifies that the provided plain text password when hashed and salted is equal
     to the provided password hash. A password that is hashed and equal to the provided hashed password

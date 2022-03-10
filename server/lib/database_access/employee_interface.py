@@ -2,7 +2,7 @@ from __future__ import annotations
 from sqlalchemy.orm import Session
 from typing import List, Dict
 from server.lib.utils.employee_utils import generate_employee_id, create_employee_password_hashes
-from server.lib.data_classes.employee import Employee, PydanticEmployeeRegistration, PydanticEmployeesRemoval, PydanticEmployeeUpdate
+from server.lib.data_classes.employee import Employee, PydanticEmployeeRegistration, PydanticEmployeesRemoval, PydanticEmployeeUpdate, PydanticMultipleEmployeesUpdate
 from server.lib.data_classes.employee_role import EmployeeRole
 from server.lib.data_classes.contact_info import ContactInfo
 from server.lib.database_manager import get_db_session
@@ -10,7 +10,7 @@ from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException, status
 
 
-def create_employee(pyd_employee: PydanticEmployeeRegistration, session: Session = None) -> Dict[str, any]:
+async def create_employee(pyd_employee: PydanticEmployeeRegistration, session: Session = None) -> Dict[str, any]:
     pyd_employee.first_name = pyd_employee.first_name.lower().strip()
     pyd_employee.last_name = pyd_employee.last_name.lower().strip()
     pyd_employee.primary_email = pyd_employee.primary_email.lower().strip()
@@ -72,7 +72,7 @@ def create_employee(pyd_employee: PydanticEmployeeRegistration, session: Session
     return created_employee
 
 
-def remove_employees(employee_ids: PydanticEmployeesRemoval | str, session: Session = None) -> List[Employee]:
+async def remove_employees(employee_ids: PydanticEmployeesRemoval | str, session: Session = None) -> List[Employee]:
     if isinstance(employee_ids, PydanticEmployeesRemoval):
         employee_ids = employee_ids.employee_ids
         if employee_ids is None:
@@ -98,7 +98,19 @@ def remove_employees(employee_ids: PydanticEmployeesRemoval | str, session: Sess
     return removed_employees
 
 
-def update_employee(employee_id, pyd_employee_update: PydanticEmployeeUpdate, session: Session = None) -> Employee:
+async def update_employees(employee_updates: Dict[str, PydanticEmployeeUpdate], session: Session = None) -> List[Employee]:
+    if employee_updates is None:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Provided request body did not contain any valid employee information!")
+    all_updated_employees: List[Employee] = []
+    for employee_id in employee_updates.keys():
+        updated_employee = update_employee(employee_id, employee_updates[employee_id], session)
+        all_updated_employees.append(updated_employee)
+    if len(employee_updates) != all_updated_employees:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="One or more employees were not able to be updated!")
+    return all_updated_employees
+
+
+async def update_employee(employee_id, pyd_employee_update: PydanticEmployeeUpdate, session: Session = None) -> Employee:
     if pyd_employee_update is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Provided request body did not contain any valid employee information!")
     if employee_id is None:
@@ -145,7 +157,7 @@ def update_employee(employee_id, pyd_employee_update: PydanticEmployeeUpdate, se
     return employee
 
 
-def get_employee(username: str, session: Session = None) -> Employee:
+async def get_employee(username: str, session: Session = None) -> Employee:
     if session is None:
         session = next(get_db_session())
     username = username.strip().lower()
@@ -168,7 +180,21 @@ def get_employee(username: str, session: Session = None) -> Employee:
     return matching_employee
 
 
-def get_all_employees(session: Session = None) -> List[Employee]:
+async def get_multiple_employees(employee_ids: List[str], session: Session = None) -> List[Employee]:
+    if session is None:
+        session = next(get_db_session())
+    if None in employee_ids:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='All the employee IDs provided must be valid strings. Please check for errors in the provided data!')
+    matching_employees = session.query(Employee).filter(
+        Employee.EmployeeID.in_(employee_ids)
+    ).all()
+    if matching_employees is None or len(matching_employees) != len(employee_ids):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='One or more employee IDs provided are invalid! Please check for spelling errors.')
+    all_employees_data = [employee.as_dict() for employee in matching_employees]
+    return all_employees_data
+
+
+async def get_all_employees(session: Session = None) -> List[Employee]:
     if session is None:
         session = next(get_db_session())
     all_employees = []
@@ -178,7 +204,7 @@ def get_all_employees(session: Session = None) -> List[Employee]:
     return all_employees
 
 
-def get_employee_role(user: Employee, session: Session = None) -> EmployeeRole:
+async def get_employee_role(user: Employee, session: Session = None) -> EmployeeRole:
     if user is None:
         raise RuntimeError('The user object was not provided! Please check for errors in the provided data!')
     if session is None:
@@ -191,7 +217,7 @@ def get_employee_role(user: Employee, session: Session = None) -> EmployeeRole:
     return matching_role
 
 
-def get_employee_contact_info(user: Employee, session: Session = None) -> ContactInfo:
+async def get_employee_contact_info(user: Employee, session: Session = None) -> ContactInfo:
     if user is None:
         raise RuntimeError('The user object was not provided! Please check for errors in the provided data!')
     if session is None:
@@ -204,37 +230,37 @@ def get_employee_contact_info(user: Employee, session: Session = None) -> Contac
     return matching_contact
 
 
-def is_employee_role(user: Employee, role_name: str, session: Session = None) -> bool:
+async def is_employee_role(user: Employee, role_name: str, session: Session = None) -> bool:
     if None in (user, role_name):
         raise RuntimeError('The user or employee role was not provided to the employee role check method. Please check for errors in the provided data!')
-    employee_role: EmployeeRole = get_employee_role(user, session)
+    employee_role: EmployeeRole = await get_employee_role(user, session)
     if employee_role is None:
         raise RuntimeError('The employee role could not be retrieved for the provided user. Please check for errors in the database or the provided data!')
     return employee_role.Name == role_name
 
 
-def is_admin(user: Employee, session: Session = None) -> bool:
+async def is_admin(user: Employee, session: Session = None) -> bool:
     if user is None:
         raise RuntimeError('The user object was not provided! Please check for errors in the provided data!')
-    employee_is_admin: bool = is_employee_role(user, 'administrator', session)
+    employee_is_admin: bool = await is_employee_role(user, 'administrator', session)
     if employee_is_admin is None:
         raise RuntimeError('The employee role could not be retrieved for the provided user. Please check for errors in the database or the provided data!')
     return employee_is_admin
 
 
-def is_teacher(user: Employee, session: Session = None) -> bool:
+async def is_teacher(user: Employee, session: Session = None) -> bool:
     if user is None:
         raise RuntimeError('The user object was not provided! Please check for errors in the provided data!')
-    employee_is_teacher: bool = is_employee_role(user, 'teacher', session)
+    employee_is_teacher: bool = await is_employee_role(user, 'teacher', session)
     if employee_is_teacher is None:
         raise RuntimeError('The employee role could not be retrieved for the provided user. Please check for errors in the database or the provided data!')
     return employee_is_teacher
 
 
-def get_employee_security_scopes(user: Employee, session: Session = None):
+async def get_employee_security_scopes(user: Employee, session: Session = None):
     if user is None:
         raise RuntimeError('The user object was not provided! Please check for errors in the provided data!')
-    employee_role = get_employee_role(user, session)
+    employee_role = await get_employee_role(user, session)
     if employee_role is None:
         raise RuntimeError('The employee role could not be retrieved for the provided user. Please check for errors in the database or the provided data!')
     if employee_role.Name == 'administrator':

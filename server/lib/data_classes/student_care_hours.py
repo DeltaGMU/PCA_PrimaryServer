@@ -3,7 +3,7 @@ import datetime
 from typing import Optional
 from pydantic import BaseModel
 from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Date, LargeBinary, VARCHAR, Boolean, Time, sql
-from server.lib.database_functions.sqlalchemy_base import MainEngineBase as Base
+from server.lib.database_access.sqlalchemy_base import MainEngineBase as Base
 
 
 class PydanticStudentCareHoursCheckIn(BaseModel):

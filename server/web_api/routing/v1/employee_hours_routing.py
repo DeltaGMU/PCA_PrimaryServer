@@ -1,7 +1,8 @@
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
 from fastapi import status, Depends, HTTPException
-from server.lib.database_functions.employee_hours_interface import get_employee_hours
+from config import ENV_SETTINGS
+from server.lib.database_access.employee_hours_interface import get_employee_hours
 from server.lib.database_manager import get_db_session
 from server.web_api.models import ResponseModel
 from server.web_api.web_security import oauth_scheme, token_is_valid
@@ -16,7 +17,7 @@ class EmployeesRouter:
         pass
 
     class Read:
-        @router.get("/api/v1/employees/hours", status_code=status.HTTP_200_OK)
+        @router.get(ENV_SETTINGS.API_ROUTES.Timesheet.timesheet, status_code=status.HTTP_200_OK)
         def read_employee_work_hours(self, employee_id: str, date_start: str, date_end: str, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint to accumulate and return the total work hours, pto hours, overtime/extra hours for an employee within a provided date range.

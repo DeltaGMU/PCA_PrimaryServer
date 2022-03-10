@@ -2,7 +2,7 @@ from fastapi.exceptions import RequestValidationError
 from server.web_api.models import ResponseModel
 from server.web_api.routing.v1 import core_routing, employee_routing, employee_hours_routing, student_routing
 from server.web_api.web_security import add_token_to_blacklist, create_access_token, get_user_from_token, oauth_scheme
-from server.lib.database_functions.employee_interface import get_employee
+from server.lib.database_access.employee_interface import get_employee
 from fastapi import FastAPI, Depends, status, Security, HTTPException, Request, Response
 from starlette.middleware.cors import CORSMiddleware
 from pydantic import ValidationError
@@ -39,6 +39,7 @@ web_app.include_router(employee_hours_routing.router)
 
 
 # Manually handle CORS preflight requests
+'''
 @web_app.options('/{rest_of_path:path}')
 async def preflight_handler(request: Request, rest_of_path: str) -> Response:
     response = Response()
@@ -46,7 +47,7 @@ async def preflight_handler(request: Request, rest_of_path: str) -> Response:
     response.headers['Access-Control-Allow-Methods'] = 'POST, GET, PUT, DELETE, OPTIONS'
     response.headers['Access-Control-Allow-Headers'] = 'Origin, Accept, Access-Control-Allow-Origin, Authorization, Content-Type'
     return response
-
+'''
 
 @web_app.get(ENV_SETTINGS.API_ROUTES.index, status_code=status.HTTP_200_OK)
 async def serve_index():
@@ -60,37 +61,37 @@ async def serve_index():
 
 
 @web_app.post(ENV_SETTINGS.API_ROUTES.login, status_code=status.HTTP_200_OK)
-def login(data: OAuth2PasswordRequestForm = Depends()):
+async def login(data: OAuth2PasswordRequestForm = Depends()):
     username = data.username
     password = data.password
 
-    employee_user = get_employee(username)
+    employee_user = await get_employee(username)
     if employee_user is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid username or password provided!")
     else:
-        employee_verified = verify_employee_password(password, employee_user.PasswordHash)
+        employee_verified = await verify_employee_password(password, employee_user.PasswordHash)
         if employee_verified is None or employee_verified is False:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid username or password provided!")
-    access_token_dict = create_access_token(employee_user)
+    access_token_dict = await create_access_token(employee_user)
     return ResponseModel(status.HTTP_200_OK, "success", {**access_token_dict})
 
 
 @web_app.get(ENV_SETTINGS.API_ROUTES.me, status_code=status.HTTP_200_OK)
-def logged_in_welcome(token: str = Depends(oauth_scheme)):
-    user = get_user_from_token(token)
+async def logged_in_welcome(token: str = Depends(oauth_scheme)):
+    user = await get_user_from_token(token)
     if user is None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token is invalid or expired!")
-    return ResponseModel(status.HTTP_200_OK, "success", {"user": f"{user.FirstName} {user.LastName}"})
+    return ResponseModel(status.HTTP_200_OK, "logged in successfully!", {"user": f"{user.FirstName} {user.LastName}"})
 
 
 @web_app.post(ENV_SETTINGS.API_ROUTES.logout, status_code=status.HTTP_200_OK)
-def log_out_user(token: str = Depends(oauth_scheme)):
-    token_blacklist_check = add_token_to_blacklist(token)
+async def log_out_user(token: str = Depends(oauth_scheme)):
+    token_blacklist_check = await add_token_to_blacklist(token)
     if token_blacklist_check is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Token is invalid or expired!")
     elif not token_blacklist_check:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Token already invalidated!")
-    return ResponseModel(status.HTTP_200_OK, "success")
+    return ResponseModel(status.HTTP_200_OK, "logged out successfully!")
 
 
 @web_app.exception_handler(Exception)

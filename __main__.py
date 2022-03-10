@@ -84,6 +84,9 @@ def init():
         if ENV_SETTINGS.debug_mode and ENV_SETTINGS.quiet_mode:
             print("Debug mode and Quiet mode are both enabled, this is a mistake!\nPlease make sure only one or the other is enabled. Defaulting to Quiet mode for this session.")
             debug_mode = False
+
+        LoggingManager().log(LoggingManager.LogLevel.LOG_INFO, 'Initializing PCA Project Server...', origin=LOG_ORIGIN_STARTUP, no_print=False)
+        LoggingManager().log(LoggingManager.LogLevel.LOG_INFO, 'System logging manager initialized.', origin=LOG_ORIGIN_STARTUP, no_print=False)
         # Create and initialize the web session manager with the provided parameters.
         web_session_manager = WebSessionManager(ENV_SETTINGS.web_host, ENV_SETTINGS.web_port)
         # Start the primary web server after all the modules have successfully been configured.
@@ -111,7 +114,8 @@ def graceful_shutdown(web_session_manager=None):
     # Delete the access token database if the server is being shutdown.
     from server.lib.database_manager import MainEngineBase as Base, main_engine
     from server.lib.data_classes.access_token import TokenBlacklist
-    Base.metadata.drop_all(bind=main_engine, tables=[TokenBlacklist.__table__])
+    if Base:
+        Base.metadata.drop_all(bind=main_engine, tables=[TokenBlacklist.__table__])
     LoggingManager().log(LoggingManager.LogLevel.LOG_INFO, f'The application has closed.\n{"#" * 140}', origin=LOG_ORIGIN_SHUTDOWN, no_print=False)
 
 

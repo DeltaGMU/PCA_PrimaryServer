@@ -1,6 +1,6 @@
 
 '''
-from server.lib.database_functions.sqlalchemy_base import MemoryEngineBase, memory_engine, memory_db_session
+from server.lib.database_access.sqlalchemy_base import MemoryEngineBase, memory_engine, memory_db_session
 
 
 MemoryEngineBase.metadata.create_all(memory_engine)

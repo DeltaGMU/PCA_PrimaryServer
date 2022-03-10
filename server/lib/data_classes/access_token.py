@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, VARCHAR
-from server.lib.database_functions.sqlalchemy_base import MainEngineBase as Base, main_engine
+from server.lib.database_access.sqlalchemy_base import MainEngineBase as Base, main_engine
 
 
 class TokenBlacklist(Base):

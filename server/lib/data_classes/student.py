@@ -10,7 +10,7 @@ from __future__ import annotations
 from pydantic import BaseModel
 from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Date, LargeBinary, VARCHAR, Boolean, Time, sql
 from sqlalchemy.orm import relationship
-from server.lib.database_functions.sqlalchemy_base import MainEngineBase as Base
+from server.lib.database_access.sqlalchemy_base import MainEngineBase as Base
 
 
 class PydanticStudent(BaseModel):

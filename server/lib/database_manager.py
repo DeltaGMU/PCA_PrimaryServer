@@ -1,4 +1,4 @@
-from server.lib.database_functions.sqlalchemy_base import MainEngineBase, main_engine, main_db_session
+from server.lib.database_access.sqlalchemy_base import MainEngineBase, main_engine, main_db_session
 
 
 MainEngineBase.metadata.create_all(main_engine)

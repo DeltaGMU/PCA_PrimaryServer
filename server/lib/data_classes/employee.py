@@ -6,11 +6,11 @@ For example, creating a new employee record through a request to the API will re
 to create the employee entity in the database and validate the data that is sent in the request.
 """
 
-from typing import Optional, Union, List
+from typing import Optional, Union, List, Dict
 from pydantic import BaseModel
 from sqlalchemy import Column, ForeignKey, Integer, DateTime, Date, VARCHAR, Boolean, sql
 from sqlalchemy.orm import relationship, backref
-from server.lib.database_functions.sqlalchemy_base import MainEngineBase as Base
+from server.lib.database_access.sqlalchemy_base import MainEngineBase as Base
 
 
 class PydanticEmployeeRegistration(BaseModel):
@@ -43,12 +43,20 @@ class PydanticEmployeeUpdate(BaseModel):
     enable_notifications: Optional[bool]
 
 
+class PydanticMultipleEmployeesUpdate(BaseModel):
+    employee_updates: Dict[str, PydanticEmployeeUpdate]
+
+
 class PydanticEmployeesRemoval(BaseModel):
     """
     A Pydantic class used to represent an employee entity when deleting an existing employee record from an HTTP request to the API.
     Do not try to initialize this class as an independent entity or extend it into a subclass.
     """
     employee_ids: Union[List[str], str]
+
+
+class PydanticRetrieveMultipleEmployees(BaseModel):
+    employee_ids: List[str]
 
 
 class Employee(Base):
@@ -97,7 +105,7 @@ class Employee(Base):
     def as_dict(self):
         """
         A utility method to convert the class attributes into a dictionary format.
-        The web friendly version hides the internal IDs, password hash, and other metadata information.
+        This web friendly version hides the internal IDs, password hash, and other metadata information.
 
         :return: Web-safe dictionary representation of the data class attributes.
         :rtype: Dict[str, any]

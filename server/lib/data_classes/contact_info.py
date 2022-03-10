@@ -9,7 +9,7 @@ from __future__ import annotations
 from typing import Optional
 from pydantic import BaseModel
 from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Date, LargeBinary, VARCHAR, Boolean, sql
-from server.lib.database_functions.sqlalchemy_base import MainEngineBase as Base
+from server.lib.database_access.sqlalchemy_base import MainEngineBase as Base
 
 
 class PydanticContactInfoRegistration(BaseModel):
@@ -63,6 +63,21 @@ class ContactInfo(Base):
         self.EnableNotifications = enable_notifications
 
     def as_dict(self):
+        """
+        A utility method to convert the class attributes into a dictionary format.
+        This web friendly version hides the internal IDs, and other metadata information.
+
+        :return: Dictionary representation of the data class attributes.
+        :rtype: Dict[str, any]
+        """
+        return {
+            "full_name_of_contact": self.FullNameOfContact,
+            "primary_email": self.PrimaryEmail,
+            "secondary_email": self.SecondaryEmail,
+            "enable_notifications": self.EnableNotifications,
+        }
+
+    def as_detail_dict(self):
         """
         A utility method to convert the class attributes into a dictionary format.
         This is useful for representing the entity in a JSON format for a request response.

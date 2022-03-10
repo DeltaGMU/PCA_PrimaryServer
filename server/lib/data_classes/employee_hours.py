@@ -1,7 +1,7 @@
 from pydantic.main import BaseModel
 from sqlalchemy.dialects.mysql import INTEGER
 from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Date, VARCHAR, sql
-from server.lib.database_functions.sqlalchemy_base import MainEngineBase as Base
+from server.lib.database_access.sqlalchemy_base import MainEngineBase as Base
 
 
 class PydanticEmployeeHours(BaseModel):
@@ -50,6 +50,21 @@ class EmployeeHours(Base):
     def as_dict(self):
         """
         A utility method to convert the class attributes into a dictionary format.
+        This web friendly version hides the internal IDs, and other metadata information.
+
+        :return: Dictionary representation of the data class attributes.
+        :rtype: Dict[str, any]
+        """
+        return {
+            "work_hours": self.WorkHours,
+            "pto_hours": self.PTOHours,
+            "extra_hours": self.ExtraHours,
+            "date_worked": self.DateWorked,
+        }
+
+    def as_detail_dict(self):
+        """
+        A utility method to convert the class attributes into a dictionary format.
         This is useful for representing the entity in a JSON format for a request response.
 
         :return: Dictionary representation of the data class attributes.
@@ -61,4 +76,5 @@ class EmployeeHours(Base):
             "pto_hours": self.PTOHours,
             "extra_hours": self.ExtraHours,
             "date_worked": self.DateWorked,
+            "entry_created": self.EntryCreated
         }

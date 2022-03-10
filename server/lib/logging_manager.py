@@ -39,7 +39,7 @@ class LoggingManager:
                 makedirs(f"{ROOT_DIR}/logs")
             if enable_logging:
                 cls._instance.enable()
-        return cls._instance
+        return cls.instance()
 
     @classmethod
     def instance(cls):
@@ -62,17 +62,19 @@ class LoggingManager:
         :return: None
         :raises RuntimeError: If the logging manager has not been initialized.
         """
+        if not cls._instance:
+            raise RuntimeError('Logging Manager class has not been instantiated, please instantiate the class first!')
+        if not cls._instance.is_enabled():
+            return
+
         cls._instance.Settings.set_log_level(ENV_SETTINGS.log_level)
         cls._instance.Settings.set_max_logs(ENV_SETTINGS.max_logs)
         cls._instance.Settings.set_max_log_size(ENV_SETTINGS.max_log_size)
         cls._instance.Settings.set_log_directory(ENV_SETTINGS.log_directory)
 
-        if not cls._instance:
-            raise RuntimeError('Logging Manager class has not been instantiated, please instantiate the class first!')
-        if not cls._instance.is_enabled():
-            return
         cls._instance.__logger = logging.getLogger("PCARuntimeLogging")
         cls._instance.__logger.setLevel(cls._instance.LogLevel.LOG_DEBUG.value[0])
+        cls._instance.__logger.handlers = []
 
         log_file_name = f"{ROOT_DIR}/logs/runtime.log"
         handler = RotatingFileHandler(
@@ -82,8 +84,6 @@ class LoggingManager:
         )
         handler.setFormatter(logging.Formatter('[%(asctime)s]-[%(levelname)s]-%(message)s'))
         cls._instance.__logger.addHandler(handler)
-        cls._instance.log(cls._instance.LogLevel.LOG_INFO, 'Initializing PCA Project Server...', origin=LOG_ORIGIN_STARTUP, no_print=False)
-        cls._instance.log(cls._instance.LogLevel.LOG_INFO, 'Logging manager initialized.', origin=LOG_ORIGIN_STARTUP, no_print=False)
 
     @classmethod
     def log(cls, log_type: LoggingManager.LogLevel, message: Union[List[str], str], origin: str = None, error_type: str = None,
@@ -124,7 +124,7 @@ class LoggingManager:
 
         # Format the message and log the event as necessary.
         log_output = f'[{META_NAME}({META_VERSION}).{origin if origin else LOG_ORIGIN_GENERAL}]' \
-                     f'{f"<{error_type}>:" if error_type else ""}{log_message}'
+                     f'{f"<{error_type}>:" if error_type else ""} {log_message}'
         # If an exception stack trace is provided, include the stack trace in the log message.
         if exc_message:
             log_output += f"\n{exc_message}\n"
@@ -203,7 +203,7 @@ class LoggingManager:
         LOG_CRITICAL = 50, 'critical'
 
         @classmethod
-        def has_value_id(cls, value: int) -> (int, str) | None:
+        def has_value_id(cls, value: int) -> Union[(int, str), None]:
             """
             This utility method checks if the given enum integer value is present in the Log Level tuple values.
 
@@ -218,7 +218,7 @@ class LoggingManager:
             return None
 
         @classmethod
-        def has_value_label(cls, value: str) -> (int, str) | None:
+        def has_value_label(cls, value: str) -> Union[(int, str), None]:
             """
             This utility method checks if the given enum string value is present in the Log Level tuple values.
 
