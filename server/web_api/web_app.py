@@ -1,7 +1,7 @@
 from fastapi.exceptions import RequestValidationError
 from server.web_api.models import ResponseModel
 from server.web_api.routing.v1 import core_routing, employee_routing, employee_hours_routing, student_routing
-from server.web_api.web_security import add_token_to_blacklist, create_access_token, get_user_from_token, oauth_scheme
+from server.web_api.web_security import add_token_to_blacklist, create_access_token, get_user_from_token, oauth_scheme, token_is_valid
 from server.lib.database_access.employee_interface import get_employee
 from fastapi import FastAPI, Depends, status, Security, HTTPException, Request, Response
 from starlette.middleware.cors import CORSMiddleware
@@ -13,7 +13,6 @@ from config import ENV_SETTINGS
 from server.lib.utils.employee_utils import verify_employee_password
 from server.lib.strings import META_VERSION, ROOT_DIR
 from starlette.exceptions import HTTPException as StarletteHTTPException
-
 
 web_app = FastAPI(
     title="PCA Web API",
@@ -48,6 +47,7 @@ async def preflight_handler(request: Request, rest_of_path: str) -> Response:
     response.headers['Access-Control-Allow-Headers'] = 'Origin, Accept, Access-Control-Allow-Origin, Authorization, Content-Type'
     return response
 '''
+
 
 @web_app.get(ENV_SETTINGS.API_ROUTES.index, status_code=status.HTTP_200_OK)
 async def serve_index():
@@ -92,6 +92,14 @@ async def log_out_user(token: str = Depends(oauth_scheme)):
     elif not token_blacklist_check:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Token already invalidated!")
     return ResponseModel(status.HTTP_200_OK, "logged out successfully!")
+
+
+@web_app.get(ENV_SETTINGS.API_ROUTES.routes, status_code=status.HTTP_200_OK)
+async def get_api_routes(token: str = Depends(oauth_scheme)):
+    if not await token_is_valid(token):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
+    routes_list = [{"path": route.path, "name": route.name} for route in web_app.routes]
+    return ResponseModel(status.HTTP_200_OK, "routes retrieved successfully!", {"routes": routes_list})
 
 
 @web_app.exception_handler(Exception)
