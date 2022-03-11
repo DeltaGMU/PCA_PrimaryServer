@@ -24,8 +24,8 @@ class PydanticEmployeeRegistration(BaseModel):
     primary_email: str
     secondary_email: Optional[str]
     role: str
-    is_enabled: Optional[bool]
-    enable_notifications: Optional[bool]
+    is_enabled: Optional[bool] = True
+    enable_notifications: Optional[bool] = True
 
 
 class PydanticEmployeeUpdate(BaseModel):
