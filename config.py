@@ -9,10 +9,18 @@ class APIRoutes:
     index = '/'
     core = '/api/v1'
     status = '/api/v1/status'
+    routes = '/api/v1/routes'
     me = '/api/v1/me'
     login = '/api/v1/login'
     logout = '/api/v1/logout'
     register = '/api/v1/register'
+
+    class Reports:
+        reports = '/api/v1/reports'
+        employee_reports = '/api/v1/reports/employees'
+        student_reports = '/api/v1/reports/students'
+        timesheet_reports = '/api/v1/reports/timesheet'
+        care_reports = '/api/v1/reports/care'
 
     class Employees:
         count = '/api/v1/employees/count'
@@ -27,16 +35,15 @@ class APIRoutes:
         student = '/api/v1/students/{student_id}'
 
     class StudentCare:
-        count = 'api/v1/care/count'
-        care = 'api/v1/care'
-        check_in = 'api/v1/care/checkin'
-        check_out = 'api/v1/care/checkout'
-        report = 'api/v1/care/report'
+        count = '/api/v1/care/count'
+        care = '/api/v1/care'
+        check_in = '/api/v1/care/checkin'
+        check_out = '/api/v1/care/checkout'
 
     class Timesheet:
-        count = 'api/v1/timesheet/count'
-        timesheet = 'api/v1/timesheet'
-        report = 'api/v1/timesheet/report'
+        count = '/api/v1/timesheet/count'
+        timesheet = '/api/v1/timesheet'
+        one_timesheet = 'api/v1/timesheet/{employee_id}'
 
 
 class Settings(BaseSettings):
