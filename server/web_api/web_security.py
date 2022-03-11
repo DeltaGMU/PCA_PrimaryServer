@@ -5,8 +5,8 @@ from datetime import timedelta, datetime
 from fastapi.security.oauth2 import OAuth2PasswordBearer
 from jwt.exceptions import PyJWTError
 from config import ENV_SETTINGS
-from lib.logging_manager import LoggingManager
-from lib.strings import LOG_ORIGIN_AUTH, LOG_WARNING_AUTH
+from server.lib.logging_manager import LoggingManager
+from server.lib.strings import LOG_ORIGIN_AUTH, LOG_WARNING_AUTH
 from server.lib.data_classes.employee import Employee
 from server.lib.data_classes.access_token import TokenBlacklist
 from server.lib.database_access.employee_interface import get_employee_role, get_employee
