@@ -20,7 +20,7 @@ async def create_employee(pyd_employee: PydanticEmployeeRegistration, session: S
     if pyd_employee.is_enabled is None:
         pyd_employee.is_enabled = True
 
-    password_hash = create_employee_password_hashes(pyd_employee.plain_password)
+    password_hash = await create_employee_password_hashes(pyd_employee.plain_password)
     if password_hash is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The plain text password provided to be hashed is invalid!")
     if len(pyd_employee.first_name) == 0 or len(pyd_employee.last_name) == 0:
@@ -36,7 +36,7 @@ async def create_employee(pyd_employee: PydanticEmployeeRegistration, session: S
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The provided employee role is invalid or does not exist!")
 
     # Create employee ID.
-    employee_id = generate_employee_id(pyd_employee.first_name, pyd_employee.last_name, session)
+    employee_id = await generate_employee_id(pyd_employee.first_name, pyd_employee.last_name, session)
     if employee_id is None:
         session.rollback()
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The employee first name or last name is invalid and cannot be used to create an employee ID!")
@@ -103,7 +103,7 @@ async def update_employees(employee_updates: Dict[str, PydanticEmployeeUpdate], 
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Provided request body did not contain any valid employee information!")
     all_updated_employees: List[Employee] = []
     for employee_id in employee_updates.keys():
-        updated_employee = update_employee(employee_id, employee_updates[employee_id], session)
+        updated_employee = await update_employee(employee_id, employee_updates[employee_id], session)
         all_updated_employees.append(updated_employee)
     if len(employee_updates) != all_updated_employees:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="One or more employees were not able to be updated!")
