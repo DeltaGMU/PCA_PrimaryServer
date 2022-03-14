@@ -1,17 +1,35 @@
 from pydantic.main import BaseModel
+from typing import Optional, List, Union
 from sqlalchemy.dialects.mysql import INTEGER
 from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Date, VARCHAR, sql
 from server.lib.database_access.sqlalchemy_base import MainEngineBase as Base
 
 
-class PydanticEmployeeHours(BaseModel):
-    """
-    A Pydantic class used to represent an employee hours entity when creating a new employee hours record from an HTTP request to the API.
-    Do not try to initialize this class as an independent entity or extend it into a subclass.
-    """
-    employee_id: str
-    hours_worked: int
+class PydanticEmployeeTimesheetSubmission(BaseModel):
+    work_hours: int
+    pto_hours: Optional[int] = 0
+    extra_hours: Optional[int] = 0
     date_worked: str
+
+
+class PydanticEmployeeMultipleTimesheetSubmission(BaseModel):
+    time_sheets: List[PydanticEmployeeTimesheetSubmission]
+
+
+class PydanticReadEmployeeTimesheet(BaseModel):
+    date_start: str
+    date_end: Optional[str]
+
+
+class PydanticEmployeeTimesheetUpdate(BaseModel):
+    date_worked: str
+    work_hours: Optional[int] = 0
+    pto_hours: Optional[int] = 0
+    extra_hours: Optional[int] = 0
+
+
+class PydanticEmployeeTimesheetRemoval(BaseModel):
+    dates_worked: Union[List[str], str]
 
 
 class EmployeeHours(Base):
@@ -36,8 +54,12 @@ class EmployeeHours(Base):
 
         :param employee_id: The employee id that references the employee id key in the employees table.
         :type employee_id: str, required
-        :param hours_worked: The hours worked by the employee on the given date.
-        :type hours_worked: int, required
+        :param work_hours: The hours worked by the employee on the given date.
+        :type work_hours: int, required
+        :param pto_hours: The PTO hours by the employee on the given date. Defaults to 0 if not provided.
+        :type pto_hours: int, optional
+        :param extra_hours: The extra/overtime hours by the employee on the given date. Defaults to 0 if not provided.
+        :type extra_hours: int, optional
         :param date_worked: The date that the employee hours were worked on represented in YYYY-MM-DD format.
         :type date_worked: str, required
         """

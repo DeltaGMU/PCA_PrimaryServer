@@ -72,7 +72,7 @@ async def create_employee(pyd_employee: PydanticEmployeeRegistration, session: S
     return created_employee
 
 
-async def remove_employees(employee_ids: PydanticEmployeesRemoval | str, session: Session = None) -> List[Employee]:
+async def remove_employees(employee_ids: PydanticEmployeesRemoval, session: Session = None) -> List[Employee]:
     if isinstance(employee_ids, PydanticEmployeesRemoval):
         employee_ids = employee_ids.employee_ids
         if employee_ids is None:

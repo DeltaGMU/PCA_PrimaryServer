@@ -12,7 +12,7 @@ from server.lib.data_classes.employee import Employee, PydanticEmployeeRegistrat
     PydanticRetrieveMultipleEmployees, PydanticMultipleEmployeesUpdate
 from server.lib.database_manager import get_db_session
 from server.lib.database_access.employee_interface import get_employee_role, get_employee_contact_info, get_all_employees, get_employee, \
-    create_employee, remove_employees, update_employee, get_multiple_employees, update_employees
+    create_employee, remove_employees, update_employee, get_multiple_employees, update_employees, is_admin
 from server.web_api.web_security import token_is_valid, oauth_scheme, get_user_from_token
 
 router = InferringRouter()
@@ -23,7 +23,7 @@ router = InferringRouter()
 class EmployeesRouter:
     class Create:
         @staticmethod
-        @router.post(ENV_SETTINGS.API_ROUTES.register, status_code=status.HTTP_201_CREATED)
+        @router.post(ENV_SETTINGS.API_ROUTES.Employees.employees, status_code=status.HTTP_201_CREATED)
         async def register_new_employee(pyd_employee: PydanticEmployeeRegistration, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint to create a new employee entity and adds it to the employees' table in the database.
@@ -38,7 +38,7 @@ class EmployeesRouter:
             :rtype: server.web_api.models.ResponseModel
             :raises HTTPException: If the provided request body contains any invalid parameters for the employee. This error may also be caused if the employee already exists in the database.
             """
-            if not await token_is_valid(token):
+            if not await token_is_valid(token, ["administrator"]):
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
             created_employee = await create_employee(pyd_employee, session)
             return ResponseModel(status.HTTP_201_CREATED, "success", {"employee": created_employee})
@@ -58,7 +58,7 @@ class EmployeesRouter:
             :rtype: server.web_api.models.ResponseModel
             :raises HTTPException: If the authentication token is invalid.
             """
-            if not await token_is_valid(token):
+            if not await token_is_valid(token, ["administrator"]):
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
             employees_count = session.query(Employee).count()
             return ResponseModel(status.HTTP_200_OK, "success", {"count": employees_count})
@@ -77,7 +77,7 @@ class EmployeesRouter:
             :rtype: server.web_api.models.ResponseModel
             :raises HTTPException: If the authentication token is invalid.
             """
-            if not await token_is_valid(token):
+            if not await token_is_valid(token, ["administrator"]):
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
             all_employees = await get_all_employees(session)
             all_employee_data = [employee.as_dict() for employee in all_employees]
@@ -97,7 +97,7 @@ class EmployeesRouter:
             :rtype: server.web_api.models.ResponseModel
             :raises HTTPException: If the authentication token is invalid or the employee does not exist.
             """
-            if not await token_is_valid(token):
+            if not await token_is_valid(token, ["teacher"]):
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
             employee = await get_user_from_token(token, session)
             if employee is None:
@@ -120,7 +120,7 @@ class EmployeesRouter:
             :rtype: server.web_api.models.ResponseModel
             :raises HTTPException: If the authentication token is invalid, the provided request data is invalid, or one or more of the employees does not exist.
             """
-            if not await token_is_valid(token):
+            if not await token_is_valid(token, ["administrator"]):
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
             if len(employee_ids.employee_ids) == 0:
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The employee ID list is empty! You must provide at least one employee ID to search for.")
@@ -145,11 +145,14 @@ class EmployeesRouter:
             :rtype: server.web_api.models.ResponseModel
             :raises HTTPException: If the authentication token is invalid or the employee could not be retrieved.
             """
-            if not await token_is_valid(token):
+            if not await token_is_valid(token, ["teacher"]):
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
             if employee_id is None or not isinstance(employee_id, str):
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The employee ID must be a valid string!")
-            employee = await get_employee(employee_id, session)
+            employee = await get_user_from_token(token)
+            if employee is None or (employee.EmployeeID != employee_id.strip() and not is_admin(employee)):
+                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="The user does not have permissions to view information about other employees.")
+            employee = await get_employee(employee_id.strip(), session)
             if employee is None:
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The employee could not be retrieved.")
             full_employee_information = employee.as_dict()
@@ -174,7 +177,7 @@ class EmployeesRouter:
             :rtype: server.web_api.models.ResponseModel
             :raises HTTPException: If the authentication token is invalid or the employees could not be updated.
             """
-            if not await token_is_valid(token):
+            if not await token_is_valid(token, ["administrator"]):
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
             updated_employees = await update_employees(multi_employee_update.employee_updates, session)
             if updated_employees is None:
@@ -199,9 +202,14 @@ class EmployeesRouter:
             :rtype: server.web_api.models.ResponseModel
             :raises HTTPException: If the authentication token is invalid or the employee could not be updated.
             """
-            if not await token_is_valid(token):
+            if not await token_is_valid(token, ["teacher"]):
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
-            updated_employee = await update_employee(employee_id, employee_update, session)
+            if employee_id is None or not isinstance(employee_id, str):
+                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="The employee ID must be a valid string!")
+            employee = await get_user_from_token(token)
+            if employee is None or (employee.EmployeeID != employee_id.strip() and not is_admin(employee)):
+                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="The user does not have permissions to update information about other employees.")
+            updated_employee = await update_employee(employee_id.strip(), employee_update, session)
             if updated_employee is None:
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="One or more provided parameters were invalid!")
             return ResponseModel(status.HTTP_200_OK, "success", {"employee": updated_employee.as_dict()})
@@ -226,7 +234,7 @@ class EmployeesRouter:
             :rtype: server.web_api.models.ResponseModel
             :raises HTTPException: If the provided request body contains an invalid employee ID, or if the employee does not exist in the database.
             """
-            if not await token_is_valid(token):
+            if not await token_is_valid(token, ["administrator"]):
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
             removed_employees = await remove_employees(employee_ids, session)
             return ResponseModel(status.HTTP_200_OK, "success", {"employees": [employee.as_dict() for employee in removed_employees]})
@@ -249,8 +257,10 @@ class EmployeesRouter:
             :rtype: server.web_api.models.ResponseModel
             :raises HTTPException: If the provided request body contains an invalid employee ID, or if the employee does not exist in the database.
             """
-            if not await token_is_valid(token):
+            if not await token_is_valid(token, ["administrator"]):
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
-            removed_employees = await remove_employees(employee_id, session)
+            if employee_id is None or not isinstance(employee_id, str):
+                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="The employee ID must be a valid string!")
+            removed_employees = await remove_employees(employee_id.strip(), session)
             return ResponseModel(status.HTTP_200_OK, "success", {"employee": [employee.as_dict() for employee in removed_employees]})
 
