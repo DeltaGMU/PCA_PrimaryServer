@@ -78,7 +78,9 @@ async def login(data: OAuth2PasswordRequestForm = Depends()):
 
 @web_app.get(ENV_SETTINGS.API_ROUTES.me, status_code=status.HTTP_200_OK)
 async def logged_in_welcome(token: str = Depends(oauth_scheme)):
-    user = await get_user_from_token(token)
+    if not await token_is_valid(token, ["teacher"]):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
+    user = await get_user_from_token(token, )
     if user is None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token is invalid or expired!")
     return ResponseModel(status.HTTP_200_OK, "logged in successfully!", {"user": f"{user.FirstName} {user.LastName}"})
@@ -94,9 +96,19 @@ async def log_out_user(token: str = Depends(oauth_scheme)):
     return ResponseModel(status.HTTP_200_OK, "logged out successfully!")
 
 
+@web_app.post(ENV_SETTINGS.API_ROUTES.reset, status_code=status.HTTP_200_OK)
+async def reset_password(new_password: str, reset_token: str = Depends(oauth_scheme)):
+    pass
+
+
+@web_app.post(ENV_SETTINGS.API_ROUTES.reset, status_code=status.HTTP_200_OK)
+async def forgot_password(new_password: str, reset_token: str = Depends(oauth_scheme)):
+    pass
+
+
 @web_app.get(ENV_SETTINGS.API_ROUTES.routes, status_code=status.HTTP_200_OK)
 async def get_api_routes(token: str = Depends(oauth_scheme)):
-    if not await token_is_valid(token):
+    if not await token_is_valid(token, ["administrator"]):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
     routes_list = [{"path": route.path, "name": route.name} for route in web_app.routes]
     return ResponseModel(status.HTTP_200_OK, "routes retrieved successfully!", {"routes": routes_list})
