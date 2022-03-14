@@ -1,6 +1,6 @@
 from server.lib.logging_manager import LoggingManager
 from server.lib.strings import LOG_ORIGIN_STARTUP
-from web_api.web_service import WebService
+from server.web_api.web_service import WebService
 from server.lib.error_codes import ERR_WEB_SESSION_MNGR_INCORRECT_PARAMS
 from config import ENV_SETTINGS
 
