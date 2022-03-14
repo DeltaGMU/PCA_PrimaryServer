@@ -38,13 +38,13 @@ async def generate_employee_id(first_name: str, last_name: str, session: Session
                            'The database was unable to be verified as online and active!')
     # Ensure that a session is retrieved if not provided.
     if session is None:
-        session = get_db_session()
+        session = next(get_db_session())
     # Ensure that the provided first and last names are a valid length.
     if not len(first_name) > 0 and not len(last_name) > 0:
         return None
     try:
         # Query the last record with the highest ID that was inserted into the database to calculate the employee's new unique record ID.
-        highest_id = await session.query(func.max(Employee.id)).scalar()
+        highest_id = session.query(func.max(Employee.id)).scalar()
         if highest_id is None:
             blank_role = EmployeeRole('BlankRole')
             session.add(blank_role)
@@ -78,7 +78,7 @@ async def create_employee_password_hashes(password: str) -> str | None:
     """
     if password is None or len(password) == 0:
         return None
-    employee_password_hash = await bcrypt.hash(password.encode('utf-8'))
+    employee_password_hash = bcrypt.hash(password.encode('utf-8'))
     return employee_password_hash
 
 
