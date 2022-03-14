@@ -1,7 +1,9 @@
 from __future__ import annotations
 import traceback
 import jwt
+from typing import List
 from datetime import timedelta, datetime
+from fastapi import HTTPException, status
 from fastapi.security.oauth2 import OAuth2PasswordBearer
 from jwt.exceptions import PyJWTError
 from config import ENV_SETTINGS
@@ -9,7 +11,7 @@ from server.lib.logging_manager import LoggingManager
 from server.lib.strings import LOG_ORIGIN_AUTH, LOG_WARNING_AUTH
 from server.lib.data_classes.employee import Employee
 from server.lib.data_classes.access_token import TokenBlacklist
-from server.lib.database_access.employee_interface import get_employee_role, get_employee
+from server.lib.database_access.employee_interface import get_employee_role, get_employee, get_employee_security_scopes
 # from server.lib.token_manager import get_blacklist_session
 from server.lib.database_manager import get_db_session
 from server.web_api.security_config import TOKEN_EXPIRY_MINUTES
@@ -23,34 +25,37 @@ async def create_access_token(employee_user: Employee):
         raise RuntimeError('An access token cannot be created for a null user!')
     token_issue = int((datetime.utcnow()).timestamp())
     token_expiration = int((datetime.utcnow() + timedelta(minutes=TOKEN_EXPIRY_MINUTES)).timestamp())
+    token_scopes = await get_employee_security_scopes(employee_user)
     token_data = {
         "sub": employee_user.EmployeeID,
         "iat": token_issue,
         "exp": token_expiration,
-        "scopes": [(await get_employee_role(employee_user)).Name]
+        "scopes": token_scopes
     }
     jwt_token = jwt.encode(token_data, ENV_SETTINGS.server_secret, algorithm="HS256")
     return {"first_name": employee_user.FirstName, "token": jwt_token, "token_type": 'Bearer', "iat": token_issue, "exp": token_expiration}
 
 
-async def get_user_from_token(token: str, session = None):
-    if await token_is_valid(token):
-        try:
-            decoded_token = jwt.decode(token, ENV_SETTINGS.server_secret, algorithms=["HS256"])
-        except PyJWTError:
-            return None
-        employee_user = await get_employee(decoded_token['sub'], session)
-        return employee_user
-    return None
+async def get_user_from_token(token: str, session=None):
+    try:
+        decoded_token = jwt.decode(token, ENV_SETTINGS.server_secret, algorithms=["HS256"])
+    except PyJWTError:
+        return None
+    employee_user = await get_employee(decoded_token['sub'], session)
+    return employee_user
 
 
-async def token_is_valid(token: str) -> bool:
-    if token is None:
+async def token_is_valid(token: str, scopes: List[str]) -> bool:
+    if None in (token, scopes):
         return False
     try:
-        jwt.decode(token, ENV_SETTINGS.server_secret, algorithms=["HS256"])
+        token_data = jwt.decode(token, ENV_SETTINGS.server_secret, algorithms=["HS256"])
+        token_user = token_data.get("sub")
+        if token_user is None:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Authorization token is missing user information!")
+        token_scopes = token_data.get("scopes", [])
     except PyJWTError:
-        return False
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Authorization token is invalid!")
 
     # Remove expired tokens before checking validity.
     cur_time = int(datetime.utcnow().timestamp())
@@ -66,18 +71,23 @@ async def token_is_valid(token: str) -> bool:
     ).first()
     if blacklist_token:
         return False
+
+    for scope in scopes:
+        if scope not in token_scopes:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="This user does not have enough permissions to access this content.")
     return True
 
 
 async def add_token_to_blacklist(token: str) -> bool | None:
-    if not await token_is_valid(token):
-        return False
     try:
-        decoded_token = jwt.decode(token, ENV_SETTINGS.server_secret, algorithms=["HS256"])
+        token_data = jwt.decode(token, ENV_SETTINGS.server_secret, algorithms=["HS256"])
+        token_user = token_data.get("sub")
+        if token_user is None:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Authorization token is missing user information!")
     except PyJWTError:
-        return None
-    # token_db[token] = decoded_token['exp']
-    blacklist_token = TokenBlacklist(token, decoded_token['iat'], decoded_token['exp'])
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Authorization token is invalid!")
+
+    blacklist_token = TokenBlacklist(token, token_data['iat'], token_data['exp'])
     try:
         session = next(get_db_session())
         session.add(blacklist_token)
