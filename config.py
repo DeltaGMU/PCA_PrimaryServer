@@ -14,6 +14,7 @@ class APIRoutes:
     login = '/api/v1/login'
     logout = '/api/v1/logout'
     register = '/api/v1/register'
+    reset = '/api/v1/reset'
 
     class Reports:
         reports = '/api/v1/reports'
@@ -43,7 +44,7 @@ class APIRoutes:
     class Timesheet:
         count = '/api/v1/timesheet/count'
         timesheet = '/api/v1/timesheet'
-        one_timesheet = 'api/v1/timesheet/{employee_id}'
+        one_timesheet = '/api/v1/timesheet/{employee_id}'
 
 
 class Settings(BaseSettings):
