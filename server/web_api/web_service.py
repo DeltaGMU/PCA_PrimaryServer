@@ -29,6 +29,10 @@ class UvicornServer(uvicorn.Server):
             while not self.started:
                 time.sleep(0.01)
             yield
+        except KeyboardInterrupt:
+            self.should_exit = True
+            thread.join()
+            return
         finally:
             self.should_exit = True
             thread.join()
