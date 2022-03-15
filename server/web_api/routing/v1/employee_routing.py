@@ -219,7 +219,7 @@ class EmployeesRouter:
         @router.delete(ENV_SETTINGS.API_ROUTES.Employees.employees, status_code=status.HTTP_200_OK)
         async def delete_employees(employee_ids: PydanticEmployeesRemoval, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
-            An endpoint to remove multiple employee entity from the employee's table in the database.
+            An endpoint to remove multiple employee records from the employee's table in the database.
             Removal of multiple employees using this endpoint will permanently delete the employee records from the database
             and all records related to the employee records in other tables through a cascading delete.
             To remove multiple employee records, the employee IDs must be provided in a list.
@@ -243,7 +243,7 @@ class EmployeesRouter:
         @router.delete(ENV_SETTINGS.API_ROUTES.Employees.one_employee, status_code=status.HTTP_200_OK)
         async def delete_employee(employee_id: str, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
-            An endpoint to remove an employee entity from the employee's table in the database.
+            An endpoint to remove an employee record from the employee's table in the database.
             Removal of an employee using this endpoint will permanently delete the employee record from the database
             and all records related to the employee record in other tables through a cascading delete.
 
