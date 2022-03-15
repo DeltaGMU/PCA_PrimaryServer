@@ -8,6 +8,8 @@ from fastapi import Body, status, HTTPException, Depends
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
 from sqlalchemy.exc import IntegrityError
+
+from config import ENV_SETTINGS
 from server.lib.utils.student_utils import generate_student_id
 from server.web_api.models import ResponseModel
 from server.lib.data_classes.student import Student, PydanticStudent
@@ -24,60 +26,73 @@ class StudentsRouter:
     The API router responsible for defining endpoints relating to students.
     The defined endpoints allow HTTP requests to conduct childcare-related operations with the student entity.
     """
+    class Create:
+        @staticmethod
+        @router.post(ENV_SETTINGS.API_ROUTES.Students.students, status_code=status.HTTP_201_CREATED)
+        def create_new_student(pyd_student: PydanticStudent, session=Depends(get_db_session)):
+            """
+            An endpoint that creates a new student record and adds it to the students' table in the database.
 
-    @router.get("/api/v1/students", status_code=status.HTTP_200_OK)
-    def get_all_students(self, session=Depends(get_db_session)):
-        """
-        An endpoint that retrieves all the students from the database.
+            :param pyd_student: The Pydantic Student reference. This means that HTTP requests to this endpoint must include the required fields in the Pydantic Student class.
+            :type pyd_student: PydanticStudent
+            :param session: The database session to use to retrieve all the employee data.
+            :type session: sqlalchemy.orm.session, optional
+            :return: A response model containing the student object that was created and inserted into the database.
+            :rtype: server.web_api.models.ResponseModel
+            :raises HTTPException: If the request body contains a student first name or last name that is invalid, or the data provided is formatted incorrectly.
+            """
+            if len(pyd_student.first_name) == 0 or len(pyd_student.last_name) == 0:
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The first and last name of the student must not be empty!")
+            student_id = generate_student_id(pyd_student.first_name.strip(), pyd_student.last_name.strip())
+            if student_id is None:
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The student first name or last name is invalid and cannot be used to create an student ID!")
+            try:
+                new_student = Student(student_id, pyd_student.first_name.lower().strip(), pyd_student.last_name.lower().strip())
+                session.add(new_student)
+                session.commit()
+            except IntegrityError as err:
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(err)) from err
+            created_student = session.query(Student).filter(Student.StudentID == student_id).one()
+            return ResponseModel(status.HTTP_201_CREATED, "success", {"student": created_student.as_detail_dict()})
 
-        :return: List of all the students in the database.
-        :rtype: server.web_api.models.ResponseModel
-        """
-        all_students = []
-        employees = session.query(Student).all()
-        for row in employees:
-            item: Student = row
-            all_students.append(item.as_dict())
-        return ResponseModel(status.HTTP_200_OK, "success", {"students": all_students})
+    class Read:
+        @staticmethod
+        @router.get(ENV_SETTINGS.API_ROUTES.Students.count, status_code=status.HTTP_200_OK)
+        def read_students_count(session=Depends(get_db_session)):
+            """
+            An endpoint that counts the number of students that are registered in the database.
 
-    @router.post("/api/v1/students/new", status_code=status.HTTP_201_CREATED)
-    def create_new_student(self, pyd_student: PydanticStudent, session=Depends(get_db_session)):
-        """
-        An endpoint that creates a new student record and adds it to the students' table in the database.
+            :return: A response model containing the number of students in the database. The count will be 0 if there are no students registered in the database.
+            :rtype: server.web_api.models.ResponseModel
+            """
+            students_count = session.query(Student).count()
+            return ResponseModel(status.HTTP_200_OK, "success", {"count": students_count})
 
-        :param pyd_student: The Pydantic Student reference. This means that HTTP requests to this endpoint must include the required fields in the Pydantic Student class.
-        :type pyd_student: PydanticStudent
-        :return: A response model containing the student object that was created and inserted into the database.
-        :rtype: server.web_api.models.ResponseModel
-        :raises HTTPException: If the request body contains a student first name or last name that is invalid, or the data provided is formatted incorrectly.
-        """
-        if len(pyd_student.first_name) == 0 or len(pyd_student.last_name) == 0:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The first and last name of the student must not be empty!")
-        student_id = generate_student_id(pyd_student.first_name.strip(), pyd_student.last_name.strip())
-        if student_id is None:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The student first name or last name is invalid and cannot be used to create an student ID!")
-        try:
-            new_student = Student(student_id, pyd_student.first_name.lower().strip(), pyd_student.last_name.lower().strip())
-            session.add(new_student)
-            session.commit()
-        except IntegrityError as err:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(err)) from err
-        created_student = session.query(Student).filter(Student.StudentID == student_id).one()
-        return ResponseModel(status.HTTP_201_CREATED, "success", {"student": created_student.as_detail_dict()})
+        @staticmethod
+        @router.get(ENV_SETTINGS.API_ROUTES.Students.students, status_code=status.HTTP_200_OK)
+        def read_all_students(session=Depends(get_db_session)):
+            """
+            An endpoint that retrieves all the students from the database.
 
-    @router.get("/api/v1/students/count", status_code=status.HTTP_200_OK)
-    def get_students_count(self, session=Depends(get_db_session)):
-        """
-        An endpoint that counts the number of students that are registered in the database.
+            :return: List of all the students in the database.
+            :rtype: server.web_api.models.ResponseModel
+            """
+            all_students = []
+            employees = session.query(Student).all()
+            for row in employees:
+                item: Student = row
+                all_students.append(item.as_dict())
+            return ResponseModel(status.HTTP_200_OK, "success", {"students": all_students})
 
-        :return: A response model containing the number of students in the database. The count will be 0 if there are no students registered in the database.
-        :rtype: server.web_api.models.ResponseModel
-        """
-        students_count = session.query(Student).count()
-        return ResponseModel(status.HTTP_200_OK, "success", {"count": students_count})
+    class Update:
+        pass
 
+    class Delete:
+        pass
+
+    @staticmethod
     @router.post("/api/v1/students/checkin", status_code=status.HTTP_201_CREATED)
-    def check_in_student(self, pyd_student_checkin: PydanticStudentCareHoursCheckIn, session=Depends(get_db_session)):
+    def check_in_student(pyd_student_checkin: PydanticStudentCareHoursCheckIn, session=Depends(get_db_session)):
         """
         An endpoint that checks-in a student into the before-care or after-care service and records the time of check-in.
         Any student checked into before-care is automatically checked out at the end of the before-care service.
@@ -112,8 +127,9 @@ class StudentsRouter:
                                        f"for the provided date: {pyd_student_checkin.check_in_date} at {pyd_student_checkin.check_in_time}")
         return ResponseModel(status.HTTP_201_CREATED, "success", {"check-in": new_student_care_hours.as_dict()})
 
+    @staticmethod
     @router.post("/api/v1/students/checkout", status_code=status.HTTP_200_OK)
-    def check_out_student(self, student_checkout: PydanticStudentCareHoursCheckOut, session=Depends(get_db_session)):
+    def check_out_student(student_checkout: PydanticStudentCareHoursCheckOut, session=Depends(get_db_session)):
         """
         Not Implemented!
         

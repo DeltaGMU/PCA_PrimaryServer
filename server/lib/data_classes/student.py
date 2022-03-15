@@ -7,6 +7,7 @@ to create the student entity in the database and validate the data that is sent 
 """
 
 from __future__ import annotations
+from typing import Optional
 from pydantic import BaseModel
 from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Date, LargeBinary, VARCHAR, Boolean, Time, sql
 from sqlalchemy.orm import relationship
@@ -20,6 +21,10 @@ class PydanticStudent(BaseModel):
     """
     first_name: str
     last_name: str
+    parent_primary_email: str
+    parent_secondary_email: Optional[str]
+    is_enabled: Optional[bool] = True
+    enable_notifications: Optional[bool] = True
 
 
 class Student(Base):
@@ -58,7 +63,7 @@ class Student(Base):
         self.LastName = last_name
         self.StudentEnabled = enabled
 
-    def as_dict(self):
+    def as_detail_dict(self):
         """
         A utility method to convert the class attributes into a dictionary format.
         This is useful for representing the entity in a JSON format for a request response.
@@ -72,4 +77,19 @@ class Student(Base):
             "last_name": self.LastName,
             "is_enabled": self.StudentEnabled,
             "entry_created": self.EntryCreated
+        }
+
+    def as_dict(self):
+        """
+        A utility method to convert the class attributes into a dictionary format.
+        This web friendly version hides the internal IDs, and other metadata information.
+
+        :return: Dictionary representation of the data class attributes.
+        :rtype: Dict[str, any]
+        """
+        return {
+            "student_id": self.StudentID,
+            "first_name": self.FirstName,
+            "last_name": self.LastName,
+            "is_enabled": self.StudentEnabled
         }
