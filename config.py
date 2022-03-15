@@ -15,6 +15,7 @@ class APIRoutes:
     logout = '/api/v1/logout'
     register = '/api/v1/register'
     reset = '/api/v1/reset'
+    forgot_password = '/api/v1/forgot_password'
 
     class Reports:
         reports = '/api/v1/reports'
@@ -57,6 +58,7 @@ class Settings(BaseSettings):
     web_host: str
     web_port: int
     server_secret: str
+    cors_domains: str
     sys_debug_mode: Optional[bool] = False
     api_debug_mode: Optional[bool] = False
     db_debug_mode: Optional[bool] = False

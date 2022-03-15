@@ -22,7 +22,7 @@ web_app = FastAPI(
 )
 web_app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:8080", "http://localhost"],
+    allow_origins=[cors_domain.strip() for cors_domain in ENV_SETTINGS.cors_domains.split(",")],
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE"],
     allow_headers=["Origin", "Accept", "Content-Type", "Authorization", "Access-Control-Allow-Origin"]
@@ -35,7 +35,6 @@ web_app.include_router(core_routing.router)
 web_app.include_router(employee_routing.router)
 web_app.include_router(employee_hours_routing.router)
 # web_app.include_router(student_routing.router)
-
 
 # Manually handle CORS preflight requests
 '''
@@ -101,7 +100,7 @@ async def reset_password(new_password: str, reset_token: str = Depends(oauth_sch
     pass
 
 
-@web_app.post(ENV_SETTINGS.API_ROUTES.reset, status_code=status.HTTP_200_OK)
+@web_app.post(ENV_SETTINGS.API_ROUTES.forgot_password, status_code=status.HTTP_200_OK)
 async def forgot_password(new_password: str, reset_token: str = Depends(oauth_scheme)):
     pass
 
