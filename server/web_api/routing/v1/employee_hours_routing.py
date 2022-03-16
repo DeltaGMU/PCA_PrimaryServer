@@ -143,4 +143,4 @@ class EmployeeHoursRouter:
             if employee is None or (employee.EmployeeID != employee_id.strip() and not await is_admin(employee)):
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="The user does not have sufficient permissions.")
             deleted_time_sheets = await delete_employee_time_sheets(employee_id, delete_employee_hours, session)
-            return ResponseModel(status.HTTP_200_OK, "success", {"time_sheet": deleted_time_sheets})
+            return ResponseModel(status.HTTP_200_OK, "success", {"time_sheets": [time_sheet.as_dict() for time_sheet in deleted_time_sheets]})

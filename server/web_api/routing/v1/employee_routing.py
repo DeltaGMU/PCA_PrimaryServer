@@ -150,7 +150,7 @@ class EmployeesRouter:
             if employee_id is None or not isinstance(employee_id, str):
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The employee ID must be a valid string!")
             employee = await get_user_from_token(token)
-            if employee is None or (employee.EmployeeID != employee_id.strip() and not is_admin(employee)):
+            if employee is None or (employee.EmployeeID != employee_id.strip() and not await is_admin(employee)):
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="The user does not have permissions to view information about other employees.")
             employee = await get_employee(employee_id.strip(), session)
             if employee is None:
@@ -207,7 +207,7 @@ class EmployeesRouter:
             if employee_id is None or not isinstance(employee_id, str):
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="The employee ID must be a valid string!")
             employee = await get_user_from_token(token)
-            if employee is None or (employee.EmployeeID != employee_id.strip() and not is_admin(employee)):
+            if employee is None or (employee.EmployeeID != employee_id.strip() and not await is_admin(employee)):
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="The user does not have permissions to update information about other employees.")
             updated_employee = await update_employee(employee_id.strip(), employee_update, session)
             if updated_employee is None:

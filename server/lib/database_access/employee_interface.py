@@ -14,6 +14,8 @@ async def create_employee(pyd_employee: PydanticEmployeeRegistration, session: S
     pyd_employee.first_name = pyd_employee.first_name.lower().strip()
     pyd_employee.last_name = pyd_employee.last_name.lower().strip()
     pyd_employee.primary_email = pyd_employee.primary_email.lower().strip()
+    if pyd_employee.secondary_email:
+        pyd_employee.secondary_email = pyd_employee.secondary_email.lower().strip()
     pyd_employee.role = pyd_employee.role.lower().strip()
     if pyd_employee.enable_notifications is None:
         pyd_employee.enable_notifications = True

@@ -14,13 +14,15 @@ from sqlalchemy.orm import relationship
 from server.lib.database_access.sqlalchemy_base import MainEngineBase as Base
 
 
-class PydanticStudent(BaseModel):
+class PydanticStudentRegistration(BaseModel):
     """
     A Pydantic class used to represent a student entity when creating a new student record from a http request to the API.
     Do not try to initialize this class as an independent entity or extend it into a subclass.
     """
     first_name: str
     last_name: str
+    car_pool_number: int
+    parent_full_name: str
     parent_primary_email: str
     parent_secondary_email: Optional[str]
     is_enabled: Optional[bool] = True
@@ -38,12 +40,13 @@ class Student(Base):
     StudentID = Column(VARCHAR(length=50), unique=True, nullable=False)
     FirstName = Column(VARCHAR(length=50), nullable=False)
     LastName = Column(VARCHAR(length=50), nullable=False)
+    ContactInfoID = Column(Integer, ForeignKey('contact_info.id'), nullable=False)
     StudentEnabled = Column(Boolean(), nullable=False, default=True)
     StudentCareHoursRelationship = relationship('StudentCareHours', cascade='all, delete')
     EntryCreated = Column(DateTime, nullable=False, default=sql.func.now())
 
     # Do not initialize this except for creating blank student templates!
-    def __init__(self, student_id: str, first_name: str, last_name: str, enabled: bool = True):
+    def __init__(self, student_id: str, first_name: str, last_name: str, contact_info_id: int, enabled: bool = True):
         """
         The constructor for the ``Student`` data class that is utilized internally by the SQLAlchemy library.
         Only manually instantiate this data class to create employee hours records in the database within database sessions.
@@ -61,6 +64,7 @@ class Student(Base):
         self.StudentID = student_id
         self.FirstName = first_name
         self.LastName = last_name
+        self.ContactInfoID = contact_info_id
         self.StudentEnabled = enabled
 
     def as_detail_dict(self):
@@ -73,6 +77,7 @@ class Student(Base):
         """
         return {
             "student_id": self.StudentID,
+            "contact_id": self.ContactInfoID,
             "first_name": self.FirstName,
             "last_name": self.LastName,
             "is_enabled": self.StudentEnabled,
