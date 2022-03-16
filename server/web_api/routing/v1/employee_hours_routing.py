@@ -51,8 +51,8 @@ class EmployeeHoursRouter:
 
     class Read:
         @staticmethod
-        @router.post(ENV_SETTINGS.API_ROUTES.Timesheet.one_timesheet, status_code=status.HTTP_200_OK)
-        async def read_employee_time_sheets(employee_id: str, employee_hours: PydanticReadEmployeeTimesheet, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
+        @router.get(ENV_SETTINGS.API_ROUTES.Timesheet.one_timesheet, status_code=status.HTTP_200_OK)
+        async def read_employee_time_sheets(employee_id: str, date_start: str, date_end: str = None, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint to accumulate and return the total work hours, pto hours, overtime/extra hours for an employee within a provided date range.
             Front-end interaction can send requests to this endpoint with any valid date range, which would
@@ -60,8 +60,6 @@ class EmployeeHoursRouter:
 
             :param employee_id: The ID of the employee.
             :type employee_id: str, required
-            :param employee_hours: The starting date and the ending date of the total hours to be calculated.
-            :type employee_hours: PydanticReadEmployeeTimesheet, required
             :param token: The JSON Web Token responsible for authenticating the user to this endpoint.
             :type token: str, required
             :param session: The database session to use to retrieve all the employee data.
@@ -77,9 +75,9 @@ class EmployeeHoursRouter:
             employee = await get_user_from_token(token)
             if employee is None or (employee.EmployeeID != employee_id.strip() and not await is_admin(employee)):
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="The user does not have sufficient permission.")
-            if employee_hours.date_end is None:
-                employee_hours.date_end = employee_hours.date_start
-            total_hours_and_list = await get_employee_hours_total(employee_id.strip(), employee_hours.date_start, employee_hours.date_end, session)
+            if date_end is None:
+                date_end = date_start
+            total_hours_and_list = await get_employee_hours_total(employee_id.strip(), date_start, date_end, session)
             return ResponseModel(status.HTTP_200_OK, "success", total_hours_and_list)
 
     class Update:
