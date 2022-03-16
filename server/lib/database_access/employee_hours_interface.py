@@ -18,39 +18,31 @@ async def create_employee_multiple_hours(employee_id: str, employee_updates: Lis
         if not check_date_formats([employee_update.date_worked for employee_update in employee_updates]):
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="One or more provided dates are not in the YYYY-MM-DD format!")
         submitted_time_sheets = []
-        timesheet_exists = session.query(EmployeeHours).filter(
-            EmployeeHours.EmployeeID == employee_id,
-            EmployeeHours.DateWorked.in_([timesheet.date_worked for timesheet in employee_updates])
-        ).all()
-        if len(timesheet_exists) == 0:
-            for timesheet in employee_updates:
-                timesheet_submission = EmployeeHours(
-                    employee_id,
-                    timesheet.work_hours,
-                    timesheet.pto_hours,
-                    timesheet.extra_hours,
-                    timesheet.date_worked
+        for timesheet in employee_updates:
+            timesheet_submission = EmployeeHours(
+                employee_id,
+                timesheet.work_hours,
+                timesheet.pto_hours,
+                timesheet.extra_hours,
+                timesheet.date_worked
+            )
+            try:
+                session.add(timesheet_submission)
+            except IntegrityError:
+                session.query(
+                    EmployeeHours
+                ).filter(
+                    EmployeeHours.EmployeeID == employee_id,
+                    EmployeeHours.DateWorked == timesheet.date_worked
+                ).update(
+                    {
+                        EmployeeHours.WorkHours: timesheet.work_hours,
+                        EmployeeHours.PTOHours: timesheet.pto_hours,
+                        EmployeeHours.ExtraHours: timesheet.extra_hours
+                    }
                 )
-                try:
-                    session.add(timesheet_submission)
-                except IntegrityError:
-                    session.query(
-                        EmployeeHours
-                    ).filter(
-                        EmployeeHours.EmployeeID == employee_id,
-                        EmployeeHours.DateWorked == timesheet.date_worked
-                    ).update(
-                        {
-                            EmployeeHours.WorkHours: timesheet.work_hours,
-                            EmployeeHours.PTOHours: timesheet.pto_hours,
-                            EmployeeHours.ExtraHours: timesheet.extra_hours
-                        }
-                    )
-                submitted_time_sheets.append(timesheet_submission)
-            session.commit()
-        else:
-            session.rollback()
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Duplicate date entry! One or more of the provided work days already have an entry by this employee!")
+            submitted_time_sheets.append(timesheet_submission)
+        session.commit()
     except IntegrityError as err:
         session.rollback()
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(err)) from err

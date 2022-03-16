@@ -3,7 +3,7 @@ from fastapi_utils.inferring_router import InferringRouter
 from fastapi import status, Depends, HTTPException
 from config import ENV_SETTINGS
 from server.lib.database_access.employee_interface import is_admin
-from server.lib.data_classes.employee_hours import PydanticReadEmployeeTimesheet, PydanticEmployeeMultipleTimesheetSubmission, PydanticEmployeeTimesheetUpdate, PydanticEmployeeTimesheetRemoval
+from server.lib.data_classes.employee_hours import PydanticEmployeeMultipleTimesheetSubmission, PydanticEmployeeTimesheetUpdate, PydanticEmployeeTimesheetRemoval
 from server.lib.database_access.employee_hours_interface import create_employee_multiple_hours, update_employee_hours, delete_employee_time_sheets, get_employee_hours_total, delete_all_employee_time_sheets
 from server.lib.database_manager import get_db_session
 from server.web_api.models import ResponseModel
