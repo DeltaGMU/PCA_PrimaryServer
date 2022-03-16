@@ -10,11 +10,12 @@ from fastapi_utils.inferring_router import InferringRouter
 from sqlalchemy.exc import IntegrityError
 
 from config import ENV_SETTINGS
-from server.lib.utils.student_utils import generate_student_id
+from server.lib.database_access.student_interface import create_student
 from server.web_api.models import ResponseModel
-from server.lib.data_classes.student import Student, PydanticStudent
+from server.lib.data_classes.student import Student, PydanticStudentRegistration
 from server.lib.data_classes.student_care_hours import StudentCareHours, PydanticStudentCareHoursCheckIn, PydanticStudentCareHoursCheckOut
 from server.lib.database_manager import get_db_session
+from server.web_api.web_security import token_is_valid, oauth_scheme
 
 router = InferringRouter()
 
@@ -24,36 +25,30 @@ router = InferringRouter()
 class StudentsRouter:
     """
     The API router responsible for defining endpoints relating to students.
-    The defined endpoints allow HTTP requests to conduct childcare-related operations with the student entity.
+    The defined endpoints allow HTTP requests to conduct create, read, update, and delete tasks on student records.
     """
+
     class Create:
         @staticmethod
         @router.post(ENV_SETTINGS.API_ROUTES.Students.students, status_code=status.HTTP_201_CREATED)
-        def create_new_student(pyd_student: PydanticStudent, session=Depends(get_db_session)):
+        async def create_new_student(pyd_student: PydanticStudentRegistration, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint that creates a new student record and adds it to the students' table in the database.
 
-            :param pyd_student: The Pydantic Student reference. This means that HTTP requests to this endpoint must include the required fields in the Pydantic Student class.
-            :type pyd_student: PydanticStudent
-            :param session: The database session to use to retrieve all the employee data.
+            :param pyd_student: The new student's first name, last name, parent full name, parent full name, parent primary email, and optional parameters like parent secondary email and enabling email notifications.
+            :type pyd_student: PydanticStudentRegistration, required
+            :param token: The JSON Web Token responsible for authenticating the user to this endpoint.
+            :type token: str, required
+            :param session: The database session to use to create a new student record in the database.
             :type session: sqlalchemy.orm.session, optional
             :return: A response model containing the student object that was created and inserted into the database.
             :rtype: server.web_api.models.ResponseModel
-            :raises HTTPException: If the request body contains a student first name or last name that is invalid, or the data provided is formatted incorrectly.
+            :raises HTTPException: If the request body contains any invalid parameters, or the data provided is formatted incorrectly.
             """
-            if len(pyd_student.first_name) == 0 or len(pyd_student.last_name) == 0:
-                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The first and last name of the student must not be empty!")
-            student_id = generate_student_id(pyd_student.first_name.strip(), pyd_student.last_name.strip())
-            if student_id is None:
-                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The student first name or last name is invalid and cannot be used to create an student ID!")
-            try:
-                new_student = Student(student_id, pyd_student.first_name.lower().strip(), pyd_student.last_name.lower().strip())
-                session.add(new_student)
-                session.commit()
-            except IntegrityError as err:
-                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(err)) from err
-            created_student = session.query(Student).filter(Student.StudentID == student_id).one()
-            return ResponseModel(status.HTTP_201_CREATED, "success", {"student": created_student.as_detail_dict()})
+            if not await token_is_valid(token, ["administrator"]):
+                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
+            created_student = await create_student(pyd_student, session)
+            return ResponseModel(status.HTTP_201_CREATED, "success", {"student": created_student})
 
     class Read:
         @staticmethod
