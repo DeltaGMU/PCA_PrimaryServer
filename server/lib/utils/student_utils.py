@@ -13,7 +13,7 @@ from server.lib.database_manager import get_db_session
 from server.lib.strings import LOG_ERROR_DATABASE, LOG_ERROR_GENERAL, LOG_ORIGIN_GENERAL
 
 
-def generate_student_id(first_name: str, last_name: str, carpool_number: int, session: Session = None) -> str:
+async def generate_student_id(first_name: str, last_name: str, carpool_number: int, session: Session = None) -> str:
     """
     This utility method is used to generate a student ID from the given first name and last name.
     The ID format for students is: ``<first_name_initial><full_last_name><unique_record_id>``
