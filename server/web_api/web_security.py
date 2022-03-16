@@ -33,7 +33,7 @@ async def create_access_token(employee_user: Employee):
         "scopes": token_scopes
     }
     jwt_token = jwt.encode(token_data, ENV_SETTINGS.server_secret, algorithm="HS256")
-    return {"first_name": employee_user.FirstName, "token": jwt_token, "token_type": 'Bearer', "iat": token_issue, "exp": token_expiration}
+    return {"employee_id": employee_user.EmployeeID, "first_name": employee_user.FirstName, "token": jwt_token, "token_type": 'Bearer', "iat": token_issue, "exp": token_expiration}
 
 
 async def get_user_from_token(token: str, session=None):
