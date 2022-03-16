@@ -58,8 +58,13 @@ class EmployeeHoursRouter:
             Front-end interaction can send requests to this endpoint with any valid date range, which would
             be useful for presenting total work hours over the course of a week, 2 weeks, a month, or a year.
 
+
             :param employee_id: The ID of the employee.
             :type employee_id: str, required
+            :param date_start: The starting date for the range of time sheets to query.
+            :type date_start: str, required
+            :param date_end: The ending date for the range of time sheets to query. If an ending date is not provided, it will only query the time sheets from the starting date.
+            :type date_end: str, optional
             :param token: The JSON Web Token responsible for authenticating the user to this endpoint.
             :type token: str, required
             :param session: The database session to use to retrieve all the employee data.
