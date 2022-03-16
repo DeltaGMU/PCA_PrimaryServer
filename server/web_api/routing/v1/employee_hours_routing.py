@@ -51,7 +51,7 @@ class EmployeeHoursRouter:
 
     class Read:
         @staticmethod
-        @router.get(ENV_SETTINGS.API_ROUTES.Timesheet.one_timesheet, status_code=status.HTTP_200_OK)
+        @router.post(ENV_SETTINGS.API_ROUTES.Timesheet.one_timesheet, status_code=status.HTTP_200_OK)
         async def read_employee_time_sheets(employee_id: str, employee_hours: PydanticReadEmployeeTimesheet, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint to accumulate and return the total work hours, pto hours, overtime/extra hours for an employee within a provided date range.
