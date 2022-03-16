@@ -183,7 +183,8 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="web_api.html">Web API Documentation</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="api_response_model.html">API Response Models</a></li>
 <li class="toctree-l4"><a class="reference internal" href="api_status.html">API Status</a></li>
-<li class="toctree-l4"><a class="reference internal" href="api_employees.html">Employees API - WORK IN PROGRESS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api_employees.html">Employees API</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api_timesheets.html">Employees API</a></li>
 <li class="toctree-l4"><a class="reference internal" href="api_students.html">Students API - WORK IN PROGRESS</a></li>
 </ul>
 </li>
@@ -251,13 +252,25 @@
   <tr>
     <td></td>
     <td>
+        <a href="api_employees.html#get--api-v1-employees--employee_id-"><code class="xref">GET /api/v1/employees/:{employee_id}:</code></a></td><td>
+    <em></em></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+        <a href="api_employees.html#get--api-v1-employees-all"><code class="xref">GET /api/v1/employees/all</code></a></td><td>
+    <em></em></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
         <a href="api_employees.html#get--api-v1-employees-count"><code class="xref">GET /api/v1/employees/count</code></a></td><td>
     <em></em></td>
   </tr>
   <tr>
     <td></td>
     <td>
-        <a href="api_employees.html#get--api-v1-employees-hours"><code class="xref">GET /api/v1/employees/hours</code></a></td><td>
+        <a href="api_employees.html#get--api-v1-employees-token"><code class="xref">GET /api/v1/employees/token</code></a></td><td>
     <em></em></td>
   </tr>
   <tr>
@@ -281,25 +294,13 @@
   <tr>
     <td></td>
     <td>
-        <a href="api_employees.html#post--api-v1-employees-hours-add"><code class="xref">POST /api/v1/employees/hours/add</code></a></td><td>
+        <a href="api_timesheets.html#get--api-v1-timesheet--employee_id-"><code class="xref">GET /api/v1/timesheet/:{employee_id}:</code></a></td><td>
     <em></em></td>
   </tr>
   <tr>
     <td></td>
     <td>
-        <a href="api_employees.html#post--api-v1-employees-new"><code class="xref">POST /api/v1/employees/new</code></a></td><td>
-    <em></em></td>
-  </tr>
-  <tr>
-    <td></td>
-    <td>
-        <a href="api_employees.html#post--api-v1-employees-remove"><code class="xref">POST /api/v1/employees/remove</code></a></td><td>
-    <em></em></td>
-  </tr>
-  <tr>
-    <td></td>
-    <td>
-        <a href="api_employees.html#post--api-v1-employees-verify"><code class="xref">POST /api/v1/employees/verify</code></a></td><td>
+        <a href="api_employees.html#post--api-v1-employees"><code class="xref">POST /api/v1/employees</code></a></td><td>
     <em></em></td>
   </tr>
   <tr>
@@ -312,6 +313,30 @@
     <td></td>
     <td>
         <a href="api_students.html#post--api-v1-students-new"><code class="xref">POST /api/v1/students/new</code></a></td><td>
+    <em></em></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+        <a href="api_timesheets.html#post--api-v1-timesheet--employee_id-"><code class="xref">POST /api/v1/timesheet/:{employee_id}:</code></a></td><td>
+    <em></em></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+        <a href="api_timesheets.html#put--api-v1-timesheet--employee_id-"><code class="xref">PUT /api/v1/timesheet/:{employee_id}:</code></a></td><td>
+    <em></em></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+        <a href="api_employees.html#delete--api-v1-employees"><code class="xref">DELETE /api/v1/employees</code></a></td><td>
+    <em></em></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+        <a href="api_timesheets.html#delete--api-v1-timesheet--employee_id-"><code class="xref">DELETE /api/v1/timesheet/:{employee_id}:</code></a></td><td>
     <em></em></td>
   </tr>
 </table>

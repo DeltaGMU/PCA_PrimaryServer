@@ -185,7 +185,8 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="web_api.html">Web API Documentation</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="api_response_model.html">API Response Models</a></li>
 <li class="toctree-l4"><a class="reference internal" href="api_status.html">API Status</a></li>
-<li class="toctree-l4"><a class="reference internal" href="api_employees.html">Employees API - WORK IN PROGRESS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api_employees.html">Employees API</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api_timesheets.html">Employees API</a></li>
 <li class="toctree-l4"><a class="reference internal" href="api_students.html">Students API - WORK IN PROGRESS</a></li>
 </ul>
 </li>
@@ -234,27 +235,55 @@ The Pydantic data classes are used in requests to the API for ensuring that data
 For example, creating a new student record through a request to the API will require a Pydantic student data class to define the attributes needed
 to create the student entity in the database and validate the data that is sent in the request.</p>
 <dl class="py class">
-<dt class="sig sig-object py" id="server.lib.data_classes.student.PydanticStudent">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.lib.data_classes.student.</span></span><span class="sig-name descname"><span class="pre">PydanticStudent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.lib.data_classes.student.PydanticStudent" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="server.lib.data_classes.student.PydanticStudentRegistration">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.lib.data_classes.student.</span></span><span class="sig-name descname"><span class="pre">PydanticStudentRegistration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">car_pool_number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent_full_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent_primary_email</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent_secondary_email</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_enabled</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enable_notifications</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.lib.data_classes.student.PydanticStudentRegistration" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">pydantic.main.BaseModel</span></code></p>
 <p>A Pydantic class used to represent a student entity when creating a new student record from a http request to the API.
 Do not try to initialize this class as an independent entity or extend it into a subclass.</p>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="server.lib.data_classes.student.PydanticStudent.first_name">
-<span class="sig-name descname"><span class="pre">first_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#server.lib.data_classes.student.PydanticStudent.first_name" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="server.lib.data_classes.student.PydanticStudentRegistration.car_pool_number">
+<span class="sig-name descname"><span class="pre">car_pool_number</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#server.lib.data_classes.student.PydanticStudentRegistration.car_pool_number" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="server.lib.data_classes.student.PydanticStudent.last_name">
-<span class="sig-name descname"><span class="pre">last_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#server.lib.data_classes.student.PydanticStudent.last_name" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="server.lib.data_classes.student.PydanticStudentRegistration.enable_notifications">
+<span class="sig-name descname"><span class="pre">enable_notifications</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#server.lib.data_classes.student.PydanticStudentRegistration.enable_notifications" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="server.lib.data_classes.student.PydanticStudentRegistration.first_name">
+<span class="sig-name descname"><span class="pre">first_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#server.lib.data_classes.student.PydanticStudentRegistration.first_name" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="server.lib.data_classes.student.PydanticStudentRegistration.is_enabled">
+<span class="sig-name descname"><span class="pre">is_enabled</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">bool</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#server.lib.data_classes.student.PydanticStudentRegistration.is_enabled" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="server.lib.data_classes.student.PydanticStudentRegistration.last_name">
+<span class="sig-name descname"><span class="pre">last_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#server.lib.data_classes.student.PydanticStudentRegistration.last_name" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="server.lib.data_classes.student.PydanticStudentRegistration.parent_full_name">
+<span class="sig-name descname"><span class="pre">parent_full_name</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#server.lib.data_classes.student.PydanticStudentRegistration.parent_full_name" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="server.lib.data_classes.student.PydanticStudentRegistration.parent_primary_email">
+<span class="sig-name descname"><span class="pre">parent_primary_email</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#server.lib.data_classes.student.PydanticStudentRegistration.parent_primary_email" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="server.lib.data_classes.student.PydanticStudentRegistration.parent_secondary_email">
+<span class="sig-name descname"><span class="pre">parent_secondary_email</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#server.lib.data_classes.student.PydanticStudentRegistration.parent_secondary_email" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 </dd></dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="server.lib.data_classes.student.Student">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.lib.data_classes.student.</span></span><span class="sig-name descname"><span class="pre">Student</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">student_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enabled</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.lib.data_classes.student.Student" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.lib.data_classes.student.</span></span><span class="sig-name descname"><span class="pre">Student</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">student_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">first_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contact_info_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enabled</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.lib.data_classes.student.Student" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sqlalchemy.orm.decl_api.Base</span></code></p>
 <p>A MariaDB data class that represents the table structure of the student table in the database server.
 This is replicated in the server code to ensure that the data being sent to and received from the database are valid.
 Do not attempt to manually modify this class or extend it into a subclass.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="server.lib.data_classes.student.Student.ContactInfoID">
+<span class="sig-name descname"><span class="pre">ContactInfoID</span></span><a class="headerlink" href="#server.lib.data_classes.student.Student.ContactInfoID" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="server.lib.data_classes.student.Student.EntryCreated">
 <span class="sig-name descname"><span class="pre">EntryCreated</span></span><a class="headerlink" href="#server.lib.data_classes.student.Student.EntryCreated" title="Permalink to this definition">#</a></dt>
@@ -280,10 +309,24 @@ Do not attempt to manually modify this class or extend it into a subclass.</p>
 <span class="sig-name descname"><span class="pre">StudentID</span></span><a class="headerlink" href="#server.lib.data_classes.student.Student.StudentID" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 <dl class="py method">
+<dt class="sig sig-object py" id="server.lib.data_classes.student.Student.as_detail_dict">
+<span class="sig-name descname"><span class="pre">as_detail_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#server.lib.data_classes.student.Student.as_detail_dict" title="Permalink to this definition">#</a></dt>
+<dd><p>A utility method to convert the class attributes into a dictionary format.
+This is useful for representing the entity in a JSON format for a request response.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Dictionary representation of the data class attributes.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Dict[str, any]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
 <dt class="sig sig-object py" id="server.lib.data_classes.student.Student.as_dict">
 <span class="sig-name descname"><span class="pre">as_dict</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#server.lib.data_classes.student.Student.as_dict" title="Permalink to this definition">#</a></dt>
 <dd><p>A utility method to convert the class attributes into a dictionary format.
-This is useful for representing the entity in a JSON format for a request response.</p>
+This web friendly version hides the internal IDs, and other metadata information.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Dictionary representation of the data class attributes.</p>

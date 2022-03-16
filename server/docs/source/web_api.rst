@@ -8,4 +8,5 @@ Web API Documentation
    api_response_model
    api_status
    api_employees
+   api_timesheets
    api_students

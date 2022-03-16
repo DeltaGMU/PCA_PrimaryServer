@@ -185,7 +185,8 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="web_api.html">Web API Documentation</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="api_response_model.html">API Response Models</a></li>
 <li class="toctree-l4"><a class="reference internal" href="api_status.html">API Status</a></li>
-<li class="toctree-l4"><a class="reference internal" href="api_employees.html">Employees API - WORK IN PROGRESS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api_employees.html">Employees API</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api_timesheets.html">Employees API</a></li>
 <li class="toctree-l4"><a class="reference internal" href="api_students.html">Students API - WORK IN PROGRESS</a></li>
 </ul>
 </li>
@@ -226,34 +227,34 @@
           </label>
         </div>
         <article role="main">
-          <section id="module-server.services.web_service">
-<span id="web-service-documentation"></span><h1>Web Service Documentation<a class="headerlink" href="#module-server.services.web_service" title="Permalink to this headline">#</a></h1>
+          <section id="module-server.web_api.web_service">
+<span id="web-service-documentation"></span><h1>Web Service Documentation<a class="headerlink" href="#module-server.web_api.web_service" title="Permalink to this headline">#</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="server.services.web_service.UvicornServer">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.services.web_service.</span></span><span class="sig-name descname"><span class="pre">UvicornServer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.services.web_service.UvicornServer" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="server.web_api.web_service.UvicornServer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.web_api.web_service.</span></span><span class="sig-name descname"><span class="pre">UvicornServer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.web_service.UvicornServer" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">uvicorn.server.Server</span></code></p>
 <p>The internal uvicorn server handler class that overrides the base uvicorn server
 configuration with updated thread handling.
 Do not modify this code!</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="server.services.web_service.UvicornServer.install_signal_handlers">
-<span class="sig-name descname"><span class="pre">install_signal_handlers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#server.services.web_service.UvicornServer.install_signal_handlers" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="server.web_api.web_service.UvicornServer.install_signal_handlers">
+<span class="sig-name descname"><span class="pre">install_signal_handlers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#server.web_api.web_service.UvicornServer.install_signal_handlers" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="server.services.web_service.UvicornServer.run_in_thread">
-<span class="sig-name descname"><span class="pre">run_in_thread</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#server.services.web_service.UvicornServer.run_in_thread" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="server.web_api.web_service.UvicornServer.run_in_thread">
+<span class="sig-name descname"><span class="pre">run_in_thread</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.web_service.UvicornServer.run_in_thread" title="Permalink to this definition">#</a></dt>
 <dd></dd></dl>
 </dd></dl>
 <dl class="py class">
-<dt class="sig sig-object py" id="server.services.web_service.WebService">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.services.web_service.</span></span><span class="sig-name descname"><span class="pre">WebService</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_https</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ssl_cert</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ssl_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.services.web_service.WebService" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="server.web_api.web_service.WebService">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.web_api.web_service.</span></span><span class="sig-name descname"><span class="pre">WebService</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">host</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_https</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ssl_cert</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ssl_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.web_service.WebService" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>This web service class manages the state of the web server that serves the REST API endpoints to
 the web interfaces. Please make sure that this is the last module that is initialized in the application.
 It contains methods to initialize and stop the Uvicorn web server.</p>
 <dl class="py method">
-<dt class="sig sig-object py" id="server.services.web_service.WebService.initialize_web">
-<span class="sig-name descname"><span class="pre">initialize_web</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#server.services.web_service.WebService.initialize_web" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="server.web_api.web_service.WebService.initialize_web">
+<span class="sig-name descname"><span class="pre">initialize_web</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.web_service.WebService.initialize_web" title="Permalink to this definition">#</a></dt>
 <dd><p>Initializes the uvicorn web server for the FastAPI endpoints with the configuration parameters
 provided in the class constructor.</p>
 <dl class="field-list simple">
@@ -263,8 +264,8 @@ provided in the class constructor.</p>
 </dl>
 </dd></dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="server.services.web_service.WebService.stop_web">
-<span class="sig-name descname"><span class="pre">stop_web</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#server.services.web_service.WebService.stop_web" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object py" id="server.web_api.web_service.WebService.stop_web">
+<span class="sig-name descname"><span class="pre">stop_web</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.web_service.WebService.stop_web" title="Permalink to this definition">#</a></dt>
 <dd><p>Sets the stop flag for the running API server thread if the uvicorn web server is currently active.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>

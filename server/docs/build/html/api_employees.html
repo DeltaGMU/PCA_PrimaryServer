@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Students API - WORK IN PROGRESS" href="api_students.html" /><link rel="prev" title="API Status" href="api_status.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Employees API" href="api_timesheets.html" /><link rel="prev" title="API Status" href="api_status.html" />
 
     <meta name="generator" content="sphinx-4.4.0, furo 2022.02.23"/>
-        <title>Employees API - WORK IN PROGRESS - PCA Project 0.0.1 documentation</title>
+        <title>Employees API - PCA Project 0.0.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=3c656993158f05539f962c5cea52a5e6c184bb8c" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=25ceb02ed1c46dc30f2321ff83e92799f69dfdb9" />
@@ -185,7 +185,8 @@
 <li class="toctree-l3 current has-children"><a class="reference internal" href="web_api.html">Web API Documentation</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="api_response_model.html">API Response Models</a></li>
 <li class="toctree-l4"><a class="reference internal" href="api_status.html">API Status</a></li>
-<li class="toctree-l4 current current-page"><a class="current reference internal" href="#">Employees API - WORK IN PROGRESS</a></li>
+<li class="toctree-l4 current current-page"><a class="current reference internal" href="#">Employees API</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api_timesheets.html">Employees API</a></li>
 <li class="toctree-l4"><a class="reference internal" href="api_students.html">Students API - WORK IN PROGRESS</a></li>
 </ul>
 </li>
@@ -226,50 +227,12 @@
           </label>
         </div>
         <article role="main">
-          <section id="employees-api-work-in-progress">
-<h1>Employees API - WORK IN PROGRESS<a class="headerlink" href="#employees-api-work-in-progress" title="Permalink to this headline">#</a></h1>
+          <section id="employees-api">
+<h1>Employees API<a class="headerlink" href="#employees-api" title="Permalink to this headline">#</a></h1>
 <p>This page highlights the different endpoints that are available
-to the web interface to interact with employee data and employee hours data.</p>
+to the web interface to interact with employee data.</p>
 <section id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">#</a></h2>
-<dl class="http get">
-<dt class="sig sig-object http" id="get--api-v1-employees">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/v1/employees</span></span><a class="headerlink" href="#get--api-v1-employees" title="Permalink to this definition">#</a></dt>
-<dd><p>An endpoint that retrieves all the employees from the database and formats it into a list.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Status Codes</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – When the list of employees is successfully retrieved from the database.</p></li>
-</ul>
-</dd>
-</dl>
-<p><strong>Example request</strong>:</p>
-<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/v1/employees</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
-</pre></div>
-</div>
-<p><strong>Example response</strong>:</p>
-<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
-<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
-
-<span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="mi">200</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"success"</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">      </span><span class="nt">"employees"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"></span>
-<span class="w">          </span><span class="p">{</span><span class="w"></span>
-<span class="w">              </span><span class="nt">"employee_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"jsmith300"</span><span class="p">,</span><span class="w"></span>
-<span class="w">              </span><span class="nt">"first_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"John"</span><span class="p">,</span><span class="w"></span>
-<span class="w">              </span><span class="nt">"last_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Smith"</span><span class="p">,</span><span class="w"></span>
-<span class="w">              </span><span class="nt">"password_hash"</span><span class="p">:</span><span class="w"> </span><span class="s2">"$2b$12$vS1yUX3qYgrR3PUQhj0/8e55bOiTgU5prMgbaIHxLsD6VkQRtp4kS"</span><span class="p">,</span><span class="w"></span>
-<span class="w">              </span><span class="nt">"is_enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"></span>
-<span class="w">              </span><span class="nt">"entry_created"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2022-03-01T09:46:58"</span><span class="w"></span>
-<span class="w">          </span><span class="p">}</span><span class="w"></span>
-<span class="w">      </span><span class="p">]</span><span class="w"></span>
-<span class="w">  </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
-</pre></div>
-</div>
-</dd></dl>
 <dl class="http get">
 <dt class="sig sig-object http" id="get--api-v1-employees-count">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/v1/employees/count</span></span><a class="headerlink" href="#get--api-v1-employees-count" title="Permalink to this definition">#</a></dt>
@@ -283,6 +246,11 @@ to the web interface to interact with employee data and employee hours data.</p>
 </dl>
 <p><strong>Example request</strong>:</p>
 <div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/v1/employees/count</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+Headers:
+{
+    "Authorization": "Bearer &lt;access_token&gt;"
+}
 </pre></div>
 </div>
 <p><strong>Example response</strong>:</p>
@@ -290,24 +258,223 @@ to the web interface to interact with employee data and employee hours data.</p>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 
 <span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="mi">200</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"success"</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">      </span><span class="nt">"count"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
-<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="mi">200</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"success"</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">"count"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--api-v1-employees-all">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/v1/employees/all</span></span><a class="headerlink" href="#get--api-v1-employees-all" title="Permalink to this definition">#</a></dt>
+<dd><p>An endpoint that retrieves all the employees from the database and formats it into a list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Status Codes</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – When the list of employees is successfully retrieved from the database.</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/v1/employees/all</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+Headers:
+{
+    "Authorization": "Bearer &lt;access_token&gt;"
+}
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span>HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+    "status": 200,
+    "message": "success",
+    "data": {
+        "employees": [
+            {
+                "employee_id": "jsmith300",
+                "first_name": "John",
+                "last_name": "Smith",
+                "is_enabled": true
+            },
+            {
+                "employee_id": jsmith301",
+                "first_name": "Johnny",
+                "last_name": "Smith",
+                "is_enabled": false
+            }
+            ......
+        ]
+    }
+}
+</pre></div>
+</div>
+</dd></dl>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--api-v1-employees">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/v1/employees</span></span><a class="headerlink" href="#get--api-v1-employees" title="Permalink to this definition">#</a></dt>
+<dd><p>An endpoint that retrieves multiple specific employees from the database and formats it into a list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>employee_ids</strong> – A list of employee IDs to retrieve employees from the database.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Status Codes</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – When the list of employees is successfully retrieved from the database.</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/v1/employees</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+Headers:
+{
+    "Authorization": "Bearer &lt;access_token&gt;"
+}
+Body:
+{
+    "employee_ids": ["jsmith300", "jsmith301"]
+}
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span>HTTP/1.1 200 OK
+Content-Type: application/json
+
+{
+    "status": 200,
+    "message": "success",
+    "data": {
+        "employees": [
+            {
+                "employee_id": "jsmith300",
+                "first_name": "John",
+                "last_name": "Smith",
+                "is_enabled": true
+            },
+            {
+                "employee_id": jsmith301",
+                "first_name": "Johnny",
+                "last_name": "Smith",
+                "is_enabled": false
+            }
+            ......
+        ]
+    }
+}
+</pre></div>
+</div>
+</dd></dl>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--api-v1-employees--employee_id-">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/v1/employees/:{employee_id}:</span></span><a class="headerlink" href="#get--api-v1-employees--employee_id-" title="Permalink to this definition">#</a></dt>
+<dd><p>An endpoint that retrieves detailed employee information from the database by providing the ID in the URL.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Status Codes</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – When the detailed employee information is successfully retrieved from the database.</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/v1/employees/:{employee_id}:</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+URL: &lt;server_url&gt;/api/v1/employees/jsmith317
+Headers:
+{
+    "Authorization": "Bearer &lt;access_token&gt;"
+}
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="mi">200</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"success"</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">"employees"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="nt">"employee_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"jsmith317"</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nt">"first_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"john"</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nt">"last_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"smith"</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nt">"role"</span><span class="p">:</span><span class="w"> </span><span class="s2">"teacher"</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nt">"full_name_of_contact"</span><span class="p">:</span><span class="w"> </span><span class="s2">"john smith"</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nt">"primary_email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"johnsmith123@email.com"</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nt">"secondary_email"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nt">"enable_notifications"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nt">"is_enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--api-v1-employees-token">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/v1/employees/token</span></span><a class="headerlink" href="#get--api-v1-employees-token" title="Permalink to this definition">#</a></dt>
+<dd><p>An endpoint that retrieves basic employee information such as the employee ID, first name, last name, and status from the access token.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Status Codes</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – When the employee is successfully retrieved from the database.</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Example request</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/v1/employees/token</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
+
+Headers:
+{
+    "Authorization": "Bearer &lt;access_token&gt;"
+}
+</pre></div>
+</div>
+<p><strong>Example response</strong>:</p>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
+<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
+
+<span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="mi">200</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"success"</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">"employees"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="nt">"employee_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"jsmith317"</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nt">"first_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"john"</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nt">"last_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"smith"</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nt">"role"</span><span class="p">:</span><span class="w"> </span><span class="s2">"teacher"</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nt">"full_name_of_contact"</span><span class="p">:</span><span class="w"> </span><span class="s2">"john smith"</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nt">"primary_email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"johnsmith123@email.com"</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nt">"secondary_email"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nt">"enable_notifications"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nt">"is_enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 </dd></dl>
 <dl class="http post">
-<dt class="sig sig-object http" id="post--api-v1-employees-new">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/v1/employees/new</span></span><a class="headerlink" href="#post--api-v1-employees-new" title="Permalink to this definition">#</a></dt>
+<dt class="sig sig-object http" id="post--api-v1-employees">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/v1/employees</span></span><a class="headerlink" href="#post--api-v1-employees" title="Permalink to this definition">#</a></dt>
 <dd><p>An endpoint to create a new employee entity and adds it to the employees’ table in the database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>first_name</strong> – The first name of the new employee.</p></li>
 <li><p><strong>last_name</strong> – The last name of the new employee.</p></li>
+<li><p><strong>plain_password</strong> – The plain-text password for the next employee account.</p></li>
+<li><p><strong>primary_email</strong> – The primary email contact for the employee.</p></li>
+<li><p><strong>[Optional]</strong> (<em>is_enabled</em>) – The secondary email contact for the employee.</p></li>
+<li><p><strong>[Optional]</strong> – Enable or disable email notifications, enabled by default.</p></li>
+<li><p><strong>[Optional]</strong> – Enable or disable the new account, enabled by default.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Status Codes</dt>
@@ -318,14 +485,22 @@ to the web interface to interact with employee data and employee hours data.</p>
 </dd>
 </dl>
 <p><strong>Example request</strong>:</p>
-<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/v1/employees/new</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
-<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
-
-<span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="nt">"first_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"John"</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">"last_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Smith"</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">"plain_password"</span><span class="p">:</span><span class="w"> </span><span class="s2">"john123"</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span>POST /api/v1/employees/new HTTP/1.1
+Headers:
+{
+    "Authorization": "Bearer &lt;access_token&gt;"
+}
+Body:
+{
+    "first_name": "John",
+    "last_name": "Smith",
+    "plain_password": "john123",
+    "role": "teacher"
+    "primary_email": "johnsmith123@email.com",
+    [OPTIONAL] "secondary_email": null,
+    [OPTIONAL] "enable_notifications": true,
+    [OPTIONAL] "is_enabled": true
+}
 </pre></div>
 </div>
 <p><strong>Example response</strong>:</p>
@@ -333,31 +508,32 @@ to the web interface to interact with employee data and employee hours data.</p>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 
 <span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="mi">201</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"success"</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">      </span><span class="nt">"employee"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">          </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">300</span><span class="p">,</span><span class="w"></span>
-<span class="w">          </span><span class="nt">"employee_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"jsmith300"</span><span class="p">,</span><span class="w"></span>
-<span class="w">          </span><span class="nt">"first_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"John"</span><span class="p">,</span><span class="w"></span>
-<span class="w">          </span><span class="nt">"last_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Smith"</span><span class="p">,</span><span class="w"></span>
-<span class="w">          </span><span class="nt">"password_hash"</span><span class="p">:</span><span class="w"> </span><span class="s2">"$2b$12$vS1yUX3qYgrR3PUQhj0/8e55bOiTgU5prMgbaIHxLsD6VkQRtp4kS"</span><span class="p">,</span><span class="w"></span>
-<span class="w">          </span><span class="nt">"is_enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"></span>
-<span class="w">          </span><span class="nt">"entry_created"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2022-03-01T09:46:58"</span><span class="w"></span>
-<span class="w">      </span><span class="p">}</span><span class="w"></span>
-<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="mi">201</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"success"</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">"employee"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="nt">"employee_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"jsmith318"</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nt">"first_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"john"</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nt">"last_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"smith"</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nt">"role_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"teacher"</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nt">"primary_email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"johnsmith123@email.com"</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nt">"secondary_email"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nt">"email_notifications_enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nt">"is_enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 </dd></dl>
-<dl class="http post">
-<dt class="sig sig-object http" id="post--api-v1-employees-remove">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/v1/employees/remove</span></span><a class="headerlink" href="#post--api-v1-employees-remove" title="Permalink to this definition">#</a></dt>
-<dd><p>An endpoint to delete an existing employee entity from the database.</p>
+<dl class="http delete">
+<dt class="sig sig-object http" id="delete--api-v1-employees">
+<span class="sig-name descname"><span class="pre">DELETE</span> </span><span class="sig-name descname"><span class="pre">/api/v1/employees</span></span><a class="headerlink" href="#delete--api-v1-employees" title="Permalink to this definition">#</a></dt>
+<dd><p>An endpoint to delete an existing employee record from the database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>employee_id</strong> – The employee ID of the employee to be removed.</p></li>
+<li><p><strong>employee_ids</strong> – The employee IDs of the employees to be removed provided as a list. If only one employee needs to be deleted, it can be provided as a string.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Status Codes</dt>
@@ -368,12 +544,17 @@ to the web interface to interact with employee data and employee hours data.</p>
 </dd>
 </dl>
 <p><strong>Example request</strong>:</p>
-<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/v1/employees/new</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
-<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
-
-<span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="nt">"employee_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"jsmith300"</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span>DELETE /api/v1/employees/new HTTP/1.1
+Headers:
+{
+    "Authorization": "Bearer &lt;access_token&gt;"
+}
+Body:
+{
+    "employee_ids": "jsmith300"
+    [OR]
+    "employee_ids": ["jsmith300", "jsmith301", "jsmith302"]
+}
 </pre></div>
 </div>
 <p><strong>Example response</strong>:</p>
@@ -381,148 +562,19 @@ to the web interface to interact with employee data and employee hours data.</p>
 <span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
 
 <span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="mi">200</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"success"</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">      </span><span class="nt">"employee"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">          </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">300</span><span class="p">,</span><span class="w"></span>
-<span class="w">          </span><span class="nt">"employee_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"jsmith300"</span><span class="p">,</span><span class="w"></span>
-<span class="w">          </span><span class="nt">"first_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"John"</span><span class="p">,</span><span class="w"></span>
-<span class="w">          </span><span class="nt">"last_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Smith"</span><span class="p">,</span><span class="w"></span>
-<span class="w">          </span><span class="nt">"password_hash"</span><span class="p">:</span><span class="w"> </span><span class="s2">"$2b$12$vS1yUX3qYgrR3PUQhj0/8e55bOiTgU5prMgbaIHxLsD6VkQRtp4kS"</span><span class="p">,</span><span class="w"></span>
-<span class="w">          </span><span class="nt">"is_enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"></span>
-<span class="w">          </span><span class="nt">"entry_created"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2022-03-01T09:46:58"</span><span class="w"></span>
-<span class="w">      </span><span class="p">}</span><span class="w"></span>
-<span class="w">  </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
-</pre></div>
-</div>
-</dd></dl>
-<dl class="http post">
-<dt class="sig sig-object http" id="post--api-v1-employees-verify">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/v1/employees/verify</span></span><a class="headerlink" href="#post--api-v1-employees-verify" title="Permalink to this definition">#</a></dt>
-<dd><p>An endpoint to verify the password of an employee with the hashed password stored in the database.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>employee_id</strong> – The employee ID of the employee.</p></li>
-<li><p><strong>password_text</strong> – The plain-text password of the employee attempting to verify their credentials.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Status Codes</dt>
-<dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – When the verification process is successfully completed.</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – When the employee ID or the provided password is invalid.</p></li>
-</ul>
-</dd>
-</dl>
-<p><strong>Example request</strong>:</p>
-<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/v1/employees/verify</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
-<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
-
-<span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="nt">"employee_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"jsmith300"</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">"password_text"</span><span class="p">:</span><span class="w"> </span><span class="s2">"john123"</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
-</pre></div>
-</div>
-<p><strong>Example response</strong>:</p>
-<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
-<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
-
-<span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="mi">200</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"success"</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">      </span><span class="nt">"verified"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w"></span>
-<span class="w">  </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
-</pre></div>
-</div>
-</dd></dl>
-<dl class="http get">
-<dt class="sig sig-object http" id="get--api-v1-employees-hours">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/api/v1/employees/hours</span></span><a class="headerlink" href="#get--api-v1-employees-hours" title="Permalink to this definition">#</a></dt>
-<dd><p>An endpoint that retrieves the total employee work hours from the given date range.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>employee_id</strong> – The employee ID of the employee.</p></li>
-<li><p><strong>date_start</strong> – The start date of the work hours to query in YYYY-MM-DD format.</p></li>
-<li><p><strong>date_end</strong> – The end date of the work hours to query in YYYY-MM-DD format.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Status Codes</dt>
-<dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.1">200 OK</a></span> – When the total employee work hours are successfully retrieved and calculated.</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – When the employee ID, start date, or end date is invalid.</p></li>
-</ul>
-</dd>
-</dl>
-<p><strong>Example request</strong>:</p>
-<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">GET</span> <span class="nn">/api/v1/employees/hours?employee_id=jsmith300&amp;date_start=2022-02-01&amp;date_end=2022-02-22</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
-</pre></div>
-</div>
-<p><strong>Example response</strong>:</p>
-<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">200</span> <span class="ne">OK</span>
-<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
-
-<span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="mi">200</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"success"</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">      </span><span class="nt">"hours"</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="w"></span>
-<span class="w">  </span><span class="p">}</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
-</pre></div>
-</div>
-</dd></dl>
-<dl class="http post">
-<dt class="sig sig-object http" id="post--api-v1-employees-hours-add">
-<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/api/v1/employees/hours/add</span></span><a class="headerlink" href="#post--api-v1-employees-hours-add" title="Permalink to this definition">#</a></dt>
-<dd><p>An endpoint to add work hours to an employee for a given date in YYYY-MM-DD format.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>employee_id</strong> – The employee ID of the employee.</p></li>
-<li><p><strong>hours_worked</strong> – The hours worked by the employee on the provided date.</p></li>
-<li><p><strong>date_worked</strong> – The date the employee worked for the provided hours.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Status Codes</dt>
-<dd class="field-even"><ul class="simple">
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.2.2">201 Created</a></span> – When the employee work hours are successfully added to the database.</p></li>
-<li><p><span><a class="reference external" href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html#sec10.4.1">400 Bad Request</a></span> – When the request body contains invalid parameters.</p></li>
-</ul>
-</dd>
-</dl>
-<p><strong>Example request</strong>:</p>
-<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="nf">POST</span> <span class="nn">/api/v1/employees/hours/add</span> <span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span>
-<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
-
-<span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="nt">"employee_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"jsmith300"</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">"hours_worked"</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">"date_worked"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2022-02-20"</span><span class="w"></span>
-<span class="p">}</span><span class="w"></span>
-</pre></div>
-</div>
-<p><strong>Example response</strong>:</p>
-<div class="highlight-http notranslate"><div class="highlight"><pre><span></span><span class="kr">HTTP</span><span class="o">/</span><span class="m">1.1</span> <span class="m">201</span> <span class="ne">OK</span>
-<span class="na">Content-Type</span><span class="o">:</span> <span class="l">application/json</span>
-
-<span class="p">{</span><span class="w"></span>
-<span class="w">  </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="mi">201</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"success"</span><span class="p">,</span><span class="w"></span>
-<span class="w">  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">      </span><span class="nt">"employee_hours"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">          </span><span class="nt">"DateWorked"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2022-02-20"</span><span class="p">,</span><span class="w"></span>
-<span class="w">          </span><span class="nt">"HoursWorked"</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w"></span>
-<span class="w">          </span><span class="nt">"EntryCreated"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2022-03-01T20:22:35"</span><span class="p">,</span><span class="w"></span>
-<span class="w">          </span><span class="nt">"EmployeeID"</span><span class="p">:</span><span class="w"> </span><span class="s2">"jsmith300"</span><span class="p">,</span><span class="w"></span>
-<span class="w">          </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">50</span><span class="w"></span>
-<span class="w">      </span><span class="p">}</span><span class="w"></span>
-<span class="w">  </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="mi">200</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"success"</span><span class="p">,</span><span class="w"></span>
+<span class="w">    </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">"employee"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">300</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nt">"employee_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"jsmith300"</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nt">"first_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"John"</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nt">"last_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Smith"</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nt">"password_hash"</span><span class="p">:</span><span class="w"> </span><span class="s2">"$2b$12$vS1yUX3qYgrR3PUQhj0/8e55bOiTgU5prMgbaIHxLsD6VkQRtp4kS"</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nt">"is_enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"></span>
+<span class="w">            </span><span class="nt">"entry_created"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2022-03-01T09:46:58"</span><span class="w"></span>
+<span class="w">        </span><span class="p">}</span><span class="w"></span>
+<span class="w">    </span><span class="p">}</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
@@ -532,10 +584,46 @@ to the web interface to interact with employee data and employee hours data.</p>
 <span id="implementation-documentation"></span><h2>Implementation Documentation<a class="headerlink" href="#module-server.web_api.routing.v1.employee_routing" title="Permalink to this headline">#</a></h2>
 <p>This module consists of FastAPI routing for Employees.
 This handles all the REST API logic for creating, reading, updating, and destroying employee-related data.</p>
-<dl class="py function">
-<dt class="sig sig-object py" id="server.web_api.routing.v1.employee_routing.delete_employee">
-<span class="sig-prename descclassname"><span class="pre">server.web_api.routing.v1.employee_routing.</span></span><span class="sig-name descname"><span class="pre">delete_employee</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">employee_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(OAuth2PasswordBearer)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_db_session)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.employee_routing.delete_employee" title="Permalink to this definition">#</a></dt>
-<dd><p>An endpoint to remove an employee entity from the employee’s table in the database.
+<dl class="py class">
+<dt class="sig sig-object py" id="server.web_api.routing.v1.employee_routing.EmployeesRouter">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.web_api.routing.v1.employee_routing.</span></span><span class="sig-name descname"><span class="pre">EmployeesRouter</span></span><a class="headerlink" href="#server.web_api.routing.v1.employee_routing.EmployeesRouter" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py class">
+<dt class="sig sig-object py" id="server.web_api.routing.v1.employee_routing.EmployeesRouter.Create">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Create</span></span><a class="headerlink" href="#server.web_api.routing.v1.employee_routing.EmployeesRouter.Create" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="server.web_api.routing.v1.employee_routing.EmployeesRouter.Create.register_new_employee">
+<em class="property"><span class="pre">async</span><span class="w"> </span><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">register_new_employee</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pyd_employee</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployeeRegistration" title="server.lib.data_classes.employee.PydanticEmployeeRegistration"><span class="pre">server.lib.data_classes.employee.PydanticEmployeeRegistration</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(OAuth2PasswordBearer)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_db_session)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.employee_routing.EmployeesRouter.Create.register_new_employee" title="Permalink to this definition">#</a></dt>
+<dd><p>An endpoint to create a new employee entity and adds it to the employees’ table in the database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pyd_employee</strong> (<a class="reference internal" href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployeeRegistration" title="server.lib.data_classes.employee.PydanticEmployeeRegistration"><em>PydanticEmployeeRegistration</em></a><em>, </em><em>required</em>) – The Pydantic Employee Registration reference. This means that HTTP requests to this endpoint must include the required fields in the <code class="docutils literal notranslate"><span class="pre">PydanticEmployeeRegistration</span></code>.</p></li>
+<li><p><strong>token</strong> (<em>str</em><em>, </em><em>required</em>) – The JSON Web Token responsible for authenticating the user to this endpoint.</p></li>
+<li><p><strong>session</strong> (<em>sqlalchemy.orm.Session</em><em>, </em><em>optional</em>) – The database session to use to register a new employee.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A response model containing the employee object that was created from the provided information with a generated employee ID and hashed password.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="api_response_model.html#server.web_api.models.ResponseModel" title="server.web_api.models.ResponseModel">server.web_api.models.ResponseModel</a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>HTTPException</strong> – If the provided request body contains any invalid parameters for the employee. This error may also be caused if the employee already exists in the database.</p>
+</dd>
+</dl>
+</dd></dl>
+</dd></dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="server.web_api.routing.v1.employee_routing.EmployeesRouter.Delete">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Delete</span></span><a class="headerlink" href="#server.web_api.routing.v1.employee_routing.EmployeesRouter.Delete" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="server.web_api.routing.v1.employee_routing.EmployeesRouter.Delete.delete_employee">
+<em class="property"><span class="pre">async</span><span class="w"> </span><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">delete_employee</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">employee_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(OAuth2PasswordBearer)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_db_session)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.employee_routing.EmployeesRouter.Delete.delete_employee" title="Permalink to this definition">#</a></dt>
+<dd><p>An endpoint to remove an employee record from the employee’s table in the database.
 Removal of an employee using this endpoint will permanently delete the employee record from the database
 and all records related to the employee record in other tables through a cascading delete.</p>
 <dl class="field-list simple">
@@ -557,10 +645,10 @@ and all records related to the employee record in other tables through a cascadi
 </dd>
 </dl>
 </dd></dl>
-<dl class="py function">
-<dt class="sig sig-object py" id="server.web_api.routing.v1.employee_routing.delete_employees">
-<span class="sig-prename descclassname"><span class="pre">server.web_api.routing.v1.employee_routing.</span></span><span class="sig-name descname"><span class="pre">delete_employees</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">employee_ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployeesRemoval" title="server.lib.data_classes.employee.PydanticEmployeesRemoval"><span class="pre">server.lib.data_classes.employee.PydanticEmployeesRemoval</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(OAuth2PasswordBearer)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_db_session)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.employee_routing.delete_employees" title="Permalink to this definition">#</a></dt>
-<dd><p>An endpoint to remove multiple employee entity from the employee’s table in the database.
+<dl class="py method">
+<dt class="sig sig-object py" id="server.web_api.routing.v1.employee_routing.EmployeesRouter.Delete.delete_employees">
+<em class="property"><span class="pre">async</span><span class="w"> </span><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">delete_employees</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">employee_ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployeesRemoval" title="server.lib.data_classes.employee.PydanticEmployeesRemoval"><span class="pre">server.lib.data_classes.employee.PydanticEmployeesRemoval</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(OAuth2PasswordBearer)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_db_session)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.employee_routing.EmployeesRouter.Delete.delete_employees" title="Permalink to this definition">#</a></dt>
+<dd><p>An endpoint to remove multiple employee records from the employee’s table in the database.
 Removal of multiple employees using this endpoint will permanently delete the employee records from the database
 and all records related to the employee records in other tables through a cascading delete.
 To remove multiple employee records, the employee IDs must be provided in a list.</p>
@@ -583,9 +671,14 @@ To remove multiple employee records, the employee IDs must be provided in a list
 </dd>
 </dl>
 </dd></dl>
-<dl class="py function">
-<dt class="sig sig-object py" id="server.web_api.routing.v1.employee_routing.read_all_employees">
-<span class="sig-prename descclassname"><span class="pre">server.web_api.routing.v1.employee_routing.</span></span><span class="sig-name descname"><span class="pre">read_all_employees</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(OAuth2PasswordBearer)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_db_session)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.employee_routing.read_all_employees" title="Permalink to this definition">#</a></dt>
+</dd></dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="server.web_api.routing.v1.employee_routing.EmployeesRouter.Read">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Read</span></span><a class="headerlink" href="#server.web_api.routing.v1.employee_routing.EmployeesRouter.Read" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="server.web_api.routing.v1.employee_routing.EmployeesRouter.Read.read_all_employees">
+<em class="property"><span class="pre">async</span><span class="w"> </span><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">read_all_employees</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(OAuth2PasswordBearer)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_db_session)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.employee_routing.EmployeesRouter.Read.read_all_employees" title="Permalink to this definition">#</a></dt>
 <dd><p>An endpoint that retrieves all the employees from the database and formats it into a list.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -605,13 +698,31 @@ To remove multiple employee records, the employee IDs must be provided in a list
 </dd>
 </dl>
 </dd></dl>
-<dl class="py function">
-<dt class="sig sig-object py" id="server.web_api.routing.v1.employee_routing.read_employee_from_token">
-<span class="sig-prename descclassname"><span class="pre">server.web_api.routing.v1.employee_routing.</span></span><span class="sig-name descname"><span class="pre">read_employee_from_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(OAuth2PasswordBearer)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.employee_routing.read_employee_from_token" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-<dl class="py function">
-<dt class="sig sig-object py" id="server.web_api.routing.v1.employee_routing.read_employees_count">
-<span class="sig-prename descclassname"><span class="pre">server.web_api.routing.v1.employee_routing.</span></span><span class="sig-name descname"><span class="pre">read_employees_count</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(OAuth2PasswordBearer)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_db_session)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.employee_routing.read_employees_count" title="Permalink to this definition">#</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="server.web_api.routing.v1.employee_routing.EmployeesRouter.Read.read_employee_from_token">
+<em class="property"><span class="pre">async</span><span class="w"> </span><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">read_employee_from_token</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(OAuth2PasswordBearer)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_db_session)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.employee_routing.EmployeesRouter.Read.read_employee_from_token" title="Permalink to this definition">#</a></dt>
+<dd><p>An endpoint that retrieves the employee from the database that matches a provided valid access token.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>token</strong> (<em>str</em><em>, </em><em>required</em>) – The JSON Web Token responsible for authenticating the user to this endpoint and to use to retrieve the employee.</p></li>
+<li><p><strong>session</strong> (<em>sqlalchemy.orm.session</em><em>, </em><em>optional</em>) – The database session to use to retrieve the employee data.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The employee found in the database that matches the provided access token. If there are no matching employees, an error is shown.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="api_response_model.html#server.web_api.models.ResponseModel" title="server.web_api.models.ResponseModel">server.web_api.models.ResponseModel</a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>HTTPException</strong> – If the authentication token is invalid or the employee does not exist.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="server.web_api.routing.v1.employee_routing.EmployeesRouter.Read.read_employees_count">
+<em class="property"><span class="pre">async</span><span class="w"> </span><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">read_employees_count</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(OAuth2PasswordBearer)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_db_session)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.employee_routing.EmployeesRouter.Read.read_employees_count" title="Permalink to this definition">#</a></dt>
 <dd><p>An endpoint that counts the number of employees that are registered in the database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -631,9 +742,32 @@ To remove multiple employee records, the employee IDs must be provided in a list
 </dd>
 </dl>
 </dd></dl>
-<dl class="py function">
-<dt class="sig sig-object py" id="server.web_api.routing.v1.employee_routing.read_one_employee">
-<span class="sig-prename descclassname"><span class="pre">server.web_api.routing.v1.employee_routing.</span></span><span class="sig-name descname"><span class="pre">read_one_employee</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">employee_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(OAuth2PasswordBearer)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_db_session)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.employee_routing.read_one_employee" title="Permalink to this definition">#</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="server.web_api.routing.v1.employee_routing.EmployeesRouter.Read.read_multiple_employees">
+<em class="property"><span class="pre">async</span><span class="w"> </span><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">read_multiple_employees</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">employee_ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="employee_data_class.html#server.lib.data_classes.employee.PydanticRetrieveMultipleEmployees" title="server.lib.data_classes.employee.PydanticRetrieveMultipleEmployees"><span class="pre">server.lib.data_classes.employee.PydanticRetrieveMultipleEmployees</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(OAuth2PasswordBearer)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_db_session)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.employee_routing.EmployeesRouter.Read.read_multiple_employees" title="Permalink to this definition">#</a></dt>
+<dd><p>An endpoint that retrieves a single employee from the database from the given employee ID</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>employee_ids</strong> (<em>str</em><em>, </em><em>required</em>) – The list of employee IDs.</p></li>
+<li><p><strong>token</strong> (<em>str</em><em>, </em><em>required</em>) – The JSON Web Token responsible for authenticating the user to this endpoint.</p></li>
+<li><p><strong>session</strong> (<em>sqlalchemy.orm.session</em><em>, </em><em>optional</em>) – The database session to use to retrieve the employee data.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The employees found in the database.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="api_response_model.html#server.web_api.models.ResponseModel" title="server.web_api.models.ResponseModel">server.web_api.models.ResponseModel</a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>HTTPException</strong> – If the authentication token is invalid, the provided request data is invalid, or one or more of the employees does not exist.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="server.web_api.routing.v1.employee_routing.EmployeesRouter.Read.read_one_employee">
+<em class="property"><span class="pre">async</span><span class="w"> </span><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">read_one_employee</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">employee_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(OAuth2PasswordBearer)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_db_session)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.employee_routing.EmployeesRouter.Read.read_one_employee" title="Permalink to this definition">#</a></dt>
 <dd><p>An endpoint that retrieves a single employee from the database from the given employee ID</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -654,32 +788,37 @@ To remove multiple employee records, the employee IDs must be provided in a list
 </dd>
 </dl>
 </dd></dl>
-<dl class="py function">
-<dt class="sig sig-object py" id="server.web_api.routing.v1.employee_routing.register_new_employee">
-<span class="sig-prename descclassname"><span class="pre">server.web_api.routing.v1.employee_routing.</span></span><span class="sig-name descname"><span class="pre">register_new_employee</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pyd_employee</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployeeRegistration" title="server.lib.data_classes.employee.PydanticEmployeeRegistration"><span class="pre">server.lib.data_classes.employee.PydanticEmployeeRegistration</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(OAuth2PasswordBearer)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_db_session)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.employee_routing.register_new_employee" title="Permalink to this definition">#</a></dt>
-<dd><p>An endpoint to create a new employee entity and adds it to the employees’ table in the database.</p>
+</dd></dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="server.web_api.routing.v1.employee_routing.EmployeesRouter.Update">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Update</span></span><a class="headerlink" href="#server.web_api.routing.v1.employee_routing.EmployeesRouter.Update" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="server.web_api.routing.v1.employee_routing.EmployeesRouter.Update.update_multiple_employees">
+<em class="property"><span class="pre">async</span><span class="w"> </span><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">update_multiple_employees</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">multi_employee_update</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="employee_data_class.html#server.lib.data_classes.employee.PydanticMultipleEmployeesUpdate" title="server.lib.data_classes.employee.PydanticMultipleEmployeesUpdate"><span class="pre">server.lib.data_classes.employee.PydanticMultipleEmployeesUpdate</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(OAuth2PasswordBearer)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_db_session)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.employee_routing.EmployeesRouter.Update.update_multiple_employees" title="Permalink to this definition">#</a></dt>
+<dd><p>An endpoint that updates a single employee from the database from the provided employee information and employee ID.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>pyd_employee</strong> (<a class="reference internal" href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployeeRegistration" title="server.lib.data_classes.employee.PydanticEmployeeRegistration"><em>PydanticEmployeeRegistration</em></a><em>, </em><em>required</em>) – The Pydantic Employee Registration reference. This means that HTTP requests to this endpoint must include the required fields in the <code class="docutils literal notranslate"><span class="pre">PydanticEmployeeRegistration</span></code>.</p></li>
+<li><p><strong>multi_employee_update</strong> (<a class="reference internal" href="employee_data_class.html#server.lib.data_classes.employee.PydanticMultipleEmployeesUpdate" title="server.lib.data_classes.employee.PydanticMultipleEmployeesUpdate"><em>PydanticMultipleEmployeesUpdate</em></a><em>, </em><em>required</em>) – A dictionary that consists of pairs of employee IDs and update information as per the <code class="docutils literal notranslate"><span class="pre">PydanticEmployeeUpdate</span></code> parameters.</p></li>
 <li><p><strong>token</strong> (<em>str</em><em>, </em><em>required</em>) – The JSON Web Token responsible for authenticating the user to this endpoint.</p></li>
-<li><p><strong>session</strong> (<em>sqlalchemy.orm.Session</em><em>, </em><em>optional</em>) – The database session to use to register a new employee.</p></li>
+<li><p><strong>session</strong> (<em>sqlalchemy.orm.session</em><em>, </em><em>optional</em>) – The database session to use to update the employee data.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A response model containing the employee object that was created from the provided information with a generated employee ID and hashed password.</p>
+<dd class="field-even"><p>A response model containing the employee updated in the database.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="api_response_model.html#server.web_api.models.ResponseModel" title="server.web_api.models.ResponseModel">server.web_api.models.ResponseModel</a></p>
 </dd>
 <dt class="field-even">Raises</dt>
-<dd class="field-even"><p><strong>HTTPException</strong> – If the provided request body contains any invalid parameters for the employee. This error may also be caused if the employee already exists in the database.</p>
+<dd class="field-even"><p><strong>HTTPException</strong> – If the authentication token is invalid or the employees could not be updated.</p>
 </dd>
 </dl>
 </dd></dl>
-<dl class="py function">
-<dt class="sig sig-object py" id="server.web_api.routing.v1.employee_routing.update_one_employee">
-<span class="sig-prename descclassname"><span class="pre">server.web_api.routing.v1.employee_routing.</span></span><span class="sig-name descname"><span class="pre">update_one_employee</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">employee_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">employee_update</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployeeUpdate" title="server.lib.data_classes.employee.PydanticEmployeeUpdate"><span class="pre">server.lib.data_classes.employee.PydanticEmployeeUpdate</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(OAuth2PasswordBearer)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_db_session)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.employee_routing.update_one_employee" title="Permalink to this definition">#</a></dt>
+<dl class="py method">
+<dt class="sig sig-object py" id="server.web_api.routing.v1.employee_routing.EmployeesRouter.Update.update_one_employee">
+<em class="property"><span class="pre">async</span><span class="w"> </span><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">update_one_employee</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">employee_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">employee_update</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployeeUpdate" title="server.lib.data_classes.employee.PydanticEmployeeUpdate"><span class="pre">server.lib.data_classes.employee.PydanticEmployeeUpdate</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(OAuth2PasswordBearer)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_db_session)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.employee_routing.EmployeesRouter.Update.update_one_employee" title="Permalink to this definition">#</a></dt>
 <dd><p>An endpoint that updates a single employee from the database from the provided employee information and employee ID.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -697,60 +836,10 @@ To remove multiple employee records, the employee IDs must be provided in a list
 <dd class="field-odd"><p><a class="reference internal" href="api_response_model.html#server.web_api.models.ResponseModel" title="server.web_api.models.ResponseModel">server.web_api.models.ResponseModel</a></p>
 </dd>
 <dt class="field-even">Raises</dt>
-<dd class="field-even"><p><strong>HTTPException</strong> – If the authentication token is invalid or the employee could not be retrieved.</p>
+<dd class="field-even"><p><strong>HTTPException</strong> – If the authentication token is invalid or the employee could not be updated.</p>
 </dd>
 </dl>
 </dd></dl>
-<span class="target" id="module-server.web_api.routing.v1.employee_hours_routing"></span><dl class="py class">
-<dt class="sig sig-object py" id="server.web_api.routing.v1.employee_hours_routing.EmployeesRouter">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.web_api.routing.v1.employee_hours_routing.</span></span><span class="sig-name descname"><span class="pre">EmployeesRouter</span></span><a class="headerlink" href="#server.web_api.routing.v1.employee_hours_routing.EmployeesRouter" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="py class">
-<dt class="sig sig-object py" id="server.web_api.routing.v1.employee_hours_routing.EmployeesRouter.Create">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Create</span></span><a class="headerlink" href="#server.web_api.routing.v1.employee_hours_routing.EmployeesRouter.Create" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-</dd></dl>
-<dl class="py class">
-<dt class="sig sig-object py" id="server.web_api.routing.v1.employee_hours_routing.EmployeesRouter.Delete">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Delete</span></span><a class="headerlink" href="#server.web_api.routing.v1.employee_hours_routing.EmployeesRouter.Delete" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-</dd></dl>
-<dl class="py class">
-<dt class="sig sig-object py" id="server.web_api.routing.v1.employee_hours_routing.EmployeesRouter.Read">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Read</span></span><a class="headerlink" href="#server.web_api.routing.v1.employee_hours_routing.EmployeesRouter.Read" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="py method">
-<dt class="sig sig-object py" id="server.web_api.routing.v1.employee_hours_routing.EmployeesRouter.Read.read_employee_work_hours">
-<span class="sig-name descname"><span class="pre">read_employee_work_hours</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">employee_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date_start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date_end</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(OAuth2PasswordBearer)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_db_session)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.employee_hours_routing.EmployeesRouter.Read.read_employee_work_hours" title="Permalink to this definition">#</a></dt>
-<dd><p>An endpoint to accumulate and return the total work hours, pto hours, overtime/extra hours for an employee within a provided date range.
-Front-end interaction can send requests to this endpoint with any valid date range, which would
-be useful for presenting total work hours over the course of a week, 2 weeks, a month, or a year.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>employee_id</strong> (<em>str</em>) – The ID of the employee that the work hours should be calculated for.</p></li>
-<li><p><strong>date_start</strong> (<em>str</em>) – The starting date of the work hours to be calculated, provided in YYYY-MM-DD format.</p></li>
-<li><p><strong>date_end</strong> (<em>str</em>) – The ending date of the work hours to be calculated, provided in YYYY-MM-DD format.</p></li>
-<li><p><strong>token</strong> (<em>str</em><em>, </em><em>required</em>) – The JSON Web Token responsible for authenticating the user to this endpoint.</p></li>
-<li><p><strong>session</strong> (<em>sqlalchemy.orm.session</em><em>, </em><em>optional</em>) – The database session to use to retrieve all the employee data.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A response model containing the total number of work hours from the days within the provided date range.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="api_response_model.html#server.web_api.models.ResponseModel" title="server.web_api.models.ResponseModel">server.web_api.models.ResponseModel</a></p>
-</dd>
-<dt class="field-even">Raises</dt>
-<dd class="field-even"><p><strong>HTTPException</strong> – If the provided employee has no hours logged into the system, or the employee does not exist in the database.</p>
-</dd>
-</dl>
-</dd></dl>
-</dd></dl>
-<dl class="py class">
-<dt class="sig sig-object py" id="server.web_api.routing.v1.employee_hours_routing.EmployeesRouter.Update">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Update</span></span><a class="headerlink" href="#server.web_api.routing.v1.employee_hours_routing.EmployeesRouter.Update" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 </dd></dl>
 </dd></dl>
 </section>
@@ -761,12 +850,12 @@ be useful for presenting total work hours over the course of a week, 2 weeks, a 
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="api_students.html">
+          <a class="next-page" href="api_timesheets.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Students API - WORK IN PROGRESS</div>
+                <div class="title">Employees API</div>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
@@ -813,7 +902,7 @@ be useful for presenting total work hours over the course of a week, 2 weeks, a 
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">Employees API - WORK IN PROGRESS</a><ul>
+<li><a class="reference internal" href="#">Employees API</a><ul>
 <li><a class="reference internal" href="#usage">Usage</a></li>
 <li><a class="reference internal" href="#module-server.web_api.routing.v1.employee_routing">Implementation Documentation</a></li>
 </ul>

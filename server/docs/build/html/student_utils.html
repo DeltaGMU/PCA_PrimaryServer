@@ -185,7 +185,8 @@
 <li class="toctree-l3 has-children"><a class="reference internal" href="web_api.html">Web API Documentation</a><input class="toctree-checkbox" id="toctree-checkbox-8" name="toctree-checkbox-8" role="switch" type="checkbox"/><label for="toctree-checkbox-8"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l4"><a class="reference internal" href="api_response_model.html">API Response Models</a></li>
 <li class="toctree-l4"><a class="reference internal" href="api_status.html">API Status</a></li>
-<li class="toctree-l4"><a class="reference internal" href="api_employees.html">Employees API - WORK IN PROGRESS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api_employees.html">Employees API</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api_timesheets.html">Employees API</a></li>
 <li class="toctree-l4"><a class="reference internal" href="api_students.html">Students API - WORK IN PROGRESS</a></li>
 </ul>
 </li>
@@ -233,7 +234,7 @@ For example, the <code class="docutils literal notranslate"><span class="pre">ge
 a new student record is being added to the database.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="server.lib.utils.student_utils.generate_student_id">
-<span class="sig-prename descclassname"><span class="pre">server.lib.utils.student_utils.</span></span><span class="sig-name descname"><span class="pre">generate_student_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">first_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">sqlalchemy.orm.session.Session</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#server.lib.utils.student_utils.generate_student_id" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.lib.utils.student_utils.</span></span><span class="sig-name descname"><span class="pre">generate_student_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">first_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">carpool_number</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">sqlalchemy.orm.session.Session</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#server.lib.utils.student_utils.generate_student_id" title="Permalink to this definition">#</a></dt>
 <dd><p>This utility method is used to generate a student ID from the given first name and last name.
 The ID format for students is: <code class="docutils literal notranslate"><span class="pre">&lt;first_name_initial&gt;&lt;full_last_name&gt;&lt;unique_record_id&gt;</span></code></p>
 <dl class="field-list simple">
@@ -241,7 +242,8 @@ The ID format for students is: <code class="docutils literal notranslate"><span 
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>first_name</strong> (<em>str</em><em>, </em><em>required</em>) – The first name of the student.</p></li>
 <li><p><strong>last_name</strong> (<em>str</em><em>, </em><em>required</em>) – The last name of the student.</p></li>
-<li><p><strong>session</strong> (<em>Session</em><em>, </em><em>optional</em>) – The database session to use to generate the student ID.</p></li>
+<li><p><strong>carpool_number</strong> (<em>int</em><em>, </em><em>required</em>) – The carpool number that corresponds to the student.</p></li>
+<li><p><strong>session</strong> (<em>sqlalchemy.orm.session</em><em>, </em><em>optional</em>) – The database session to use to create a unique student ID.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -249,6 +251,9 @@ The ID format for students is: <code class="docutils literal notranslate"><span 
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>str | None</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>RuntimeError</strong> – If any of the provided parameters are invalid, or there was a database issue with querying for student IDs.</p>
 </dd>
 </dl>
 </dd></dl>
