@@ -31,7 +31,21 @@ async def create_employee_multiple_hours(employee_id: str, employee_updates: Lis
                     timesheet.extra_hours,
                     timesheet.date_worked
                 )
-                session.add(timesheet_submission)
+                try:
+                    session.add(timesheet_submission)
+                except IntegrityError:
+                    session.query(
+                        EmployeeHours
+                    ).filter(
+                        EmployeeHours.EmployeeID == employee_id,
+                        EmployeeHours.DateWorked == timesheet.date_worked
+                    ).update(
+                        {
+                            EmployeeHours.WorkHours: timesheet.work_hours,
+                            EmployeeHours.PTOHours: timesheet.pto_hours,
+                            EmployeeHours.ExtraHours: timesheet.extra_hours
+                        }
+                    )
                 submitted_time_sheets.append(timesheet_submission)
             session.commit()
         else:
@@ -104,6 +118,15 @@ async def update_employee_hours(employee_id: str, date_worked: str, work_hours: 
     except IntegrityError as err:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(err)) from err
     return updated_hours
+
+
+async def delete_all_employee_time_sheets(employee_id: str, session: Session = None):
+    deletion_task = session.query(EmployeeHours).filter(
+        EmployeeHours.EmployeeID == employee_id.strip()
+    ).all().delete()
+    session.commit()
+    if deletion_task != 0:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Could not successfully remove all employee time sheets!")
 
 
 async def delete_employee_time_sheets(employee_id: str, dates_worked: PydanticEmployeeTimesheetRemoval, session: Session = None) -> List[EmployeeHours]:

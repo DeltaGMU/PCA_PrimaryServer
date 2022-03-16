@@ -4,7 +4,7 @@ from fastapi import status, Depends, HTTPException
 from config import ENV_SETTINGS
 from server.lib.database_access.employee_interface import is_admin
 from server.lib.data_classes.employee_hours import PydanticReadEmployeeTimesheet, PydanticEmployeeMultipleTimesheetSubmission, PydanticEmployeeTimesheetUpdate, PydanticEmployeeTimesheetRemoval
-from server.lib.database_access.employee_hours_interface import create_employee_multiple_hours, update_employee_hours, delete_employee_time_sheets, get_employee_hours_total
+from server.lib.database_access.employee_hours_interface import create_employee_multiple_hours, update_employee_hours, delete_employee_time_sheets, get_employee_hours_total, delete_all_employee_time_sheets
 from server.lib.database_manager import get_db_session
 from server.web_api.models import ResponseModel
 from server.web_api.web_security import oauth_scheme, token_is_valid, get_user_from_token
@@ -119,8 +119,34 @@ class EmployeeHoursRouter:
 
     class Delete:
         @staticmethod
+        @router.delete(ENV_SETTINGS.API_ROUTES.Timesheet.timesheet, status_code=status.HTTP_200_OK)
+        async def remove_all_employee_time_sheets(employee_id: str, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
+            """
+            An endpoint to delete all the time sheets for a specified employee.
+
+            :param employee_id: The ID of the employee.
+            :type employee_id: str, required
+            :param token: The JSON Web Token responsible for authenticating the user to this endpoint.
+            :type token: str, required
+            :param session: The database session to use to update the timesheet data.
+            :type session: sqlalchemy.orm.session, optional
+            :return: A response model displaying the success or failure of the deletion task.
+            :rtype: server.web_api.models.ResponseModel
+            :raises HTTPException: If the provided employee has no hours logged into the system, or the employee does not exist in the database.
+            """
+            if not await token_is_valid(token, ["administrator"]):
+                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
+            if employee_id is None or not isinstance(employee_id, str):
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The employee ID must be a valid string!")
+            employee = await get_user_from_token(token)
+            if employee is None or (employee.EmployeeID != employee_id.strip() and not await is_admin(employee)):
+                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="The user does not have sufficient permissions.")
+            await delete_all_employee_time_sheets(employee_id, session)
+            return ResponseModel(status.HTTP_200_OK, "success")
+
+        @staticmethod
         @router.delete(ENV_SETTINGS.API_ROUTES.Timesheet.one_timesheet, status_code=status.HTTP_200_OK)
-        async def delete_employee_time_sheets(employee_id: str, delete_employee_hours: PydanticEmployeeTimesheetRemoval,
+        async def remove_employee_time_sheets(employee_id: str, delete_employee_hours: PydanticEmployeeTimesheetRemoval,
                                               token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint to update the total work hours, pto hours, overtime/extra hours for an employee on a provided date.
