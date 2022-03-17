@@ -1,5 +1,5 @@
-Employees API
-===============
+Time Sheets API
+==================
 
 This page highlights the different endpoints that are available
 to the web interface to interact with employee timesheet data.

@@ -40,7 +40,6 @@ Usage
             }
         }
 
-
 ..  http:get:: /api/v1/employees/all
 
     An endpoint that retrieves all the employees from the database and formats it into a list.
@@ -60,7 +59,7 @@ Usage
 
     **Example response**:
 
-    ..  sourcecode:: http
+    .. sourcecode:: http
 
         HTTP/1.1 200 OK
         Content-Type: application/json
@@ -82,11 +81,9 @@ Usage
                         "last_name": "Smith",
                         "is_enabled": false
                     }
-                    ......
                 ]
             }
         }
-
 
 ..  http:get:: /api/v1/employees
 
@@ -97,7 +94,7 @@ Usage
 
     **Example request**:
 
-    ..  sourcecode:: http
+    .. sourcecode:: http
 
         GET /api/v1/employees HTTP/1.1
 
@@ -112,7 +109,7 @@ Usage
 
     **Example response**:
 
-    ..  sourcecode:: http
+    .. sourcecode:: http
 
         HTTP/1.1 200 OK
         Content-Type: application/json
@@ -148,7 +145,7 @@ Usage
 
     **Example request**:
 
-    ..  sourcecode:: http
+    .. sourcecode:: http
 
         GET /api/v1/employees/:{employee_id}: HTTP/1.1
 
@@ -160,7 +157,7 @@ Usage
 
     **Example response**:
 
-    ..  sourcecode:: http
+    .. sourcecode:: http
 
         HTTP/1.1 200 OK
         Content-Type: application/json
@@ -192,7 +189,7 @@ Usage
 
     **Example request**:
 
-    ..  sourcecode:: http
+    .. sourcecode:: http
 
         GET /api/v1/employees/token HTTP/1.1
 
@@ -203,7 +200,7 @@ Usage
 
     **Example response**:
 
-    ..  sourcecode:: http
+    .. sourcecode:: http
 
         HTTP/1.1 200 OK
         Content-Type: application/json
@@ -243,7 +240,7 @@ Usage
 
     **Example request**:
 
-    ..  sourcecode:: http
+    .. sourcecode:: http
 
         POST /api/v1/employees/new HTTP/1.1
         Headers:
@@ -264,7 +261,7 @@ Usage
 
     **Example response**:
 
-    ..  sourcecode:: http
+    .. sourcecode:: http
 
         HTTP/1.1 201 OK
         Content-Type: application/json
@@ -297,7 +294,7 @@ Usage
 
     **Example request**:
 
-    ..  sourcecode:: http
+    .. sourcecode:: http
 
         DELETE /api/v1/employees HTTP/1.1
         Headers:
@@ -313,7 +310,7 @@ Usage
 
     **Example response**:
 
-    ..  sourcecode:: http
+    .. sourcecode:: http
 
         HTTP/1.1 200 OK
         Content-Type: application/json

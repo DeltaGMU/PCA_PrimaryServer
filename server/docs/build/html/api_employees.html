@@ -3,7 +3,7 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Employees API" href="api_timesheets.html" /><link rel="prev" title="API Status" href="api_status.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Time Sheets API" href="api_timesheets.html" /><link rel="prev" title="API Status" href="api_status.html" />
 
     <meta name="generator" content="sphinx-4.4.0, furo 2022.02.23"/>
         <title>Employees API - PCA Project 0.0.1 documentation</title>
@@ -186,7 +186,7 @@
 <li class="toctree-l4"><a class="reference internal" href="api_response_model.html">API Response Models</a></li>
 <li class="toctree-l4"><a class="reference internal" href="api_status.html">API Status</a></li>
 <li class="toctree-l4 current current-page"><a class="current reference internal" href="#">Employees API</a></li>
-<li class="toctree-l4"><a class="reference internal" href="api_timesheets.html">Employees API</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api_timesheets.html">Time Sheets API</a></li>
 <li class="toctree-l4"><a class="reference internal" href="api_students.html">Students API - WORK IN PROGRESS</a></li>
 </ul>
 </li>
@@ -308,7 +308,6 @@ Content-Type: application/json
                 "last_name": "Smith",
                 "is_enabled": false
             }
-            ......
         ]
     }
 }
@@ -544,7 +543,7 @@ Body:
 </dd>
 </dl>
 <p><strong>Example request</strong>:</p>
-<div class="highlight-http notranslate"><div class="highlight"><pre><span></span>DELETE /api/v1/employees/new HTTP/1.1
+<div class="highlight-http notranslate"><div class="highlight"><pre><span></span>DELETE /api/v1/employees HTTP/1.1
 Headers:
 {
     "Authorization": "Bearer &lt;access_token&gt;"
@@ -566,11 +565,9 @@ Body:
 <span class="w">    </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"success"</span><span class="p">,</span><span class="w"></span>
 <span class="w">    </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">        </span><span class="nt">"employee"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">            </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">300</span><span class="p">,</span><span class="w"></span>
 <span class="w">            </span><span class="nt">"employee_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"jsmith300"</span><span class="p">,</span><span class="w"></span>
 <span class="w">            </span><span class="nt">"first_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"John"</span><span class="p">,</span><span class="w"></span>
 <span class="w">            </span><span class="nt">"last_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Smith"</span><span class="p">,</span><span class="w"></span>
-<span class="w">            </span><span class="nt">"password_hash"</span><span class="p">:</span><span class="w"> </span><span class="s2">"$2b$12$vS1yUX3qYgrR3PUQhj0/8e55bOiTgU5prMgbaIHxLsD6VkQRtp4kS"</span><span class="p">,</span><span class="w"></span>
 <span class="w">            </span><span class="nt">"is_enabled"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"></span>
 <span class="w">            </span><span class="nt">"entry_created"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2022-03-01T09:46:58"</span><span class="w"></span>
 <span class="w">        </span><span class="p">}</span><span class="w"></span>
@@ -855,7 +852,7 @@ To remove multiple employee records, the employee IDs must be provided in a list
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Employees API</div>
+                <div class="title">Time Sheets API</div>
               </div>
               <svg><use href="#svg-arrow-right"></use></svg>
             </a>
