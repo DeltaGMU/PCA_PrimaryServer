@@ -33,10 +33,23 @@ class EmployeeRole(Base):
         """
         self.Name = role_name
 
-    def as_dict(self):
+    def as_detail_dict(self):
         """
         A utility method to convert the class attributes into a dictionary format.
         This is useful for representing the entity in a JSON format for a request response.
+
+        :return: Dictionary representation of the data class attributes.
+        :rtype: Dict[str, any]
+        """
+        return {
+            "id": self.id,
+            "role": self.Name
+        }
+
+    def as_dict(self):
+        """
+        A utility method to convert the class attributes into a dictionary format.
+        This web friendly version hides the internal IDs, and other metadata information.
 
         :return: Dictionary representation of the data class attributes.
         :rtype: Dict[str, any]
