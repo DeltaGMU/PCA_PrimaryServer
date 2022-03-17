@@ -1,7 +1,6 @@
 from __future__ import annotations
 from typing import Dict, List
 from sqlalchemy.orm import Session
-from sqlalchemy.sql.functions import func
 from server.lib.utils.date_utils import check_date_formats
 from server.lib.data_classes.employee_hours import EmployeeHours, PydanticEmployeeTimesheetSubmission, PydanticEmployeeTimesheetRemoval
 from server.lib.database_manager import get_db_session
@@ -26,21 +25,22 @@ async def create_employee_multiple_hours(employee_id: str, employee_updates: Lis
                 timesheet.extra_hours,
                 timesheet.date_worked
             )
-            try:
-                session.add(timesheet_submission)
-            except IntegrityError:
-                session.query(
-                    EmployeeHours
-                ).filter(
+            timesheet_exists = session.query(EmployeeHours).filter(
+                EmployeeHours.EmployeeID == employee_id,
+                EmployeeHours.DateWorked == timesheet.date_worked
+            ).first()
+            if timesheet_exists:
+                print(f"DUPLICATE DETECTED - {timesheet.date_worked}")
+                session.query(EmployeeHours).filter(
                     EmployeeHours.EmployeeID == employee_id,
                     EmployeeHours.DateWorked == timesheet.date_worked
-                ).update(
-                    {
-                        EmployeeHours.WorkHours: timesheet.work_hours,
-                        EmployeeHours.PTOHours: timesheet.pto_hours,
-                        EmployeeHours.ExtraHours: timesheet.extra_hours
-                    }
-                )
+                ).update({
+                    EmployeeHours.WorkHours: timesheet.work_hours,
+                    EmployeeHours.PTOHours: timesheet.pto_hours,
+                    EmployeeHours.ExtraHours: timesheet.extra_hours
+                })
+            else:
+                session.add(timesheet_submission)
             submitted_time_sheets.append(timesheet_submission)
         session.commit()
     except IntegrityError as err:
@@ -113,12 +113,10 @@ async def update_employee_hours(employee_id: str, date_worked: str, work_hours: 
 
 
 async def delete_all_employee_time_sheets(employee_id: str, session: Session = None):
-    deletion_task = session.query(EmployeeHours).filter(
+    session.query(EmployeeHours).filter(
         EmployeeHours.EmployeeID == employee_id.strip()
-    ).all().delete()
+    ).delete()
     session.commit()
-    if deletion_task != 0:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Could not successfully remove all employee time sheets!")
 
 
 async def delete_employee_time_sheets(employee_id: str, dates_worked: PydanticEmployeeTimesheetRemoval, session: Session = None) -> List[EmployeeHours]:
@@ -160,10 +158,6 @@ async def get_employee_hours_list(employee_id: str, date_start: str, date_end: s
             EmployeeHours.EmployeeID == employee_id.strip(),
             EmployeeHours.DateWorked.between(date_start.strip(), date_end.strip())
         ).all()
-        if time_sheets is None:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
-                                detail="The employee has no hours logged into the system for the provided range"
-                                       " of dates or the employee is not in the database!")
     except IntegrityError as err:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(err)) from err
     return [*time_sheets]
@@ -173,26 +167,23 @@ async def get_employee_hours_total(employee_id: str, date_start: str, date_end: 
     if session is None:
         session = next(get_db_session())
     try:
-        total_hours = session.query(
-            func.sum(EmployeeHours.WorkHours).label('work_hours'),
-            func.sum(EmployeeHours.PTOHours).label('pto_hours'),
-            func.sum(EmployeeHours.ExtraHours).label('extra_hours')
-        ).filter(
-            EmployeeHours.EmployeeID == employee_id.strip(),
-            EmployeeHours.DateWorked.between(date_start.strip(), date_end.strip())
-        ).one()
-        employee_hours_list = await get_employee_hours_list(employee_id.strip(), date_start.strip(), date_end.strip())
-        if total_hours is None or None in (total_hours[0], total_hours[1], total_hours[2]) or employee_hours_list is None:
+        employee_hours_list = await get_employee_hours_list(employee_id.strip(), date_start.strip(), date_end.strip(), session)
+        if employee_hours_list is None:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                                 detail="The provided employee has no hours logged into the system, "
                                        "or the employee is not in the database!")
+        total_hours = {
+            "work_hours": 0,
+            "pto_hours": 0,
+            "extra_hours": 0
+        }
+        for record in employee_hours_list:
+            total_hours['work_hours'] += record.WorkHours
+            total_hours['pto_hours'] += record.PTOHours
+            total_hours['extra_hours'] += record.ExtraHours
         total_hours_and_list = {
-            "total_hours": {
-                "work_hours": total_hours[0],
-                "pto_hours": total_hours[1],
-                "extra_hours": total_hours[2],
-            },
-            "time_sheets": {f"{time_sheet.DateWorked}":time_sheet.as_dict() for time_sheet in employee_hours_list}
+            "total_hours": total_hours,
+            "time_sheets": {f"{time_sheet.DateWorked}": time_sheet.as_dict() for time_sheet in employee_hours_list}
         }
     except IntegrityError as err:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(err)) from err
