@@ -11,22 +11,24 @@ class PydanticResetToken(BaseModel):
 class ResetToken(Base):
     __tablename__ = 'reset_tokens'
     id = Column(Integer, primary_key=True, autoincrement=True, unique=True, nullable=False)
-    token = Column(VARCHAR(length=256), unique=True, nullable=False)
-    employee_id = foreign key
-    iss = Column(Integer, nullable=False)
-    exp = Column(Integer, nullable=False)
+    Token = Column(VARCHAR(length=256), unique=True, nullable=False)
+    EmployeeID = Column(VARCHAR(length=256), unique=True, nullable=False)
+    Iss = Column(Integer, nullable=False)
+    Exp = Column(Integer, nullable=False)
 
-    def __init__(self, token: str, iss: int, exp: int):
-        self.token = token
-        self.iss = iss
-        self.exp = exp
+    def __init__(self, token: str, employee_id: str, iss: int, exp: int):
+        self.Token = token
+        self.EmployeeID = employee_id
+        self.Iss = iss
+        self.Exp = exp
 
     def as_dict(self):
         return {
             "id": self.id,
-            "token": self.token,
-            "iss": self.iss,
-            "exp": self.exp
+            "token": self.Token,
+            "employee_id": self.EmployeeID,
+            "iss": self.Iss,
+            "exp": self.Exp
         }
 
 
