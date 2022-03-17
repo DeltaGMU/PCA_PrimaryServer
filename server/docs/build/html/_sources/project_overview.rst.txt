@@ -16,7 +16,7 @@ System Overview:
     .. image:: images/workflow_1.png
         :width: 600
 
-    The second part is the student childcare system. With this childcare system, parents and teachers
+    The second part is the student childcare system. With this childcare system, parents and employee
     are able to check-in/check-out the child from before-care and after-care with automatic invoice calculations.
     These calculations are available to the accountant who can download is as a neat report to input the pre-calculated invoice information into QuickBooks.
     This is shown in the image below:

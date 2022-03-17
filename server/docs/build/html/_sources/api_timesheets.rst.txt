@@ -148,7 +148,7 @@ Usage
     :param work_hours [OPTIONAL]: The Work hours that need to be updated.
     :param pto_hours [OPTIONAL]: The PTO hours that need to be updated.
     :param extra_hours [OPTIONAL]: The Extra/OT hours that need to be updated.
-    :status 200: When the employee time sheet is successfully updated for the given date.
+    :status 200: When the employee time sheets are successfully deleted for the given date.
     :status 400: When the request body is invalid, or the time sheet does not exist for the given date.
 
     **Example request**:
@@ -187,6 +187,45 @@ Usage
                     "date_worked": "2022-03-01"
                 }
             }
+        }
+
+
+..  http:delete:: /api/v1/timesheet:
+
+    An endpoint that deletes all the time sheets of an employee.
+
+    :param employee_id: The ID of the employee to remove time sheets from.
+    :status 200: When the employee time sheets are successfully deleted.
+    :status 400: When the request body is invalid, or the employee does not exist.
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+        DELETE /api/v1/timesheet
+
+        URL: /api/v1/timesheet
+        Headers:
+        {
+            "Authorization": "Bearer <access_token>"
+        }
+        Params:
+        {
+            "employee_id": "jsmith317"
+        }
+
+
+   **Example response**:
+
+   .. sourcecode:: http
+
+        HTTP/1.1 200 OK
+        Content-Type: application/json
+
+        {
+            "status": 200,
+            "message": "success",
+            "data": {}
         }
 
 
