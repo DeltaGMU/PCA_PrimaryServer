@@ -20,7 +20,7 @@ class EmployeeHoursRouter:
         @router.post(ENV_SETTINGS.API_ROUTES.Timesheet.one_timesheet, status_code=status.HTTP_201_CREATED)
         async def register_employee_time_sheets(employee_id: str, employee_time_sheets: PydanticEmployeeMultipleTimesheetSubmission, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
-            An endpoint to submit multiple time sheets for an employee with the work hours, pto hours, overtime/extra hours on a provided date.
+            An endpoint to submit (and/or update) multiple time sheets for an employee with the work hours, pto hours, overtime/extra hours on a provided date.
             Front-end interaction is required to provide an employee ID, work hours, and a work date. Providing PTO hours and extra/overtime hours
             are optional and will default to 0 for the date if not provided.
 
