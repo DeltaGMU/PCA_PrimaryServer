@@ -30,7 +30,7 @@ async def create_employee_multiple_hours(employee_id: str, employee_updates: Lis
                 EmployeeHours.DateWorked == timesheet.date_worked
             ).first()
             if timesheet_exists:
-                print(f"DUPLICATE DETECTED - {timesheet.date_worked}")
+                # Duplicate key detected, so just update the record instead.
                 session.query(EmployeeHours).filter(
                     EmployeeHours.EmployeeID == employee_id,
                     EmployeeHours.DateWorked == timesheet.date_worked
