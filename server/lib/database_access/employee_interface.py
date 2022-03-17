@@ -250,13 +250,13 @@ async def is_admin(user: Employee, session: Session = None) -> bool:
     return employee_is_admin
 
 
-async def is_teacher(user: Employee, session: Session = None) -> bool:
+async def is_employee(user: Employee, session: Session = None) -> bool:
     if user is None:
         raise RuntimeError('The user object was not provided! Please check for errors in the provided data!')
-    employee_is_teacher: bool = await is_employee_role(user, 'teacher', session)
-    if employee_is_teacher is None:
+    pca_employee: bool = await is_employee_role(user, 'employee', session)
+    if pca_employee is None:
         raise RuntimeError('The employee role could not be retrieved for the provided user. Please check for errors in the database or the provided data!')
-    return employee_is_teacher
+    return pca_employee
 
 
 async def get_employee_security_scopes(user: Employee, session: Session = None):
@@ -266,9 +266,9 @@ async def get_employee_security_scopes(user: Employee, session: Session = None):
     if employee_role is None:
         raise RuntimeError('The employee role could not be retrieved for the provided user. Please check for errors in the database or the provided data!')
     if employee_role.Name == 'administrator':
-        user_scopes = ['administrator', 'teacher']
-    elif employee_role.Name == 'teacher':
-        user_scopes = ['teacher']
+        user_scopes = ['administrator', 'employee']
+    elif employee_role.Name == 'employee':
+        user_scopes = ['employee']
     else:
         raise RuntimeError('The provided security scope is invalid! Please ensure that the security scope is in the database.')
     return user_scopes

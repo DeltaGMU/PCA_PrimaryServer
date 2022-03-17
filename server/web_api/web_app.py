@@ -77,7 +77,7 @@ async def login(data: OAuth2PasswordRequestForm = Depends()):
 
 @web_app.get(ENV_SETTINGS.API_ROUTES.me, status_code=status.HTTP_200_OK)
 async def logged_in_welcome(token: str = Depends(oauth_scheme)):
-    if not await token_is_valid(token, ["teacher"]):
+    if not await token_is_valid(token, ["employee"]):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
     user = await get_user_from_token(token, )
     if user is None:

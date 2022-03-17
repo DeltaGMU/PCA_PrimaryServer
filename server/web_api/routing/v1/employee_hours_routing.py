@@ -36,7 +36,7 @@ class EmployeeHoursRouter:
             :rtype: server.web_api.models.ResponseModel
             :raises HTTPException: If the provided timesheet information is invalid, or the employee does not exist in the database.
             """
-            if not await token_is_valid(token, ["teacher"]):
+            if not await token_is_valid(token, ["employee"]):
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
             if employee_id is None or not isinstance(employee_id, str):
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="The employee ID must be a valid string!")
@@ -73,7 +73,7 @@ class EmployeeHoursRouter:
             :rtype: server.web_api.models.ResponseModel
             :raises HTTPException: If the provided employee has no hours logged into the system, or the employee does not exist in the database.
             """
-            if not await token_is_valid(token, ["teacher"]):
+            if not await token_is_valid(token, ["employee"]):
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
             if employee_id is None or not isinstance(employee_id, str):
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The employee ID must be a valid string!")
@@ -105,7 +105,7 @@ class EmployeeHoursRouter:
             :rtype: server.web_api.models.ResponseModel
             :raises HTTPException: If the provided employee has no hours logged into the system, or the employee does not exist in the database.
             """
-            if not await token_is_valid(token, ["teacher"]):
+            if not await token_is_valid(token, ["employee"]):
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
             if employee_id is None or not isinstance(employee_id, str):
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The employee ID must be a valid string!")
@@ -164,7 +164,7 @@ class EmployeeHoursRouter:
             :rtype: server.web_api.models.ResponseModel
             :raises HTTPException: If the provided employee has no hours logged into the system, or the employee does not exist in the database.
             """
-            if not await token_is_valid(token, ["teacher"]):
+            if not await token_is_valid(token, ["employee"]):
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
             if employee_id is None or not isinstance(employee_id, str):
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The employee ID must be a valid string!")
