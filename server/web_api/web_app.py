@@ -1,4 +1,6 @@
 from fastapi.exceptions import RequestValidationError
+
+from lib.data_classes.reset_token import PydanticResetToken
 from server.web_api.models import ResponseModel
 from server.web_api.routing.v1 import core_routing, employee_routing, employee_hours_routing, student_routing
 from server.web_api.web_security import add_token_to_blacklist, create_access_token, get_user_from_token, oauth_scheme, token_is_valid
@@ -96,13 +98,13 @@ async def log_out_user(token: str = Depends(oauth_scheme)):
 
 
 @web_app.post(ENV_SETTINGS.API_ROUTES.reset, status_code=status.HTTP_200_OK)
-async def reset_password(new_password: str, reset_token: str = Depends(oauth_scheme)):
-    pass
+async def reset_password(pyd_info: PydanticResetToken):
+    return ResponseModel(status.HTTP_200_OK, "")
 
 
 @web_app.post(ENV_SETTINGS.API_ROUTES.forgot_password, status_code=status.HTTP_200_OK)
-async def forgot_password(new_password: str, reset_token: str = Depends(oauth_scheme)):
-    pass
+async def forgot_password(employee_id: str):
+    return ResponseModel(status.HTTP_200_OK, "")
 
 
 @web_app.get(ENV_SETTINGS.API_ROUTES.routes, status_code=status.HTTP_200_OK)
