@@ -9,6 +9,7 @@ class PydanticEmployeeTimesheetSubmission(BaseModel):
     work_hours: int
     pto_hours: Optional[int] = 0
     extra_hours: Optional[int] = 0
+    comment: Optional[str] = ""
     date_worked: str
 
 
@@ -26,6 +27,7 @@ class PydanticEmployeeTimesheetUpdate(BaseModel):
     work_hours: Optional[int] = 0
     pto_hours: Optional[int] = 0
     extra_hours: Optional[int] = 0
+    comment: Optional[str] = ""
 
 
 class PydanticEmployeeTimesheetRemoval(BaseModel):
@@ -45,9 +47,10 @@ class EmployeeHours(Base):
     PTOHours = Column(INTEGER(unsigned=True), nullable=False, default=0)
     ExtraHours = Column(INTEGER(unsigned=True), nullable=False, default=0)
     DateWorked = Column(Date, nullable=False)
+    Comment = Column(VARCHAR(length=1024), default="")
     EntryCreated = Column(DateTime, nullable=False, default=sql.func.now())
 
-    def __init__(self, employee_id: str, work_hours: int, pto_hours: int, extra_hours: int, date_worked: str):
+    def __init__(self, employee_id: str, work_hours: int, pto_hours: int, extra_hours: int, date_worked: str, comment: str = ""):
         """
         The constructor for the ``EmployeeHours`` data class that is utilized internally by the SQLAlchemy library.
         Only manually instantiate this data class to create employee hours records in the database within database sessions.
@@ -62,12 +65,15 @@ class EmployeeHours(Base):
         :type extra_hours: int, optional
         :param date_worked: The date that the employee hours were worked on represented in YYYY-MM-DD format.
         :type date_worked: str, required
+        :param comment: Optional comments made by the employee regarding PTO/extra hours.
+        :type comment: str, optional
         """
         self.EmployeeID = employee_id
         self.WorkHours = work_hours
         self.PTOHours = pto_hours
         self.ExtraHours = extra_hours
         self.DateWorked = date_worked
+        self.Comment = comment
 
     def as_dict(self):
         """
@@ -82,6 +88,7 @@ class EmployeeHours(Base):
             "pto_hours": self.PTOHours,
             "extra_hours": self.ExtraHours,
             "date_worked": self.DateWorked,
+            "comment": self.Comment
         }
 
     def as_detail_dict(self):
@@ -98,5 +105,6 @@ class EmployeeHours(Base):
             "pto_hours": self.PTOHours,
             "extra_hours": self.ExtraHours,
             "date_worked": self.DateWorked,
+            "comment": self.Comment,
             "entry_created": self.EntryCreated
         }

@@ -23,7 +23,8 @@ async def create_employee_multiple_hours(employee_id: str, employee_updates: Lis
                 timesheet.work_hours,
                 timesheet.pto_hours,
                 timesheet.extra_hours,
-                timesheet.date_worked
+                timesheet.date_worked,
+                timesheet.comment
             )
             timesheet_exists = session.query(EmployeeHours).filter(
                 EmployeeHours.EmployeeID == employee_id,
@@ -37,7 +38,8 @@ async def create_employee_multiple_hours(employee_id: str, employee_updates: Lis
                 ).update({
                     EmployeeHours.WorkHours: timesheet.work_hours,
                     EmployeeHours.PTOHours: timesheet.pto_hours,
-                    EmployeeHours.ExtraHours: timesheet.extra_hours
+                    EmployeeHours.ExtraHours: timesheet.extra_hours,
+                    EmployeeHours.Comment: timesheet.comment
                 })
             else:
                 session.add(timesheet_submission)
@@ -49,7 +51,7 @@ async def create_employee_multiple_hours(employee_id: str, employee_updates: Lis
     return submitted_time_sheets
 
 
-async def create_employee_hours(employee_id: str, date_worked: str, work_hours: int, pto_hours: int = 0, extra_hours: int = 0, session: Session = None) -> EmployeeHours:
+async def create_employee_hours(employee_id: str, date_worked: str, work_hours: int, pto_hours: int = 0, extra_hours: int = 0, comment: str = "", session: Session = None) -> EmployeeHours:
     if session is None:
         session = next(get_db_session())
     if None in (employee_id, date_worked, work_hours, pto_hours, extra_hours):
@@ -67,7 +69,8 @@ async def create_employee_hours(employee_id: str, date_worked: str, work_hours: 
                 work_hours,
                 pto_hours,
                 extra_hours,
-                date_worked
+                date_worked,
+                comment
             )
             session.add(timesheet_submission)
             session.commit()
@@ -80,7 +83,7 @@ async def create_employee_hours(employee_id: str, date_worked: str, work_hours: 
     return timesheet_submission
 
 
-async def update_employee_hours(employee_id: str, date_worked: str, work_hours: int = 0, pto_hours: int = 0, extra_hours: int = 0, session: Session = None) -> EmployeeHours:
+async def update_employee_hours(employee_id: str, date_worked: str, work_hours: int = 0, pto_hours: int = 0, extra_hours: int = 0, comment: str = "", session: Session = None) -> EmployeeHours:
     if session is None:
         session = next(get_db_session())
     try:
@@ -93,7 +96,8 @@ async def update_employee_hours(employee_id: str, date_worked: str, work_hours: 
             {
                 EmployeeHours.WorkHours: work_hours,
                 EmployeeHours.PTOHours: pto_hours,
-                EmployeeHours.ExtraHours: extra_hours
+                EmployeeHours.ExtraHours: extra_hours,
+                EmployeeHours.Comment: comment
             }
         )
         session.commit()
@@ -175,7 +179,7 @@ async def get_employee_hours_total(employee_id: str, date_start: str, date_end: 
         total_hours = {
             "work_hours": 0,
             "pto_hours": 0,
-            "extra_hours": 0
+            "extra_hours": 0,
         }
         for record in employee_hours_list:
             total_hours['work_hours'] += record.WorkHours
