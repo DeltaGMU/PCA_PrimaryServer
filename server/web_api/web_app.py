@@ -36,7 +36,7 @@ web_app.mount("/favicon.ico", FileResponse(f"{ROOT_DIR}/web_api/static/favicon.i
 web_app.include_router(core_routing.router)
 web_app.include_router(employee_routing.router)
 web_app.include_router(employee_hours_routing.router)
-# web_app.include_router(student_routing.router)
+web_app.include_router(student_routing.router)
 
 # Manually handle CORS preflight requests
 '''
