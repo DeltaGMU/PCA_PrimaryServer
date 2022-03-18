@@ -10,7 +10,7 @@ from fastapi_utils.inferring_router import InferringRouter
 from sqlalchemy.exc import IntegrityError
 
 from config import ENV_SETTINGS
-from server.lib.database_access.student_interface import create_student
+from server.lib.database_access.student_interface import create_student, get_student_by_id, get_student_contact_info
 from server.web_api.models import ResponseModel
 from server.lib.data_classes.student import Student, PydanticStudentRegistration
 from server.lib.data_classes.student_care_hours import StudentCareHours, PydanticStudentCareHoursCheckIn, PydanticStudentCareHoursCheckOut
@@ -53,31 +53,69 @@ class StudentsRouter:
     class Read:
         @staticmethod
         @router.get(ENV_SETTINGS.API_ROUTES.Students.count, status_code=status.HTTP_200_OK)
-        def read_students_count(session=Depends(get_db_session)):
+        async def read_students_count(token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint that counts the number of students that are registered in the database.
 
+            :param token: The JSON Web Token responsible for authenticating the user to this endpoint.
+            :type token: str, required
+            :param session: The database session to use to retrieve the number of student records.
+            :type session: sqlalchemy.orm.session, optional
             :return: A response model containing the number of students in the database. The count will be 0 if there are no students registered in the database.
             :rtype: server.web_api.models.ResponseModel
             """
+            if not await token_is_valid(token, ["administrator"]):
+                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
             students_count = session.query(Student).count()
             return ResponseModel(status.HTTP_200_OK, "success", {"count": students_count})
 
         @staticmethod
         @router.get(ENV_SETTINGS.API_ROUTES.Students.students, status_code=status.HTTP_200_OK)
-        def read_all_students(session=Depends(get_db_session)):
+        async def read_all_students(token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint that retrieves all the students from the database.
 
+            :param token: The JSON Web Token responsible for authenticating the user to this endpoint.
+            :type token: str, required
+            :param session: The database session to use to retrieve all student records.
+            :type session: sqlalchemy.orm.session, optional
             :return: List of all the students in the database.
             :rtype: server.web_api.models.ResponseModel
             """
+            if not await token_is_valid(token, ["administrator"]):
+                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
             all_students = []
             employees = session.query(Student).all()
             for row in employees:
                 item: Student = row
                 all_students.append(item.as_dict())
             return ResponseModel(status.HTTP_200_OK, "success", {"students": all_students})
+
+        @staticmethod
+        @router.get(ENV_SETTINGS.API_ROUTES.Students.student, status_code=status.HTTP_200_OK)
+        async def read_one_student(student_id: str, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
+            """
+            An endpoint that retrieves a single student from the database.
+
+            :param student_id: The ID of the student.
+            :type student_id: str, required
+            :param token: The JSON Web Token responsible for authenticating the user to this endpoint.
+            :type token: str, required
+            :param session: The database session to use to retrieve a single student record.
+            :type session: sqlalchemy.orm.session, optional
+            :return: A single student from the database.
+            :rtype: server.web_api.models.ResponseModel
+            """
+            if not await token_is_valid(token, ["employee"]):
+                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
+            if student_id is None or not isinstance(student_id, str):
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The student ID must be a valid string!")
+            student = await get_student_by_id(student_id.strip())
+            if student is None:
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The student could not be retrieved.")
+            full_student_information = student.as_dict()
+            full_student_information.update((await get_student_contact_info(student)).as_dict())
+            return ResponseModel(status.HTTP_200_OK, "success", {"student": full_student_information})
 
     class Update:
         pass

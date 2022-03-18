@@ -1,5 +1,6 @@
 from typing import Dict
 
+from server.lib.database_manager import get_db_session
 from server.lib.data_classes.contact_info import ContactInfo
 from server.lib.utils.student_utils import generate_student_id
 from server.lib.data_classes.student import PydanticStudentRegistration, Student
@@ -9,6 +10,9 @@ from fastapi import HTTPException, status
 
 
 async def create_student(pyd_student: PydanticStudentRegistration, session: Session = None) -> Dict[str, any]:
+    if session is None:
+        session = next(get_db_session())
+
     pyd_student.first_name = pyd_student.first_name.lower().strip()
     pyd_student.last_name = pyd_student.last_name.lower().strip()
     pyd_student.parent_full_name = pyd_student.parent_full_name.lower().strip()
@@ -62,3 +66,32 @@ async def create_student(pyd_student: PydanticStudentRegistration, session: Sess
     del created_student['entry_created']
     del created_student['contact_id']
     return created_student
+
+
+async def get_student_by_id(student_id: str, session: Session = None):
+    if session is None:
+        session = next(get_db_session())
+
+    student_id = student_id.strip().lower()
+    if len(student_id) == 0:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='The student ID provided to the utility method to retrieve student information is invalid due to an ID length of 0!')
+
+    matching_student = session.query(Student).filter(
+        Student.StudentID == student_id
+    ).first()
+    if matching_student is None:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='The student was not found by the provided ID. Please check for errors in the provided data!')
+    return matching_student
+
+
+async def get_student_contact_info(student: Student, session: Session = None) -> ContactInfo:
+    if student is None:
+        raise RuntimeError('The student object was not provided! Please check for errors in the provided data!')
+    if session is None:
+        session = next(get_db_session())
+    matching_contact = session.query(ContactInfo).filter(
+        student.ContactInfoID == ContactInfo.id
+    ).first()
+    if matching_contact is None:
+        raise RuntimeError('The student contact information was not found using the student entity. Please check for errors in the database or the provided data!')
+    return matching_contact
