@@ -11,6 +11,7 @@ from fastapi import HTTPException, status
 async def create_student(pyd_student: PydanticStudentRegistration, session: Session = None) -> Dict[str, any]:
     pyd_student.first_name = pyd_student.first_name.lower().strip()
     pyd_student.last_name = pyd_student.last_name.lower().strip()
+    pyd_student.parent_full_name = pyd_student.parent_full_name.lower().strip()
     pyd_student.parent_primary_email = pyd_student.parent_primary_email.lower().strip()
     if pyd_student.parent_secondary_email:
         pyd_student.parent_secondary_email = pyd_student.parent_secondary_email.lower().strip()
@@ -21,6 +22,8 @@ async def create_student(pyd_student: PydanticStudentRegistration, session: Sess
 
     if len(pyd_student.first_name) == 0 or len(pyd_student.last_name) == 0:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The first and last name of the student must not be empty!")
+    if len(pyd_student.parent_full_name) == 0:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The full name for the point of contact cannot be empty!")
     if len(pyd_student.parent_primary_email) == 0:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The primary email must not be empty!")
     if pyd_student.car_pool_number < 0:
@@ -33,7 +36,7 @@ async def create_student(pyd_student: PydanticStudentRegistration, session: Sess
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The student first name, last name, or car pool number is invalid and cannot be used to create a student ID!")
 
     # Create student contact information.
-    contact_info = ContactInfo(student_id, f"{pyd_student.first_name} {pyd_student.last_name}", pyd_student.parent_primary_email, pyd_student.parent_secondary_email, pyd_student.enable_notifications)
+    contact_info = ContactInfo(student_id, pyd_student.parent_full_name, pyd_student.parent_primary_email, pyd_student.parent_secondary_email, pyd_student.enable_notifications)
     if contact_info is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The contact information for the student could not be created due to invalid parameters!")
     session.add(contact_info)
@@ -51,6 +54,7 @@ async def create_student(pyd_student: PydanticStudentRegistration, session: Sess
     created_student = session.query(Student).filter(Student.StudentID == student_id).one()
     created_student = created_student.as_detail_dict()
     # Add contact information elements into response for the web interface.
+    created_student['parent_full_name'] = contact_info.FullNameOfContact
     created_student['parent_primary_email'] = contact_info.PrimaryEmail
     created_student['parent_secondary_email'] = contact_info.SecondaryEmail
     created_student['email_notifications_enabled'] = contact_info.EnableNotifications
