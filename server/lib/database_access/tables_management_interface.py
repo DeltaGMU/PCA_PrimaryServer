@@ -36,6 +36,7 @@ def clear_temporary_tables():
         LoggingManager().log(LoggingManager.LogLevel.LOG_INFO, f'Cleared access token blacklist table: {cleared_blacklist_rows} rows.', origin=LOG_ORIGIN_DATABASE, no_print=False)
         cleared_reset_rows = session.query(ResetToken).delete()
         LoggingManager().log(LoggingManager.LogLevel.LOG_INFO, f'Cleared reset token table: {cleared_reset_rows} rows.', origin=LOG_ORIGIN_DATABASE, no_print=False)
+        session.commit()
     except SQLAlchemyError as err:
         LoggingManager().log(LoggingManager.LogLevel.LOG_INFO,
                              f'Encountered an error clearing the temporary token tables: {str(err)}',
