@@ -24,5 +24,4 @@ class TokenBlacklist(Base):
 
 
 Base.metadata.drop_all(bind=main_engine, tables=[TokenBlacklist.__table__])
-# TokenBlacklist.__table__.drop(main_engine)
 TokenBlacklist.__table__.create(main_engine)
