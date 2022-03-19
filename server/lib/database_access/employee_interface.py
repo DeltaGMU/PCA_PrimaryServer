@@ -107,7 +107,7 @@ async def update_employees(employee_updates: Dict[str, PydanticEmployeeUpdate], 
     for employee_id in employee_updates.keys():
         updated_employee = await update_employee(employee_id, employee_updates[employee_id], session)
         all_updated_employees.append(updated_employee)
-    if len(employee_updates) != all_updated_employees:
+    if len(employee_updates) != len(all_updated_employees):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="One or more employees were not able to be updated!")
     return all_updated_employees
 
