@@ -133,16 +133,16 @@ async def update_employee(employee_id, pyd_employee_update: PydanticEmployeeUpda
     if pyd_employee_update.plain_password:
         employee.PasswordHash = create_employee_password_hashes(pyd_employee_update.plain_password)
     if pyd_employee_update.first_name:
-        employee.FirstName = pyd_employee_update.first_name
+        employee.FirstName = pyd_employee_update.first_name.lower().strip()
         employee_contact_info.FullNameOfContact = f"{employee.FirstName} {employee.LastName}"
     if pyd_employee_update.last_name:
-        employee.LastName = pyd_employee_update.last_name
+        employee.LastName = pyd_employee_update.last_name.lower().strip()
         employee_contact_info.FullNameOfContact = f"{employee.FirstName} {employee.LastName}"
     if pyd_employee_update.primary_email:
-        employee_contact_info.PrimaryEmail = pyd_employee_update.primary_email
+        employee_contact_info.PrimaryEmail = pyd_employee_update.primary_email.lower().strip()
         employee_contact_info.LastUpdated = None
     if pyd_employee_update.secondary_email:
-        employee_contact_info.SecondaryEmail = pyd_employee_update.secondary_email
+        employee_contact_info.SecondaryEmail = pyd_employee_update.secondary_email.lower().strip()
         employee_contact_info.LastUpdated = None
     if pyd_employee_update.enable_notifications:
         employee_contact_info.EnableNotifications = pyd_employee_update.enable_notifications
