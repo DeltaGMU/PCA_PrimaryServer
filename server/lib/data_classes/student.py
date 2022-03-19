@@ -7,7 +7,7 @@ to create the student entity in the database and validate the data that is sent 
 """
 
 from __future__ import annotations
-from typing import Optional
+from typing import Optional, Dict, List, Union
 from pydantic import BaseModel
 from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Date, LargeBinary, VARCHAR, Boolean, Time, sql
 from sqlalchemy.orm import relationship
@@ -16,7 +16,7 @@ from server.lib.database_access.sqlalchemy_base import MainEngineBase as Base
 
 class PydanticStudentRegistration(BaseModel):
     """
-    A Pydantic class used to represent a student entity when creating a new student record from a http request to the API.
+    A Pydantic class used to validate student information when creating a new student record from a http request to the API.
     Do not try to initialize this class as an independent entity or extend it into a subclass.
     """
     first_name: str
@@ -27,6 +27,29 @@ class PydanticStudentRegistration(BaseModel):
     parent_secondary_email: Optional[str]
     is_enabled: Optional[bool] = True
     enable_notifications: Optional[bool] = True
+
+
+class PydanticStudentUpdate(BaseModel):
+    first_name: Optional[str]
+    last_name: Optional[str]
+    car_pool_number: Optional[int]
+    parent_full_name: Optional[str]
+    parent_primary_email: Optional[str]
+    parent_secondary_email: Optional[str]
+    is_enabled: Optional[bool]
+    enable_notifications: Optional[bool]
+
+
+class PydanticMultipleStudentsUpdate(BaseModel):
+    student_updates: Dict[str, PydanticStudentUpdate]
+
+
+class PydanticStudentsRemoval(BaseModel):
+    """
+    A Pydantic class used to validate student information when deleting an existing employee record from an HTTP request to the API.
+    Do not try to initialize this class as an independent entity or extend it into a subclass.
+    """
+    student_ids: Union[List[str], str]
 
 
 class Student(Base):

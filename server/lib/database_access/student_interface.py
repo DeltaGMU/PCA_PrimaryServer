@@ -1,9 +1,8 @@
-from typing import Dict
-
+from typing import Dict, List
 from server.lib.database_manager import get_db_session
 from server.lib.data_classes.contact_info import ContactInfo
 from server.lib.utils.student_utils import generate_student_id
-from server.lib.data_classes.student import PydanticStudentRegistration, Student
+from server.lib.data_classes.student import PydanticStudentRegistration, Student, PydanticStudentUpdate, PydanticMultipleStudentsUpdate
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException, status
@@ -66,6 +65,52 @@ async def create_student(pyd_student: PydanticStudentRegistration, session: Sess
     del created_student['entry_created']
     del created_student['contact_id']
     return created_student
+
+
+async def update_students(student_updates: Dict[str, PydanticStudentUpdate], session: Session = None) -> List[Student]:
+    if student_updates is None:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Provided request body did not contain any valid employee information!")
+    all_updated_students: List[Student] = []
+    for student_id in student_updates.keys():
+        updated_student = await update_student(student_id, student_updates[student_id], session)
+        all_updated_students.append(updated_student)
+    if len(student_updates) != len(all_updated_students):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="One or more students were not able to be updated!")
+    return all_updated_students
+
+
+async def update_student(student_id: str, pyd_student_update: PydanticStudentUpdate, session: Session = None) -> Student:
+    if pyd_student_update is None:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Provided request body did not contain any valid employee information!")
+    if student_id is None:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The student ID must be provided to update student information!")
+
+    # Get student information from the database.
+    student = session.query(Student).filter(Student.StudentID == student_id).first()
+    if student is None:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The student ID is incorrect or the student does not exist!")
+    student_contact_info = session.query(ContactInfo).filter(ContactInfo.id == student.ContactInfoID).first()
+    if student_contact_info is None:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The student does not have contact information registered, please do that first!")
+
+    # Check to see what data was provided and update as necessary.
+    if pyd_student_update.first_name:
+        student.FirstName = pyd_student_update.first_name.lower().strip()
+    if pyd_student_update.last_name:
+        student.LastName = pyd_student_update.last_name.lower().strip()
+    if pyd_student_update.parent_primary_email:
+        student_contact_info.PrimaryEmail = pyd_student_update.parent_primary_email.lower().strip()
+        student_contact_info.LastUpdated = None
+    if pyd_student_update.parent_secondary_email:
+        student_contact_info.SecondaryEmail = pyd_student_update.parent_secondary_email.lower().strip()
+        student_contact_info.LastUpdated = None
+    if pyd_student_update.enable_notifications:
+        student_contact_info.EnableNotifications = pyd_student_update.enable_notifications
+        student_contact_info.LastUpdated = None
+    if pyd_student_update.is_enabled:
+        student_contact_info.EmployeeEnabled = pyd_student_update.is_enabled
+    session.commit()
+    return student
 
 
 async def get_student_by_id(student_id: str, session: Session = None):

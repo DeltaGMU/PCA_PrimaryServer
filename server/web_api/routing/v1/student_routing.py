@@ -10,9 +10,9 @@ from fastapi_utils.inferring_router import InferringRouter
 from sqlalchemy.exc import IntegrityError
 
 from config import ENV_SETTINGS
-from server.lib.database_access.student_interface import create_student, get_student_by_id, get_student_contact_info
+from server.lib.database_access.student_interface import create_student, get_student_by_id, get_student_contact_info, update_students, update_student
 from server.web_api.models import ResponseModel
-from server.lib.data_classes.student import Student, PydanticStudentRegistration
+from server.lib.data_classes.student import Student, PydanticStudentRegistration, PydanticMultipleStudentsUpdate, PydanticStudentUpdate
 from server.lib.data_classes.student_care_hours import StudentCareHours, PydanticStudentCareHoursCheckIn, PydanticStudentCareHoursCheckOut
 from server.lib.database_manager import get_db_session
 from server.web_api.web_security import token_is_valid, oauth_scheme
@@ -110,7 +110,7 @@ class StudentsRouter:
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
             if student_id is None or not isinstance(student_id, str):
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The student ID must be a valid string!")
-            student = await get_student_by_id(student_id.strip())
+            student = await get_student_by_id(student_id.strip(), session)
             if student is None:
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The student could not be retrieved.")
             full_student_information = student.as_dict()
@@ -118,7 +118,55 @@ class StudentsRouter:
             return ResponseModel(status.HTTP_200_OK, "success", {"student": full_student_information})
 
     class Update:
-        pass
+        @staticmethod
+        @router.put(ENV_SETTINGS.API_ROUTES.Students.students, status_code=status.HTTP_201_CREATED)
+        async def update_multiple_students(multi_student_update: PydanticMultipleStudentsUpdate, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
+            """
+            An endpoint that updates multiple students from the database from the provided employee information and employee ID.
+
+            :param multi_student_update: A dictionary that consists of pairs of student IDs and update information as per the ``PydanticStudentUpdate`` parameters.
+            :type multi_student_update: PydanticMultipleStudentsUpdate, required
+            :param token: The JSON Web Token responsible for authenticating the user to this endpoint.
+            :type token: str, required
+            :param session: The database session to use to update multiple student data.
+            :type session: sqlalchemy.orm.session, optional
+            :return: A response model containing the multiple student updated data in the database.
+            :rtype: server.web_api.models.ResponseModel
+            :raises HTTPException: If the authentication token is invalid or the students could not be updated.
+            """
+            if not await token_is_valid(token, ["administrator"]):
+                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
+            updated_students = await update_students(multi_student_update.student_updates, session)
+            if updated_students is None:
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="One or more provided parameters were invalid!")
+            return ResponseModel(status.HTTP_200_OK, "success", {"students": [student.as_dict() for student in updated_students]})
+
+        @staticmethod
+        @router.put(ENV_SETTINGS.API_ROUTES.Students.student, status_code=status.HTTP_201_CREATED)
+        async def update_one_student(student_id: str, student_update: PydanticStudentUpdate, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
+            """
+            An endpoint that updates a single student from the database from the provided student information and student ID.
+
+            :param student_id: The ID of the student.
+            :type student_id: str, required
+            :param student_update: The ID of the student and any other student information that needs to be updated.
+            :type student_update: PydanticStudentUpdate, required
+            :param token: The JSON Web Token responsible for authenticating the user to this endpoint.
+            :type token: str, required
+            :param session: The database session to use to update the student data.
+            :type session: sqlalchemy.orm.session, optional
+            :return: A response model containing the student updated in the database.
+            :rtype: server.web_api.models.ResponseModel
+            :raises HTTPException: If the authentication token is invalid or the student could not be updated.
+            """
+            if not await token_is_valid(token, ["administrator"]):
+                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
+            if student_id is None or not isinstance(student_id, str):
+                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="The student ID must be a valid string!")
+            updated_student = await update_student(student_id.strip(), student_update, session)
+            if updated_student is None:
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="One or more provided parameters were invalid!")
+            return ResponseModel(status.HTTP_200_OK, "success", {"student": updated_student.as_dict()})
 
     class Delete:
         pass
