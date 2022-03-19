@@ -95,7 +95,7 @@ class EmployeeHoursRouter:
 
             :param employee_id: The ID of the employee.
             :type employee_id: str, required
-            :param updated_employee_hours: The date and the updated work/pto/extra hours.
+            :param updated_employee_hours: The date, updated work/pto/extra hours, and comments.
             :type updated_employee_hours: PydanticEmployeeTimesheetUpdate, required
             :param token: The JSON Web Token responsible for authenticating the user to this endpoint.
             :type token: str, required
@@ -114,7 +114,7 @@ class EmployeeHoursRouter:
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="The user does not have sufficient permissions.")
             updated_time_sheet = await update_employee_hours(employee_id, updated_employee_hours.date_worked,
                                                              updated_employee_hours.work_hours, updated_employee_hours.pto_hours,
-                                                             updated_employee_hours.extra_hours, session)
+                                                             updated_employee_hours.extra_hours, updated_employee_hours.comment, session)
             return ResponseModel(status.HTTP_200_OK, "success", {"time_sheet": updated_time_sheet.as_dict()})
 
     class Delete:
