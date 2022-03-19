@@ -2,7 +2,7 @@ from fastapi.exceptions import RequestValidationError
 
 from server.lib.data_classes.reset_token import PydanticResetToken
 from server.web_api.models import ResponseModel
-from server.web_api.routing.v1 import core_routing, employee_routing, employee_hours_routing, student_routing
+from server.web_api.routing.v1 import core_routing, employee_routing, employee_hours_routing, student_routing, student_care_routing
 from server.web_api.web_security import add_token_to_blacklist, create_access_token, get_user_from_token, oauth_scheme, token_is_valid
 from server.lib.database_access.employee_interface import get_employee
 from fastapi import FastAPI, Depends, status, Security, HTTPException, Request, Response
@@ -15,6 +15,7 @@ from config import ENV_SETTINGS
 from server.lib.utils.employee_utils import verify_employee_password
 from server.lib.strings import META_VERSION, ROOT_DIR
 from starlette.exceptions import HTTPException as StarletteHTTPException
+
 
 web_app = FastAPI(
     title="PCA Web API",
@@ -37,17 +38,7 @@ web_app.include_router(core_routing.router)
 web_app.include_router(employee_routing.router)
 web_app.include_router(employee_hours_routing.router)
 web_app.include_router(student_routing.router)
-
-# Manually handle CORS preflight requests
-'''
-@web_app.options('/{rest_of_path:path}')
-async def preflight_handler(request: Request, rest_of_path: str) -> Response:
-    response = Response()
-    response.headers['Access-Control-Allow-Origin'] = 'http://localhost:8080, http://localhost'
-    response.headers['Access-Control-Allow-Methods'] = 'POST, GET, PUT, DELETE, OPTIONS'
-    response.headers['Access-Control-Allow-Headers'] = 'Origin, Accept, Access-Control-Allow-Origin, Authorization, Content-Type'
-    return response
-'''
+web_app.include_router(student_care_routing.router)
 
 
 @web_app.get(ENV_SETTINGS.API_ROUTES.index, status_code=status.HTTP_200_OK)
