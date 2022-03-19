@@ -34,7 +34,7 @@ class APIRoutes:
     class Students:
         count = '/api/v1/students/count'
         students = '/api/v1/students'
-        student = '/api/v1/students/{student_id}'
+        one_student = '/api/v1/students/{student_id}'
 
     class StudentCare:
         count = '/api/v1/care/count'

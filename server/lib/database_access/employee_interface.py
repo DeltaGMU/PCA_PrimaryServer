@@ -78,7 +78,7 @@ async def remove_employees(employee_ids: PydanticEmployeesRemoval | str, session
     if isinstance(employee_ids, PydanticEmployeesRemoval):
         employee_ids = employee_ids.employee_ids
         if employee_ids is None:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Provided request body did not contain any valid employee IDs!")
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Provided request body did not contain valid employee IDs!")
     removed_employees: List[Employee] = []
     if isinstance(employee_ids, List):
         employees = session.query(Employee).filter(Employee.EmployeeID.in_(employee_ids)).all()

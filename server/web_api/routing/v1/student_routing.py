@@ -8,9 +8,9 @@ from fastapi import Body, status, HTTPException, Depends
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
 from config import ENV_SETTINGS
-from server.lib.database_access.student_interface import create_student, get_student_by_id, get_student_contact_info, update_students, update_student
+from server.lib.database_access.student_interface import create_student, get_student_by_id, get_student_contact_info, update_students, update_student, remove_students
 from server.web_api.models import ResponseModel
-from server.lib.data_classes.student import Student, PydanticStudentRegistration, PydanticMultipleStudentsUpdate, PydanticStudentUpdate
+from server.lib.data_classes.student import Student, PydanticStudentRegistration, PydanticMultipleStudentsUpdate, PydanticStudentUpdate, PydanticStudentsRemoval
 from server.lib.database_manager import get_db_session
 from server.web_api.web_security import token_is_valid, oauth_scheme
 
@@ -89,7 +89,7 @@ class StudentsRouter:
             return ResponseModel(status.HTTP_200_OK, "success", {"students": all_students})
 
         @staticmethod
-        @router.get(ENV_SETTINGS.API_ROUTES.Students.student, status_code=status.HTTP_200_OK)
+        @router.get(ENV_SETTINGS.API_ROUTES.Students.one_student, status_code=status.HTTP_200_OK)
         async def read_one_student(student_id: str, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint that retrieves a single student from the database.
@@ -139,7 +139,7 @@ class StudentsRouter:
             return ResponseModel(status.HTTP_200_OK, "success", {"students": [student.as_dict() for student in updated_students]})
 
         @staticmethod
-        @router.put(ENV_SETTINGS.API_ROUTES.Students.student, status_code=status.HTTP_201_CREATED)
+        @router.put(ENV_SETTINGS.API_ROUTES.Students.one_student, status_code=status.HTTP_201_CREATED)
         async def update_one_student(student_id: str, student_update: PydanticStudentUpdate, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint that updates a single student from the database from the provided student information and student ID.
@@ -166,4 +166,51 @@ class StudentsRouter:
             return ResponseModel(status.HTTP_200_OK, "success", {"student": updated_student.as_dict()})
 
     class Delete:
-        pass
+        @staticmethod
+        @router.delete(ENV_SETTINGS.API_ROUTES.Students.students, status_code=status.HTTP_200_OK)
+        async def delete_students(student_ids: PydanticStudentsRemoval, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
+            """
+            An endpoint to remove multiple student records from the student's table in the database.
+            Removal of multiple students using this endpoint will permanently delete the student records from the database
+            and all records related to the student records in other tables through a cascading delete.
+            To remove multiple student records, the student IDs must be provided in a list.
+
+            :param student_ids: A list of IDs of students that needs to be deleted.
+            :type student_ids: PydanticStudentsRemoval, required
+            :param token: The JSON Web Token responsible for authenticating the user to this endpoint.
+            :type token: str, required
+            :param session: The database session to use to delete the student record.
+            :type session: sqlalchemy.orm.session, optional
+            :return: A response model containing the student object that was deleted from the database.
+            :rtype: server.web_api.models.ResponseModel
+            :raises HTTPException: If the provided request body contains an invalid student ID, or if the student does not exist in the database.
+            """
+            if not await token_is_valid(token, ["administrator"]):
+                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
+            removed_students = await remove_students(student_ids, session)
+            return ResponseModel(status.HTTP_200_OK, "success", {"students": [student.as_dict() for student in removed_students]})
+
+        @staticmethod
+        @router.delete(ENV_SETTINGS.API_ROUTES.Students.one_student, status_code=status.HTTP_200_OK)
+        async def delete_student(student_id: str, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
+            """
+            An endpoint to remove a student record from the student's table in the database.
+            Removal of a student using this endpoint will permanently delete the student record from the database
+            and all records related to the student record in other tables through a cascading delete.
+
+            :param student_id: The ID of the student that needs to be deleted.
+            :type student_id: str, required
+            :param token: The JSON Web Token responsible for authenticating the user to this endpoint.
+            :type token: str, required
+            :param session: The database session to use to delete the student record.
+            :type session: sqlalchemy.orm.session, optional
+            :return: A response model containing the student object that was deleted from the database.
+            :rtype: server.web_api.models.ResponseModel
+            :raises HTTPException: If the provided request body contains an invalid student ID, or if the student does not exist in the database.
+            """
+            if not await token_is_valid(token, ["administrator"]):
+                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
+            if student_id is None or not isinstance(student_id, str):
+                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="The employee ID must be a valid string!")
+            removed_students = await remove_students(student_id.strip(), session)
+            return ResponseModel(status.HTTP_200_OK, "success", {"employee": [student.as_dict() for student in removed_students]})

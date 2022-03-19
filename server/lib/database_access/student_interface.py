@@ -1,8 +1,10 @@
+from __future__ import annotations
+
 from typing import Dict, List
 from server.lib.database_manager import get_db_session
 from server.lib.data_classes.contact_info import ContactInfo
 from server.lib.utils.student_utils import generate_student_id
-from server.lib.data_classes.student import PydanticStudentRegistration, Student, PydanticStudentUpdate, PydanticMultipleStudentsUpdate
+from server.lib.data_classes.student import PydanticStudentRegistration, Student, PydanticStudentUpdate, PydanticStudentsRemoval
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException, status
@@ -140,3 +142,29 @@ async def get_student_contact_info(student: Student, session: Session = None) ->
     if matching_contact is None:
         raise RuntimeError('The student contact information was not found using the student entity. Please check for errors in the database or the provided data!')
     return matching_contact
+
+
+async def remove_students(student_ids: PydanticStudentsRemoval | str, session: Session = None) -> List[Student]:
+    if isinstance(student_ids, PydanticStudentsRemoval):
+        student_ids = student_ids.student_ids
+        if student_ids is None:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Provided request body did not contain valid student IDs!")
+    removed_students: List[Student] = []
+    if isinstance(student_ids, List):
+        students = session.query(Student).filter(Student.StudentID.in_(student_ids)).all()
+        if students:
+            for student in students:
+                session.delete(student)
+                removed_students.append(student)
+            session.commit()
+        else:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Cannot remove students that do not exist in the database!")
+    else:
+        student = session.query(Student).filter(Student.StudentID == student_ids).first()
+        if student:
+            session.delete(student)
+            removed_students.append(student)
+            session.commit()
+        else:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Cannot remove a student that does not exist in the database!")
+    return removed_students
