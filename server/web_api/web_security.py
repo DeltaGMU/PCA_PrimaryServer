@@ -60,13 +60,12 @@ async def token_is_valid(token: str, scopes: List[str]) -> bool:
     cur_time = int(datetime.utcnow().timestamp())
     session = next(get_db_session())
     session.query(TokenBlacklist).filter(
-        TokenBlacklist.Token == token,
         TokenBlacklist.Exp <= cur_time
     ).delete()
     session.commit()
 
     blacklist_token = session.query(TokenBlacklist).filter(
-        TokenBlacklist.Token == token
+        TokenBlacklist.AccessToken == token
     ).first()
     if blacklist_token:
         return False
@@ -95,5 +94,5 @@ async def add_token_to_blacklist(token: str) -> bool | None:
     except IntegrityError:
         LoggingManager().log(LoggingManager.LogLevel.LOG_WARNING, "Runtime Warning: The token to blacklist has already been added to the database, so it will be ignored.", origin=LOG_ORIGIN_AUTH, error_type=LOG_WARNING_AUTH,
                              exc_message=traceback.format_exc(), no_print=False)
-        return True
+        return False
     return True
