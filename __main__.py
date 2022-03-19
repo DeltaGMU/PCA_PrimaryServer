@@ -10,6 +10,7 @@ from config import ENV_SETTINGS
 from server.lib.web_manager import WebSessionManager
 from server.lib.logging_manager import LoggingManager
 from server.lib.strings import LOG_ORIGIN_SHUTDOWN, LOG_ORIGIN_GENERAL, LOG_ERROR_GENERAL, LOG_WARNING_GENERAL, LOG_ERROR_UNKNOWN, LOG_ORIGIN_STARTUP
+from server.lib.database_access.tables_management_interface import clear_temporary_tables, initialize_tables
 
 
 def init():
@@ -89,6 +90,10 @@ def init():
 
         LoggingManager().log(LoggingManager.LogLevel.LOG_INFO, 'Initializing PCA Project Server...', origin=LOG_ORIGIN_STARTUP, no_print=False)
         LoggingManager().log(LoggingManager.LogLevel.LOG_INFO, 'System logging manager initialized.', origin=LOG_ORIGIN_STARTUP, no_print=False)
+        # Initialize any missing tables from the database server.
+        initialize_tables()
+        # Clear the access/reset Token tables in case the last server shutdown was improper.
+        clear_temporary_tables()
         # Create and initialize the web session manager with the provided parameters.
         web_session_manager = WebSessionManager(ENV_SETTINGS.web_host, ENV_SETTINGS.web_port)
         # Start the primary web server after all the modules have successfully been configured.
@@ -113,11 +118,8 @@ def graceful_shutdown(web_session_manager=None):
     # Retrieve the web manager object reference and gracefully shutdown the server.
     if web_session_manager:
         web_session_manager.stop_web_server()
-    # Delete the access token database if the server is being shutdown.
-    from server.lib.database_manager import MainEngineBase as Base, main_engine
-    from server.lib.data_classes.access_token import TokenBlacklist
-    if Base:
-        Base.metadata.drop_all(bind=main_engine, tables=[TokenBlacklist.__table__])
+    # Clear the access/reset Token tables if the server is being shutdown.
+    clear_temporary_tables()
     LoggingManager().log(LoggingManager.LogLevel.LOG_INFO, f'The application has closed.\n{"#" * 140}', origin=LOG_ORIGIN_SHUTDOWN, no_print=False)
 
 

@@ -1,27 +1,23 @@
 from sqlalchemy import Column, Integer, VARCHAR
-from server.lib.database_access.sqlalchemy_base import MainEngineBase as Base, main_engine
+from server.lib.database_access.sqlalchemy_base_interface import MainEngineBase as Base, main_engine
 
 
 class TokenBlacklist(Base):
     __tablename__ = 'token_blacklist'
     id = Column(Integer, primary_key=True, autoincrement=True, unique=True, nullable=False)
-    token = Column(VARCHAR(length=256), unique=True, nullable=False)
-    iss = Column(Integer, nullable=False)
-    exp = Column(Integer, nullable=False)
+    Token = Column(VARCHAR(length=256), unique=True, nullable=False)
+    Iss = Column(Integer, nullable=False)
+    Exp = Column(Integer, nullable=False)
 
     def __init__(self, token: str, iss: int, exp: int):
-        self.token = token
-        self.iss = iss
-        self.exp = exp
+        self.Token = token
+        self.Iss = iss
+        self.Exp = exp
 
     def as_dict(self):
         return {
             "id": self.id,
-            "token": self.token,
-            "iss": self.iss,
-            "exp": self.exp
+            "token": self.Token,
+            "iss": self.Iss,
+            "exp": self.Exp
         }
-
-
-Base.metadata.drop_all(bind=main_engine, tables=[TokenBlacklist.__table__])
-TokenBlacklist.__table__.create(main_engine)

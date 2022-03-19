@@ -1,7 +1,4 @@
-from server.lib.database_access.sqlalchemy_base import MainEngineBase, main_engine, main_db_session
-
-
-MainEngineBase.metadata.create_all(main_engine)
+from server.lib.database_access.sqlalchemy_base_interface import MainEngineBase, main_engine, main_db_session
 
 
 class SessionContext:

@@ -10,7 +10,7 @@ from typing import Optional, Union, List, Dict
 from pydantic import BaseModel
 from sqlalchemy import Column, ForeignKey, Integer, DateTime, Date, VARCHAR, Boolean, sql
 from sqlalchemy.orm import relationship, backref
-from server.lib.database_access.sqlalchemy_base import MainEngineBase as Base
+from server.lib.database_access.sqlalchemy_base_interface import MainEngineBase as Base, main_engine
 
 
 class PydanticEmployeeRegistration(BaseModel):
@@ -75,6 +75,7 @@ class Employee(Base):
     EmployeeRoleID = Column(Integer, ForeignKey('employee_role.id'), nullable=False)
     ContactInfoID = Column(Integer, ForeignKey('contact_info.id'), nullable=False)
     EmployeeHoursRelationship = relationship('EmployeeHours', cascade='all, delete')
+    EmployeeResetTokenRelationship = relationship('ResetToken', cascade='all, delete')
     EntryCreated = Column(DateTime, nullable=False, default=sql.func.now())
 
     # Do not initialize this except for creating blank employee templates!

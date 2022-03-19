@@ -54,19 +54,19 @@ async def token_is_valid(token: str, scopes: List[str]) -> bool:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Authorization token is missing user information!")
         token_scopes = token_data.get("scopes", [])
     except PyJWTError:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Authorization token is invalid!")
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Authorization token is invalid! The authorization token might be incorrectly formatted.")
 
     # Remove expired tokens before checking validity.
     cur_time = int(datetime.utcnow().timestamp())
     session = next(get_db_session())
     session.query(TokenBlacklist).filter(
-        TokenBlacklist.token == token,
-        TokenBlacklist.exp <= cur_time
+        TokenBlacklist.Token == token,
+        TokenBlacklist.Exp <= cur_time
     ).delete()
     session.commit()
 
     blacklist_token = session.query(TokenBlacklist).filter(
-        TokenBlacklist.token == token
+        TokenBlacklist.Token == token
     ).first()
     if blacklist_token:
         return False
@@ -84,7 +84,7 @@ async def add_token_to_blacklist(token: str) -> bool | None:
         if token_user is None:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Authorization token is missing user information!")
     except PyJWTError:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Authorization token is invalid!")
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Authorization token is invalid! Unable to invalidate a malformed token.")
 
     blacklist_token = TokenBlacklist(token, token_data['iat'], token_data['exp'])
     try:

@@ -2,7 +2,7 @@ from pydantic.main import BaseModel
 from typing import Optional, List, Union
 from sqlalchemy.dialects.mysql import INTEGER
 from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Date, VARCHAR, sql
-from server.lib.database_access.sqlalchemy_base import MainEngineBase as Base
+from server.lib.database_access.sqlalchemy_base_interface import MainEngineBase as Base, main_engine
 
 
 class PydanticEmployeeTimesheetSubmission(BaseModel):
@@ -42,7 +42,7 @@ class EmployeeHours(Base):
     """
     __tablename__ = 'employee_hours'
     id = Column(Integer, primary_key=True, autoincrement=True, unique=True, nullable=False)
-    EmployeeID = Column(VARCHAR(length=50), ForeignKey('employee.id'), nullable=False)
+    EmployeeID = Column(VARCHAR(length=50), ForeignKey('employee.EmployeeID'), nullable=False)
     WorkHours = Column(INTEGER(unsigned=True), nullable=False, default=0)
     PTOHours = Column(INTEGER(unsigned=True), nullable=False, default=0)
     ExtraHours = Column(INTEGER(unsigned=True), nullable=False, default=0)
