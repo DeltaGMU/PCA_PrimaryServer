@@ -79,7 +79,7 @@ async def logged_in_welcome(token: str = Depends(oauth_scheme)):
 
 
 @web_app.post(ENV_SETTINGS.API_ROUTES.logout, status_code=status.HTTP_200_OK)
-async def log_out_user(token: str = Depends(oauth_scheme)):
+async def logout(token: str = Depends(oauth_scheme)):
     token_blacklist_check = await add_token_to_blacklist(token)
     if token_blacklist_check is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Token is invalid or expired!")
