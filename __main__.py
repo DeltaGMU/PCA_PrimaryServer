@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 """
 The primary initialization python file that handles command-line arguments and initializes the individual core modules
 for the server to run.
@@ -83,7 +85,7 @@ def init():
         # Ensure that debug mode and quiet mode are both not enabled at the same time.
         if ENV_SETTINGS.sys_debug_mode and ENV_SETTINGS.quiet_mode:
             print("Debug mode and Quiet mode are both enabled, this is a mistake!\nPlease make sure only one or the other is enabled. Defaulting to Quiet mode for this session.")
-            debug_mode = False
+            ENV_SETTINGS.sys_debug_mode = False
 
         LoggingManager().log(LoggingManager.LogLevel.LOG_INFO, 'Initializing PCA Project Server...', origin=LOG_ORIGIN_STARTUP, no_print=False)
         LoggingManager().log(LoggingManager.LogLevel.LOG_INFO, 'System logging manager initialized.', origin=LOG_ORIGIN_STARTUP, no_print=False)
