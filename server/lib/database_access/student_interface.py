@@ -1,5 +1,4 @@
 from __future__ import annotations
-
 from typing import Dict, List
 from server.lib.database_manager import get_db_session
 from server.lib.data_classes.contact_info import ContactInfo
