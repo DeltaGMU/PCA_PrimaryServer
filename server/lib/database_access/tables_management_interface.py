@@ -1,3 +1,4 @@
+import traceback
 from sqlalchemy.exc import SQLAlchemyError
 from server.lib.data_classes.employee import Employee
 from server.lib.data_classes.employee_hours import EmployeeHours
@@ -38,7 +39,7 @@ def clear_temporary_tables():
     except SQLAlchemyError as err:
         LoggingManager().log(LoggingManager.LogLevel.LOG_INFO,
                              f'Encountered an error clearing the temporary token tables: {str(err)}',
-                             exc_message=str(err),
+                             exc_message=traceback.format_exc(),
                              origin=LOG_ORIGIN_DATABASE,
                              error_type=LOG_ERROR_DATABASE,
                              no_print=False)
