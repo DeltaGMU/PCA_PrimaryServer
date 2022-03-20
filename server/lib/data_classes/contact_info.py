@@ -9,7 +9,7 @@ from __future__ import annotations
 from typing import Optional
 from pydantic import BaseModel
 from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Date, LargeBinary, VARCHAR, Boolean, sql
-from server.lib.database_access.sqlalchemy_base_interface import MainEngineBase as Base, main_engine
+from server.lib.database_access.sqlalchemy_base_interface import MainEngineBase as Base
 
 
 class PydanticContactInfoRegistration(BaseModel):

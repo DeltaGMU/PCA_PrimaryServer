@@ -2,7 +2,7 @@ from pydantic.main import BaseModel
 from typing import Optional, List, Union
 from sqlalchemy.dialects.mysql import INTEGER
 from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Date, VARCHAR, sql
-from server.lib.database_access.sqlalchemy_base_interface import MainEngineBase as Base, main_engine
+from server.lib.database_access.sqlalchemy_base_interface import MainEngineBase as Base
 
 
 class PydanticEmployeeTimesheetSubmission(BaseModel):
