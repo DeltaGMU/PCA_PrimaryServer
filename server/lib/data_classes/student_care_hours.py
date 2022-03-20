@@ -15,6 +15,7 @@ class PydanticStudentCareHoursCheckIn(BaseModel):
     student_id: str
     check_in_time: Optional[str]
     check_in_date: str
+    check_in_signature: str
     care_type: bool
 
 
@@ -26,6 +27,7 @@ class PydanticStudentCareHoursCheckOut(BaseModel):
     student_id: str
     check_out_time: str
     check_out_date: str
+    check_out_signature: str
     care_type: bool
 
 
@@ -42,9 +44,11 @@ class StudentCareHours(Base):
     CheckInTime = Column(Time(timezone=False), nullable=False, default=datetime.datetime.now().strftime('%H:%M:%S'))
     CheckOutTime = Column(Time(timezone=False), nullable=False)
     CareType = Column(Boolean(), nullable=False, default=False)  # CareType: False = Before Care, True = After Care
+    CheckInSignature = Column(VARCHAR(length=100), nullable=False)
+    CheckOutSignature = Column(VARCHAR(length=100))
     EntryCreated = Column(DateTime, nullable=False, default=sql.func.now())
 
-    def __init__(self, student_id: str, care_date: str, care_type: bool, checkin_time: datetime.datetime, checkout_time: datetime.datetime):
+    def __init__(self, student_id: str, care_date: str, care_type: bool, checkin_time: datetime.datetime, checkout_time: datetime.datetime, checkin_signature: str = None, checkout_signature: str = None):
         """
         The constructor for the ``StudentCareHours`` data class that is utilized internally by the SQLAlchemy library.
         Only manually instantiate this data class to create employee hours records in the database within database sessions.
@@ -60,14 +64,20 @@ class StudentCareHours(Base):
         :type checkin_time: str, required
         :param checkout_time: The time that the student was checked out of student care represented as a timestamp.
         :type checkout_time: str, required
+        :param checkin_signature: The name of the individual that has checked in the student, for record-keeping purposes.
+        :type checkin_signature: str, optional
+        :param checkout_signature: The name of the individual that has checked out the student, for record-keeping purposes.
+        :type checkout_signature: str, optional
         """
         self.StudentID = student_id
         self.CareDate = care_date
         self.CareType = care_type
         self.CheckInTime = checkin_time
         self.CheckOutTime = checkout_time
+        self.CheckInSignature = checkin_signature
+        self.CheckOutSignature = checkout_signature
 
-    def as_dict(self):
+    def as_detail_dict(self):
         """
         A utility method to convert the class attributes into a dictionary format.
         This is useful for representing the entity in a JSON format for a request response.
@@ -81,5 +91,25 @@ class StudentCareHours(Base):
             "check_out_time": self.CheckOutTime,
             "care_date": self.CareDate,
             "care_type": self.CareType,
+            "check_in_signature": self.CheckInSignature,
+            "check_out_signature": self.CheckOutSignature,
             "entry_created": self.EntryCreated
+        }
+
+    def as_dict(self):
+        """
+        A utility method to convert the class attributes into a dictionary format.
+        This web friendly version hides the internal IDs, and other metadata information.
+
+        :return: Dictionary representation of the data class attributes.
+        :rtype: Dict[str, any]
+        """
+        return {
+            "student_id": self.StudentID,
+            "check_in_time": self.CheckInTime,
+            "check_out_time": self.CheckOutTime,
+            "care_date": self.CareDate,
+            "care_type": self.CareType,
+            "check_in_signature": self.CheckInSignature,
+            "check_out_signature": self.CheckOutSignature
         }
