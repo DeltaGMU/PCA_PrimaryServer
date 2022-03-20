@@ -48,11 +48,18 @@ class StudentCareRouter:
         ).first()
         if student_care is None:
             try:
-                new_student_care_hours = StudentCareHours(pyd_student_checkin.student_id,
-                                                          pyd_student_checkin.check_in_date,
-                                                          pyd_student_checkin.care_type,
-                                                          datetime.strptime(time.strftime('%H:%M'), '%H:%M') if pyd_student_checkin.check_in_time is None else datetime.strptime(pyd_student_checkin.check_in_time, '%H:%M'),
-                                                          datetime.strptime((datetime.now() + timedelta(hours=3)).strftime('%H:%M'), '%H:%M'))
+                check_in_time = datetime.strptime(time.strftime('%H:%M'), '%H:%M') if pyd_student_checkin.check_in_time is None else datetime.strptime(pyd_student_checkin.check_in_time, '%H:%M')
+                check_out_time = datetime.strptime(ENV_SETTINGS.student_before_care_check_out_time if not pyd_student_checkin.care_type else ENV_SETTINGS.student_after_care_check_out_time, '%H:%M')
+                print(check_in_time)
+                print(check_out_time)
+                new_student_care_hours = StudentCareHours(
+                    pyd_student_checkin.student_id,
+                    pyd_student_checkin.check_in_date,
+                    pyd_student_checkin.care_type,
+                    check_in_time,
+                    check_out_time
+                )
+                # datetime.strptime((datetime.now() + timedelta(hours=3)).strftime('%H:%M'), '%H:%M'))
                 session.add(new_student_care_hours)
                 session.commit()
             except IntegrityError as err:

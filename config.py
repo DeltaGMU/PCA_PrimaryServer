@@ -68,6 +68,10 @@ class Settings(BaseSettings):
     max_logs: Optional[int] = 10
     max_log_size: Optional[int] = 10485760
     log_directory: Optional[str] = None
+    student_before_care_check_in_time: str
+    student_before_care_check_out_time: str
+    student_after_care_check_in_time: str
+    student_after_care_check_out_time: str
 
     class Config:
         env_file = f'.env'
