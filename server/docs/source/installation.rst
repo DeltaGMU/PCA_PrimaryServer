@@ -23,6 +23,10 @@ Required python packages for documentation generation:
 * furo==2022.2.23
 * sphinx==4.4.0
 
+Other required packages:
+
+* GTK-3 Runtime Environment for Windows Installations
+
 Installation and Setup
 ~~~~~~~~~~~~~~~~~~~~~~~
 

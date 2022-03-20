@@ -1,0 +1,33 @@
+:root {
+    --pcaBeige: #c3a579;
+    --pcaDarkBeige: #b39870;
+    --pcaBlue: #0C4A80;
+    --pcaDarkBlue: #0b3f6d;
+    --pcaGrey: #E6E6E6;
+}
+
+@media print {
+    @page {
+        size: letter;
+        margin: 10mm;
+    }
+    .thead-table {
+        background-color: var(--pcaGrey) !important;
+        color: var(--pcaBlue) !important;
+    }
+    tr:nth-child(even) {
+        background-color: #f2f2f2 !important;
+    }
+    .pca-logo {
+        width: 150px;
+        height: 150px;
+        padding: 25px;
+        float: left;
+    }
+    .page-title {
+        padding: 25px;
+    }
+    table {
+        width: 100%;
+    }
+}
