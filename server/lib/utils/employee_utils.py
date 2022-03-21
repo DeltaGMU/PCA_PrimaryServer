@@ -67,9 +67,24 @@ async def generate_employee_id(first_name: str, last_name: str, session: Session
     return new_employee_id
 
 
+def create_employee_password_hashes_sync(password: str) -> str | None:
+    """
+        This synchronous utility method creates a hashed and salted digest of a provided plain text password using BCrypt.
+
+        :param password: The plain text password that needs the hash and salt generated.
+        :type password: str, required
+        :return: the newly generated employee password hash if successful, or None if the provided parameters are invalid.
+        :rtype: str | None
+        """
+    if password is None or len(password) == 0:
+        return None
+    employee_password_hash = bcrypt.hash(password.encode('utf-8'))
+    return employee_password_hash
+
+
 async def create_employee_password_hashes(password: str) -> str | None:
     """
-    This utility method creates a hashed and salted digest of a provided plain text password using BCrypt.
+    This asynchronous utility method creates a hashed and salted digest of a provided plain text password using BCrypt.
 
     :param password: The plain text password that needs the hash and salt generated.
     :type password: str, required
