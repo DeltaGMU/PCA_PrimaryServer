@@ -8,8 +8,10 @@ from fastapi_utils.inferring_router import InferringRouter
 from config import ENV_SETTINGS
 from server.lib.database_access.student_care_interface import check_in_student, check_out_student
 from server.web_api.models import ResponseModel
-from server.lib.data_classes.student_care_hours import PydanticStudentCareHoursCheckIn, PydanticStudentCareHoursCheckOut
+from server.lib.data_classes.student_care_hours import PydanticStudentCareHoursCheckIn, PydanticStudentCareHoursCheckOut, \
+    PydanticRetrieveCheckedOutStudents, PydanticRetrieveCheckedInStudents
 from server.lib.database_manager import get_db_session
+from server.web_api.web_security import token_is_valid, oauth_scheme
 
 router = InferringRouter()
 
@@ -21,6 +23,21 @@ class StudentCareRouter:
     The API router responsible for defining endpoints relating to students.
     The defined endpoints allow HTTP requests to conduct create, read, update, and delete tasks on student records.
     """
+    class Read:
+        @staticmethod
+        @router.post(ENV_SETTINGS.API_ROUTES.StudentCare.check_in, status_code=status.HTTP_201_CREATED)
+        async def read_checked_in_students(pyd_checked_in_students: PydanticRetrieveCheckedInStudents, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
+            # Not Implemented!
+            if not await token_is_valid(token, ["administrator"]):
+                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
+
+        @staticmethod
+        @router.post(ENV_SETTINGS.API_ROUTES.StudentCare.check_in, status_code=status.HTTP_201_CREATED)
+        async def read_checked_in_students(pyd_checked_out_students: PydanticRetrieveCheckedOutStudents, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
+            # Not Implemented!
+            if not await token_is_valid(token, ["administrator"]):
+                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
+
     class Service:
         @staticmethod
         @router.post(ENV_SETTINGS.API_ROUTES.StudentCare.check_in, status_code=status.HTTP_201_CREATED)

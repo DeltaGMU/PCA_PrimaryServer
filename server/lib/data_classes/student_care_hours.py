@@ -1,9 +1,29 @@
 from __future__ import annotations
 import datetime
-from typing import Optional
+from typing import Optional, List
 from pydantic import BaseModel
 from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Date, LargeBinary, VARCHAR, Boolean, Time, sql
 from server.lib.database_access.sqlalchemy_base_interface import MainEngineBase as Base
+
+
+class PydanticRetrieveCheckedInStudents(BaseModel):
+    """
+    A Pydantic class used to represent the retrieval of multiple student entities that have been checked into student care.
+    Do not try to initialize this class as an independent entity or extend it into a subclass.
+    """
+    student_ids: Optional[List[str]]
+    check_in_date: Optional[str]
+    care_type: bool
+
+
+class PydanticRetrieveCheckedOutStudents(BaseModel):
+    """
+    A Pydantic class used to represent the retrieval of multiple student entities that have been checked out from student care.
+    Do not try to initialize this class as an independent entity or extend it into a subclass.
+    """
+    student_ids: Optional[List[str]]
+    check_out_date: Optional[str]
+    care_type: bool
 
 
 class PydanticStudentCareHoursCheckIn(BaseModel):
@@ -46,6 +66,7 @@ class StudentCareHours(Base):
     CareType = Column(Boolean(), nullable=False, default=False)  # CareType: False = Before Care, True = After Care
     CheckInSignature = Column(VARCHAR(length=100), nullable=False)
     CheckOutSignature = Column(VARCHAR(length=100))
+    ManuallyCheckedOut = Column(Boolean(), nullable=False, default=False)
     EntryCreated = Column(DateTime, nullable=False, default=sql.func.now())
 
     def __init__(self, student_id: str, care_date: str, care_type: bool, checkin_time: datetime.datetime, checkout_time: datetime.datetime, checkin_signature: str = None, checkout_signature: str = None):
