@@ -10,7 +10,7 @@ from config import ENV_SETTINGS
 from server.lib.web_manager import WebSessionManager
 from server.lib.logging_manager import LoggingManager
 from server.lib.strings import LOG_ORIGIN_SHUTDOWN, LOG_ORIGIN_GENERAL, LOG_ERROR_GENERAL, LOG_WARNING_GENERAL, LOG_ERROR_UNKNOWN, LOG_ORIGIN_STARTUP
-from server.lib.database_access.tables_management_interface import clear_temporary_tables, initialize_tables
+from server.lib.database_access.tables_management_interface import clear_temporary_tables, initialize_tables, initialize_admin
 
 
 def init():
@@ -94,6 +94,8 @@ def init():
         initialize_tables()
         # Clear the access/reset Token tables in case the last server shutdown was improper.
         clear_temporary_tables()
+        # Initialize the default administrator account if the database contains no administrator accounts.
+        initialize_admin()
         # Create and initialize the web session manager with the provided parameters.
         web_session_manager = WebSessionManager(ENV_SETTINGS.web_host, ENV_SETTINGS.web_port)
         # Start the primary web server after all the modules have successfully been configured.
