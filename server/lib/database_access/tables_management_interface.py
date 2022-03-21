@@ -1,16 +1,13 @@
 import traceback
 from sqlalchemy.exc import SQLAlchemyError
 from server.lib.data_classes.employee import Employee
-from server.lib.data_classes.employee_hours import EmployeeHours
 from server.lib.data_classes.employee_role import EmployeeRole
-from server.lib.data_classes.student import Student
-from server.lib.data_classes.student_care_hours import StudentCareHours
 from server.lib.data_classes.contact_info import ContactInfo
 from server.lib.logging_manager import LoggingManager
 from server.lib.strings import LOG_ORIGIN_DATABASE, LOG_ERROR_DATABASE
 from server.lib.data_classes.access_token import TokenBlacklist
 from server.lib.data_classes.reset_token import ResetToken
-from server.lib.database_manager import get_db_session, MainEngineBase, main_engine
+from server.lib.database_manager import get_db_session, MainEngineBase
 from server.lib.utils.employee_utils import create_employee_password_hashes_sync
 from config import DefaultData, ENV_SETTINGS
 
