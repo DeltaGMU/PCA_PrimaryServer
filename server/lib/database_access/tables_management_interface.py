@@ -143,7 +143,7 @@ def initialize_admin():
                 LoggingManager().log(LoggingManager.LogLevel.LOG_INFO,
                                      'Detected one or more enabled administrator accounts in the database, skipping default administrator account initialization...')
         else:
-            # If there are no existing administrator accounts, just create and initialize the default administrator account.
+            # If there are no existing administrator accounts, create and initialize the default administrator account.
             LoggingManager().log(LoggingManager.LogLevel.LOG_WARNING,
                                  f'No administrator accounts detected, creating and enabling the default administrator account... '
                                  f'Please be sure to delete this account after setting up a new administrator account!',
