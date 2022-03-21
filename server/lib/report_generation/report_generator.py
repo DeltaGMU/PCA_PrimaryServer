@@ -24,7 +24,7 @@ async def create_time_sheets_report(session: Session = None):
     template = env.get_template(f'timesheet_report_template.html')
     template_vars = {
         "title": "Employee Timesheet Report",
-        "pca_logo": f"{ROOT_DIR}/lib/report_generation/pca_logo.svg",
+        "pca_logo": f"{ROOT_DIR}\\lib\\report_generation\\pca_logo.svg",
         "pie_chart": f"{ROOT_DIR}\\lib\\report_generation\\pie-chart.png",
         "time_sheet_list": []
     }
