@@ -39,7 +39,7 @@ class StudentCareHours(Base):
     """
     __tablename__ = 'student_care_hours'
     id = Column(Integer, primary_key=True, autoincrement=True, unique=True, nullable=False)
-    StudentID = Column(VARCHAR(length=50), ForeignKey('student.id'), nullable=False)
+    StudentID = Column(VARCHAR(length=50), ForeignKey('student.StudentID'), nullable=False)
     CareDate = Column(Date, nullable=False, default=sql.func.current_date())
     CheckInTime = Column(Time(timezone=False), nullable=False, default=datetime.datetime.now().strftime('%H:%M:%S'))
     CheckOutTime = Column(Time(timezone=False), nullable=False)
