@@ -141,6 +141,12 @@ def initialize_admin():
                 ).first()
                 # If all the existing administrator accounts are disabled AND the default administrator account (if it exists) is disabled, enable it.
                 if check_default_acc:
+                    LoggingManager().log(LoggingManager.LogLevel.LOG_WARNING,
+                                         f'No administrator accounts enabled, enabling the default administrator account... '
+                                         f'Please be sure to delete this account after enabling/setting-up a new administrator account!',
+                                         origin=LOG_ORIGIN_DATABASE,
+                                         no_print=False)
+                    check_default_acc = check_default_acc[0]
                     check_default_acc.EmployeeEnabled = True
                     session.commit()
                 # If all the existing administrator accounts are disabled AND the default administrator does not exist, create it.
