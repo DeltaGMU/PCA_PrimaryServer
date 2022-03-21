@@ -24,6 +24,10 @@
         padding: 25px;
         float: left;
     }
+    .pie-chart {
+        width: 50%;
+        padding: 25px;
+    }
     .page-title {
         padding: 25px;
     }

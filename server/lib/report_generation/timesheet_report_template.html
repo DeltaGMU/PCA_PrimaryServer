@@ -5,7 +5,7 @@
     <title>{{ title }}</title>
 </head>
 <body>
-    <img src="{{ pca_logo }}" class="pca-logo rounded float-left" alt="PCA Logo">
+    <img src="{{ pca_logo }}" class="pca-logo rounded float-left" alt="{{ pca_logo }}">
     <div class="page-title">
         <h2>Employee Timesheet Report</h2>
         <p>This report contains a table of employees and total work/pto/extra hours for the reporting period.</p>
@@ -30,6 +30,11 @@
                 </tr>
             {% endfor -%}
         </table>
+    </div>
+    <hr/>
+    <div>
+        <h3>Timesheet Analytics</h3>
+        <img src="{{ pie_chart }}" class="pie-chart rounded" alt="{{ pie_chart }}">
     </div>
 </body>
 </html>
