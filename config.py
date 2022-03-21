@@ -5,6 +5,18 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
+class DefaultData:
+    default_admin = {
+        'employee_id': 'admin',
+        'first_name': 'pca',
+        'last_name': 'administrator',
+        'plain_password': 'admin123',
+        'primary_email': "admin@admin.com",
+        'enable_notifications': False,
+        'role': 'administrator'
+    }
+
+
 class APIRoutes:
     index = '/'
     core = '/api/v1'
@@ -72,6 +84,7 @@ class Settings(BaseSettings):
     student_before_care_check_out_time: str
     student_after_care_check_in_time: str
     student_after_care_check_out_time: str
+    all_account_roles: str
 
     class Config:
         env_file = f'.env'
