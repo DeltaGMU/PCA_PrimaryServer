@@ -16,14 +16,17 @@ from server.lib.database_manager import get_db_session, MainEngineBase, main_eng
 def initialize_tables():
     if MainEngineBase is None:
         return
-    ResetToken.__table__.create(bind=main_engine, checkfirst=True)
-    TokenBlacklist.__table__.create(bind=main_engine, checkfirst=True)
+    '''
     ContactInfo.__table__.create(bind=main_engine, checkfirst=True)
     Employee.__table__.create(bind=main_engine, checkfirst=True)
     EmployeeHours.__table__.create(bind=main_engine, checkfirst=True)
     EmployeeRole.__table__.create(bind=main_engine, checkfirst=True)
     Student.__table__.create(bind=main_engine, checkfirst=True)
     StudentCareHours.__table__.create(bind=main_engine, checkfirst=True)
+    ResetToken.__table__.create(bind=main_engine, checkfirst=True)
+    TokenBlacklist.__table__.create(bind=main_engine, checkfirst=True)
+    '''
+    MainEngineBase.metadata.create_all()
     LoggingManager().log(LoggingManager.LogLevel.LOG_INFO, 'Initialized database tables.', origin=LOG_ORIGIN_DATABASE, no_print=False)
 
 
