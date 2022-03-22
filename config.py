@@ -19,7 +19,7 @@ class DefaultData:
 
 class APIRoutes:
     index = '/'
-    letsencrypt = '/.well-known/acme-challenge/'
+    letsencrypt = '/.well-known/acme-challenge'
     core = '/api/v1'
     status = '/api/v1/status'
     routes = '/api/v1/routes'
