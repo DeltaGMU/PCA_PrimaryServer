@@ -45,7 +45,7 @@ def initialize_roles():
     if MainEngineBase is None:
         return
     session = next(get_db_session())
-    account_roles = ENV_SETTINGS.all_account_roles.lower().strip().split(',')
+    account_roles = [role.strip() for role in ENV_SETTINGS.all_account_roles.lower().strip().split(',')]
     try:
         role_query = session.query(EmployeeRole).filter(
             EmployeeRole.Name.in_(account_roles)

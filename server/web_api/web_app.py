@@ -25,7 +25,7 @@ web_app = FastAPI(
 )
 web_app.add_middleware(
     CORSMiddleware,
-    allow_origins=[cors_domain.strip() for cors_domain in ENV_SETTINGS.cors_domains.split(",")],
+    allow_origins=[cors_domain.strip() for cors_domain in ENV_SETTINGS.cors_domains.lower().strip().split(",")],
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE"],
     allow_headers=["Origin", "Accept", "Content-Type", "Authorization", "Access-Control-Allow-Origin"]
