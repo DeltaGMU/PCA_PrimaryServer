@@ -85,8 +85,8 @@ class WebService:
             port=self.port,
             reload=False,
             loop="asyncio",
-            ssl_certfile=self.ssl_cert,
-            ssl_keyfile=self.ssl_key,
+            ssl_certfile=self.ssl_cert if self.use_https else None,
+            ssl_keyfile=self.ssl_key if self.use_https else None,
             timeout_keep_alive=99999,
             log_level='info' if self.debug_mode else 'critical',
         )
