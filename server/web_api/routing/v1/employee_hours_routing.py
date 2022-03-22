@@ -51,6 +51,41 @@ class EmployeeHoursRouter:
 
     class Read:
         @staticmethod
+        @router.get(ENV_SETTINGS.API_ROUTES.Timesheet.hours_only, status_code=status.HTTP_200_OK)
+        async def read_employee_time_sheet_hours(employee_id: str, date_start: str, date_end: str = None, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
+            """
+            An endpoint to accumulate and return the total work hours, pto hours, overtime/extra hours for an employee within a provided date range without the full list of time sheets.
+            Front-end interaction can send requests to this endpoint with any valid date range, which would
+            be useful for presenting total work hours over the course of a week, 2 weeks, a month, or a year.
+
+
+            :param employee_id: The ID of the employee.
+            :type employee_id: str, required
+            :param date_start: The starting date for the range of time sheets to query.
+            :type date_start: str, required
+            :param date_end: The ending date for the range of time sheets to query. If an ending date is not provided, it will only query the time sheets from the starting date.
+            :type date_end: str, optional
+            :param token: The JSON Web Token responsible for authenticating the user to this endpoint.
+            :type token: str, required
+            :param session: The database session to use to retrieve all the employee data.
+            :type session: sqlalchemy.orm.session, optional
+            :return: A response model containing the total number of work hours, PTO hours, and extra/overtime hours from the days within the provided date range.
+            :rtype: server.web_api.models.ResponseModel
+            :raises HTTPException: If the provided employee has no hours logged into the system, or the employee does not exist in the database.
+            """
+            if not await token_is_valid(token, ["employee"]):
+                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
+            if employee_id is None or not isinstance(employee_id, str):
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The employee ID must be a valid string!")
+            employee = await get_user_from_token(token)
+            if employee is None or (employee.EmployeeID != employee_id.strip() and not await is_admin(employee)):
+                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="The user does not have sufficient permission.")
+            if date_end is None:
+                date_end = date_start
+            total_hours_and_list = await get_employee_hours_total(employee_id.strip(), date_start, date_end, session, hours_only=True)
+            return ResponseModel(status.HTTP_200_OK, "success", total_hours_and_list)
+
+        @staticmethod
         @router.get(ENV_SETTINGS.API_ROUTES.Timesheet.one_timesheet, status_code=status.HTTP_200_OK)
         async def read_employee_time_sheets(employee_id: str, date_start: str, date_end: str = None, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """

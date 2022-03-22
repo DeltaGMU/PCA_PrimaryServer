@@ -167,7 +167,7 @@ async def get_employee_hours_list(employee_id: str, date_start: str, date_end: s
     return [*time_sheets]
 
 
-async def get_employee_hours_total(employee_id: str, date_start: str, date_end: str, session: Session = None) -> Dict[str, any]:
+async def get_employee_hours_total(employee_id: str, date_start: str, date_end: str, session: Session = None, hours_only: bool = False) -> Dict[str, any]:
     if session is None:
         session = next(get_db_session())
     try:
@@ -186,9 +186,10 @@ async def get_employee_hours_total(employee_id: str, date_start: str, date_end: 
             total_hours['pto_hours'] += record.PTOHours
             total_hours['extra_hours'] += record.ExtraHours
         total_hours_and_list = {
-            "total_hours": total_hours,
-            "time_sheets": {f"{time_sheet.DateWorked}": time_sheet.as_dict() for time_sheet in employee_hours_list}
+            "total_hours": total_hours
         }
+        if not hours_only:
+            total_hours_and_list.update({"time_sheets": {f"{time_sheet.DateWorked}": time_sheet.as_dict() for time_sheet in employee_hours_list}})
     except IntegrityError as err:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(err)) from err
     return total_hours_and_list

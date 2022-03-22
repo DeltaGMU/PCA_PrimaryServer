@@ -58,6 +58,7 @@ class APIRoutes:
         count = '/api/v1/timesheet/count'
         timesheet = '/api/v1/timesheet'
         one_timesheet = '/api/v1/timesheet/{employee_id}'
+        hours_only = '/api/v1/timesheet/hours/{employee_id}'
 
 
 class Settings(BaseSettings):

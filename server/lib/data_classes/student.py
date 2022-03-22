@@ -74,7 +74,6 @@ class Student(Base):
         The constructor for the ``Student`` data class that is utilized internally by the SQLAlchemy library.
         Only manually instantiate this data class to create employee hours records in the database within database sessions.
 
-
         :param student_id: The student id of the student.
         :type student_id: str, required
         :param first_name: The first name of the student.

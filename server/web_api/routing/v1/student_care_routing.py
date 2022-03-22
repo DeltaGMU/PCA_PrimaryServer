@@ -68,7 +68,6 @@ class StudentCareRouter:
             Any student checked into after-care can be checked out at any time after checking in.
             Failure to check out a student from after-care will result in the automatic check-out of the student at the end of after-care.
 
-
             :param pyd_student_checkout: The Pydantic StudentCareHoursCheckOut reference. This means that HTTP requests to this endpoint must include the required fields in the Pydantic StudentCareHoursCheckOut class.
             :type pyd_student_checkout: StudentCareHoursCheckOut, required
             :param session: The database session to use to check out a student.

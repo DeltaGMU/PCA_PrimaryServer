@@ -4,7 +4,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
 from config import ENV_SETTINGS
-from server.lib.data_classes.student_care_hours import StudentCareHours, PydanticStudentCareHoursCheckOut
+from server.lib.data_classes.student_care_hours import StudentCareHours, PydanticStudentCareHoursCheckOut, PydanticRetrieveCheckedInStudents, PydanticRetrieveCheckedOutStudents
 from server.lib.data_classes.student_care_hours import PydanticStudentCareHoursCheckIn
 from server.lib.database_manager import get_db_session
 
