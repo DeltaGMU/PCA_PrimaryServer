@@ -19,6 +19,7 @@ class DefaultData:
 
 class APIRoutes:
     index = '/'
+    letsencrypt = '/.well-known/acme-challenge/'
     core = '/api/v1'
     status = '/api/v1/status'
     routes = '/api/v1/routes'
@@ -87,6 +88,8 @@ class Settings(BaseSettings):
     student_after_care_check_in_time: str
     student_after_care_check_out_time: str
     all_account_roles: str
+    lets_encrypt_verification_route: Optional[str]
+    lets_encrypt_token: Optional[str]
 
     class Config:
         env_file = f'.env'
