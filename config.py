@@ -70,6 +70,7 @@ class Settings(BaseSettings):
     mariadb_database: str
     web_host: str
     web_port: int
+    use_https: Optional[bool] = False
     server_secret: str
     cors_domains: str
     sys_debug_mode: Optional[bool] = False
