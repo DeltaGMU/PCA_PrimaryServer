@@ -1,5 +1,5 @@
 from server.lib.logging_manager import LoggingManager
-from server.lib.strings import LOG_ORIGIN_STARTUP
+from server.lib.strings import LOG_ORIGIN_STARTUP, ROOT_DIR
 from server.web_api.web_service import WebService
 from server.lib.error_codes import ERR_WEB_SESSION_MNGR_INCORRECT_PARAMS
 from config import ENV_SETTINGS
@@ -35,7 +35,7 @@ class WebSessionManager:
         :return: None
         """
         # TODO: Add https/ssl certs into the service later.
-        self.web_service: WebService = WebService(self.web_ip, self.web_port, debug_mode=ENV_SETTINGS.api_debug_mode)
+        self.web_service: WebService = WebService(self.web_ip, self.web_port, use_https=True, ssl_cert=f"{ROOT_DIR}/web_api/cert.pem", ssl_key=f"{ROOT_DIR}/web_api/key.pem", debug_mode=ENV_SETTINGS.api_debug_mode)
         LoggingManager().log(LoggingManager.LogLevel.LOG_INFO, "Web session manager initialized.", origin=LOG_ORIGIN_STARTUP, no_print=False)
 
     def start_web_server(self):
