@@ -7,18 +7,16 @@ import calendar
 import datetime
 
 
-async def get_all_time_sheets_for_report(session: Session = None):
+async def get_all_time_sheets_for_report(start_date: str, end_date: str, session: Session = None):
     if session is None:
         session = next(get_db_session())
     try:
-        now = datetime.datetime.now()
-        days_in_cur_month = calendar.monthrange(now.year, now.month)[1]
         all_employees_hours = {}
         all_employees = session.query(Employee).filter(Employee.EmployeeEnabled == 1).all()
         for employee in all_employees:
             time_sheets = session.query(EmployeeHours).filter(
                 EmployeeHours.EmployeeID == employee.EmployeeID,
-                EmployeeHours.DateWorked.between(f"{now.year}-{now.month}-1", f"{now.year}-{now.month}-{days_in_cur_month}"),
+                EmployeeHours.DateWorked.between(start_date, end_date),
             ).all()
             total_hours = {
                 "work_hours": 0,

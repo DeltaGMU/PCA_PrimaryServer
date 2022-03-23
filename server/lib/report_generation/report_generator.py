@@ -5,8 +5,7 @@ Requires GTK-3 Runtime Libraries!
 from jinja2 import Environment, FileSystemLoader
 from weasyprint import HTML, CSS
 from sqlalchemy.orm import Session
-import matplotlib.pyplot as plt
-import matplotlib as mpl
+from server.lib.utils.date_utils import check_date_formats
 from server.lib.strings import ROOT_DIR
 from server.lib.database_manager import get_db_session
 from server.lib.database_access.analytics_interface import check_time_sheets_submitted, get_all_time_sheets_for_report
@@ -18,9 +17,11 @@ env = Environment(loader=FileSystemLoader(
 ))
 
 
-async def create_time_sheets_report(session: Session = None):
+async def create_time_sheets_report(start_date: str, end_date: str, session: Session = None):
     if session is None:
         session = next(get_db_session())
+    if not check_date_formats([start_date, end_date]):
+        raise RuntimeError("The start and end dates for the reporting period are invalid!")
     template = env.get_template(f'timesheet_report_template.html')
     template_vars = {
         "title": "Employee Timesheet Report",
@@ -44,16 +45,17 @@ async def create_time_sheets_report(session: Session = None):
                     ]
                 )
     template_vars["time_sheet_list"] = time_sheet_list
-
+    reformat_date = f"{start_date[0:4]}_{start_date[5:7]}"
+    generated_pdf_path = f"{ROOT_DIR}/reports/{reformat_date}-EmployeeReport.pdf"
     html_out = template.render(template_vars)
     HTML(string=html_out, base_url=f".").write_pdf(
-        f"{ROOT_DIR}/lib/report_generation/EmployeeTimesheetReport.pdf",
+        generated_pdf_path,
         stylesheets=[
             CSS(f"{ROOT_DIR}/lib/report_generation/styles.css"),
             CSS(f"{ROOT_DIR}/lib/report_generation/bootstrap.min.css")
         ]
     )
-    return f"{ROOT_DIR}/lib/report_generation/EmployeeTimesheetReport.pdf"
+    return generated_pdf_path
 
 
 async def create_student_care_report():

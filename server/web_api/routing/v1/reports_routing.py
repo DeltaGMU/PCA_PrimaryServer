@@ -7,6 +7,7 @@ from fastapi.responses import FileResponse
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
 from config import ENV_SETTINGS
+from server.lib.data_classes.report import PydanticRetrieveEmployeeReport
 from server.lib.report_generation.report_generator import create_time_sheets_report
 from server.lib.database_manager import get_db_session
 from server.web_api.web_security import token_is_valid, oauth_scheme
@@ -25,10 +26,12 @@ class ReportsRouter:
     class Create:
         @staticmethod
         @router.get(ENV_SETTINGS.API_ROUTES.Reports.employee_reports, status_code=status.HTTP_201_CREATED)
-        async def create_time_sheets_report(token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
+        async def create_time_sheets_report(reporting_period: PydanticRetrieveEmployeeReport, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint that creates a report from employee time sheet information.
 
+            :param reporting_period: The start and end dates of the time period to generate reports for.
+            :type reporting_period: PydanticRetrieveEmployeeReport, required
             :param token: The JSON Web Token responsible for authenticating the user to this endpoint.
             :type token: str, required
             :param session: The database session to use to create a new student record in the database.
@@ -39,6 +42,6 @@ class ReportsRouter:
             """
             if not await token_is_valid(token, ["administrator"]):
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
-            created_report_path = await create_time_sheets_report(session)
+            created_report_path = await create_time_sheets_report(reporting_period.start_date, reporting_period.end_date, session)
             return FileResponse(created_report_path)
 
