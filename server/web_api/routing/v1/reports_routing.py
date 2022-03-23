@@ -51,9 +51,9 @@ class ReportsRouter:
         @router.delete(ENV_SETTINGS.API_ROUTES.Reports.employee_reports, status_code=status.HTTP_200_OK)
         async def create_time_sheets_report(reporting_period: PydanticDeleteEmployeeReport, token: str = Depends(oauth_scheme)):
             """
-            An endpoint that deletes an employee time sheet report provided a year and month in the YYYY-MM format.
+            An endpoint that deletes an employee time sheet report provided the starting reporting period as a year and month in the YYYY-MM format.
 
-            :param reporting_period: The date of the time sheet report in YYYY-MM format.
+            :param reporting_period: The date of the starting time period of the time sheet report in YYYY-MM format.
             :type reporting_period: PydanticDeleteEmployeeReport, required
             :param token: The JSON Web Token responsible for authenticating the user to this endpoint.
             :type token: str, required
