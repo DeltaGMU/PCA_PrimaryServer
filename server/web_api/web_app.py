@@ -1,5 +1,5 @@
 from fastapi.exceptions import RequestValidationError
-
+from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
 from server.lib.data_classes.reset_token import PydanticResetToken
 from server.web_api.models import ResponseModel
 from server.web_api.routing.v1 import core_routing, employee_routing, employee_hours_routing, student_routing, student_care_routing, reports_routing
@@ -30,6 +30,7 @@ web_app.add_middleware(
     allow_methods=["GET", "POST", "PUT", "DELETE"],
     allow_headers=["Origin", "Accept", "Content-Type", "Authorization", "Access-Control-Allow-Origin"]
 )
+web_app.add_middleware(HTTPSRedirectMiddleware)
 web_app.mount("/wiki",
               StaticFiles(directory=f"{ROOT_DIR}/docs/build/html", html=True),
               name="wiki")
