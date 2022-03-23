@@ -25,7 +25,6 @@ async def create_time_sheets_report(session: Session = None):
     template_vars = {
         "title": "Employee Timesheet Report",
         "pca_logo": f"{ROOT_DIR}\\lib\\report_generation\\pca_logo.svg",
-        "pie_chart": f"{ROOT_DIR}\\lib\\report_generation\\pie-chart.png",
         "time_sheet_list": []
     }
     all_employees, fully_submitted_count, not_submitted_count = await check_time_sheets_submitted(session)
@@ -45,23 +44,6 @@ async def create_time_sheets_report(session: Session = None):
                     ]
                 )
     template_vars["time_sheet_list"] = time_sheet_list
-
-    mpl.use('Agg')
-    # Pie chart, where the slices will be ordered and plotted counter-clockwise:
-    labels = ["Fully Submitted", "Not Submitted"]
-    submission_values = [fully_submitted_count, not_submitted_count]
-    # Colors
-    colors = ['#A1FFB0', '#E63946']
-    # Create subplot
-    fig, ax = plt.subplots()
-    # Generate pie chart
-    ax.pie(submission_values, labels=labels, autopct='%1.1f%%', startangle=45, colors=colors)
-    ax.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
-    # Set Title
-    ax.set_title('Timesheet Submissions Breakdown', fontweight="bold")
-    # Save the plot as a PNG
-    plt.savefig(f"{ROOT_DIR}/lib/report_generation/pie-chart.png", dpi=300, pad_inches=1)
-    plt.clf()
 
     html_out = template.render(template_vars)
     HTML(string=html_out, base_url=f".").write_pdf(
