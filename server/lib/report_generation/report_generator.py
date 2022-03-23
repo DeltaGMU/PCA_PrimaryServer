@@ -5,17 +5,31 @@ Requires GTK-3 Runtime Libraries!
 from jinja2 import Environment, FileSystemLoader
 import pdfkit
 from datetime import datetime
+from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 from server.lib.utils.date_utils import check_date_formats
 from server.lib.strings import ROOT_DIR
 from server.lib.database_manager import get_db_session
 from server.lib.database_access.analytics_interface import get_all_time_sheets_for_report
+from server.lib.utils.reports_utils import delete_time_sheet_report
 
 env = Environment(loader=FileSystemLoader(
     [
         f'{ROOT_DIR}/lib/report_generation'
     ]
 ))
+
+
+async def delete_time_sheet_report_from_date(date: str):
+    try:
+        datetime.strptime(date, '%Y-%m')
+    except ValueError:
+        raise RuntimeError("The start and end dates for the reporting period are invalid!")
+    formatted_path = f"{date[0:4]}_{date[5:7]}-EmployeeReport.pdf"
+    if delete_time_sheet_report(formatted_path):
+        return formatted_path
+    else:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='The provided date was invalid! Please ensure it is in the YYYY-MM format!')
 
 
 async def create_time_sheets_report(start_date: str, end_date: str, session: Session = None):
