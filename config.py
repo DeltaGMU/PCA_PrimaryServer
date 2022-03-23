@@ -73,6 +73,7 @@ class Settings(BaseSettings):
     use_https: Optional[bool] = False
     server_secret: str
     cors_domains: str
+    pca_email_api: str
     sys_debug_mode: Optional[bool] = False
     api_debug_mode: Optional[bool] = False
     db_debug_mode: Optional[bool] = False
