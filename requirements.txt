@@ -12,5 +12,5 @@ mariadb~=1.0.9
 Jinja2~=3.0.3
 PyJWT~=2.3.0
 starlette~=0.17.1
-weasyprint~=54.2
+pdfkit~=1.0.0
 matplotlib~=3.5.1

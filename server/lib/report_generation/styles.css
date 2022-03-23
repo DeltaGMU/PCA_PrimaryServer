@@ -5,33 +5,26 @@
     --pcaDarkBlue: #0b3f6d;
     --pcaGrey: #E6E6E6;
 }
-
-@media print {
-    @page {
-        size: letter;
-        margin: 10mm;
-    }
-    .thead-table {
-        background-color: var(--pcaGrey) !important;
-        color: var(--pcaBlue) !important;
-    }
-    tr:nth-child(even) {
-        background-color: #f2f2f2 !important;
-    }
-    .pca-logo {
-        width: 150px;
-        height: 150px;
-        padding: 25px;
+@font-face {
+    font-family: 'Helvetica';
+    font-style: normal;
+    font-weight: 400;
+}
+* {
+  font-family: "Helvetica" !important;
+}
+.pca-logo {
+        width: 170px !important;
+        height: 100px !important;
+        padding: 5px !important;
         float: left;
-    }
-    .pie-chart {
-        width: 50%;
-        padding: 25px;
-    }
-    .page-title {
-        padding: 25px;
-    }
-    table {
-        width: 100%;
-    }
+}
+.page-title {
+    padding: 25px !important;
+}
+table {
+    width: 99% !important;
+}
+.grid-container {
+    display: grid !important;
 }
