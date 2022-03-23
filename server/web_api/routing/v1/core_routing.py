@@ -31,7 +31,3 @@ class CoreRouter:
         :rtype: server.web_api.models.ResponseModel
         """
         return ResponseModel(status.HTTP_200_OK, "success", {"status": "online" if is_active() else "offline"})
-
-    @router.get(f"{ENV_SETTINGS.API_ROUTES.letsencrypt}/{ENV_SETTINGS.lets_encrypt_verification_route}")
-    def status(self):
-        return f"{ENV_SETTINGS.lets_encrypt_verification_route}.-{ENV_SETTINGS.lets_encrypt_token}"
