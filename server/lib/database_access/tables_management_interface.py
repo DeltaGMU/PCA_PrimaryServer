@@ -1,20 +1,25 @@
 import traceback
 from sqlalchemy.exc import SQLAlchemyError
+from config import DefaultData, ENV_SETTINGS
+from server.lib.logging_manager import LoggingManager
+from server.lib.strings import LOG_ORIGIN_DATABASE, LOG_ERROR_DATABASE
+from server.lib.database_manager import get_db_session, MainEngineBase
+from server.lib.utils.employee_utils import create_employee_password_hashes_sync
+from server.lib.data_classes.access_token import TokenBlacklist
+from server.lib.data_classes.reset_token import ResetToken
 from server.lib.data_classes.employee import Employee
 from server.lib.data_classes.employee_role import EmployeeRole
 from server.lib.data_classes.contact_info import ContactInfo
-from server.lib.logging_manager import LoggingManager
-from server.lib.strings import LOG_ORIGIN_DATABASE, LOG_ERROR_DATABASE
-from server.lib.data_classes.access_token import TokenBlacklist
-from server.lib.data_classes.reset_token import ResetToken
-from server.lib.database_manager import get_db_session, MainEngineBase
-from server.lib.utils.employee_utils import create_employee_password_hashes_sync
-from config import DefaultData, ENV_SETTINGS
 
 
 def initialize_tables():
     if MainEngineBase is None:
         return
+
+    # These look like unused imports, but the table creation process needs the reference.
+    from server.lib.data_classes.student_grade import StudentGrade
+    from server.lib.data_classes.student import Student
+    from server.lib.data_classes.employee_hours import EmployeeHours
     MainEngineBase.metadata.create_all()
     LoggingManager().log(LoggingManager.LogLevel.LOG_INFO, 'Initialized database tables.', origin=LOG_ORIGIN_DATABASE, no_print=False)
     if initialize_roles():
