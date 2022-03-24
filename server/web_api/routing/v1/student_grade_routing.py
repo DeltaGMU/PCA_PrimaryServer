@@ -16,10 +16,10 @@ router = InferringRouter()
 
 # pylint: disable=R0201
 @cbv(router)
-class ReportsRouter:
+class StudentGradesRouter:
     """
-    The API router responsible for defining endpoints relating to students.
-    The defined endpoints allow HTTP requests to conduct create, read, update, and delete tasks on student records.
+    The API router responsible for defining endpoints relating to student grades.
+    The defined endpoints allow HTTP requests to conduct create, read, update, and delete tasks on student grade records.
     """
 
     class Create:
