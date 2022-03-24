@@ -5,6 +5,25 @@ from server.lib.database_manager import get_db_session
 from sqlalchemy.exc import IntegrityError
 
 
+async def retrieve_all_grades(session: Session = None):
+    if session is None:
+        session = next(get_db_session())
+    all_grades = session.query(Session).all()
+    return all_grades
+
+
+async def retrieve_one_grade(student_grade: PydanticStudentGrade, session: Session = None):
+    if session is None:
+        session = next(get_db_session())
+    student_grade = student_grade.student_grade.lower().strip()
+    matching_grade = session.query(StudentGrade).filter(
+        StudentGrade.Name == student_grade
+    ).first()
+    if matching_grade is None:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The student grade information for the student could not be created due to invalid parameters!")
+    return matching_grade
+
+
 async def create_student_grade(student_grade: PydanticStudentGrade, session: Session = None):
     student_grade = student_grade.student_grade
     if len(student_grade) == 0:
