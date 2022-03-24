@@ -68,7 +68,6 @@ async def create_employee(pyd_employee: PydanticEmployeeRegistration, session: S
     # Remove unnecessary elements from response
     del created_employee['contact_id']
     del created_employee['entry_created']
-
     return created_employee
 
 
