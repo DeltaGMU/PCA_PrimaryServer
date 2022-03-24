@@ -70,6 +70,8 @@ async def login(data: OAuth2PasswordRequestForm = Depends()):
         employee_verified = await verify_employee_password(password, employee_user.PasswordHash)
         if employee_verified is None or employee_verified is False:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid username or password provided!")
+    if not employee_user.EmployeeEnabled:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The user account is currently disabled. Please inform your system administrator.")
     access_token_dict = await create_access_token(employee_user)
     return ResponseModel(status.HTTP_200_OK, "success", {**access_token_dict})
 
