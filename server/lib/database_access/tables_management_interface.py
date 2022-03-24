@@ -17,8 +17,11 @@ def initialize_tables():
         return
 
     # These look like unused imports, but the table creation process needs the reference.
+    # noinspection PyUnresolvedReferences
     from server.lib.data_classes.student_grade import StudentGrade
+    # noinspection PyUnresolvedReferences
     from server.lib.data_classes.student import Student
+    # noinspection PyUnresolvedReferences
     from server.lib.data_classes.employee_hours import EmployeeHours
     MainEngineBase.metadata.create_all()
     LoggingManager().log(LoggingManager.LogLevel.LOG_INFO, 'Initialized database tables.', origin=LOG_ORIGIN_DATABASE, no_print=False)
