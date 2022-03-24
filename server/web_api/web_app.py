@@ -1,7 +1,8 @@
 from fastapi.exceptions import RequestValidationError
 from server.lib.data_classes.reset_token import PydanticResetToken
 from server.web_api.models import ResponseModel
-from server.web_api.routing.v1 import core_routing, employee_routing, employee_hours_routing, student_routing, student_care_routing, reports_routing, email_routing
+from server.web_api.routing.v1 import core_routing, employee_routing, employee_hours_routing, student_routing, \
+    student_care_routing, reports_routing, email_routing, student_grade_routing
 from server.web_api.web_security import add_token_to_blacklist, create_access_token, get_user_from_token, oauth_scheme, token_is_valid
 from server.lib.database_access.employee_interface import get_employee
 from fastapi import FastAPI, Depends, status, Security, HTTPException, Request, Response
@@ -41,6 +42,7 @@ web_app.include_router(employee_routing.router)
 web_app.include_router(employee_hours_routing.router)
 web_app.include_router(student_routing.router)
 web_app.include_router(student_care_routing.router)
+web_app.include_router(student_grade_routing.router)
 web_app.include_router(reports_routing.router)
 web_app.include_router(email_routing.router)
 
