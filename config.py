@@ -60,7 +60,7 @@ class APIRoutes:
     class StudentGrade:
         count = '/api/v1/grades/count'
         grades = '/api/v1/grades'
-        one_grade = '/api/v1/grades/{grade_id}'
+        one_grade = '/api/v1/grades/{grade_name}'
 
     class StudentCare:
         count = '/api/v1/care/count'
