@@ -64,6 +64,7 @@ class Student(Base):
     FirstName = Column(VARCHAR(length=50), nullable=False)
     LastName = Column(VARCHAR(length=50), nullable=False)
     ContactInfoID = Column(Integer, ForeignKey('contact_info.id'), nullable=False)
+    GradeID = Column(Integer, ForeignKey('student_grade.id'), nullable=False)
     StudentEnabled = Column(Boolean(), nullable=False, default=True)
     StudentCareHoursRelationship = relationship('StudentCareHours', cascade='all, delete')
     EntryCreated = Column(DateTime, nullable=False, default=sql.func.now())
