@@ -1,5 +1,7 @@
 from __future__ import annotations
 from typing import Dict, List
+
+from server.lib.data_classes.student_grade import StudentGrade
 from server.lib.database_manager import get_db_session
 from server.lib.data_classes.contact_info import ContactInfo
 from server.lib.utils.student_utils import generate_student_id
@@ -17,6 +19,7 @@ async def create_student(pyd_student: PydanticStudentRegistration, session: Sess
     pyd_student.last_name = pyd_student.last_name.lower().strip()
     pyd_student.parent_full_name = pyd_student.parent_full_name.lower().strip()
     pyd_student.parent_primary_email = pyd_student.parent_primary_email.lower().strip()
+    pyd_student.grade = pyd_student.grade.lower().strip()
     if pyd_student.parent_secondary_email:
         pyd_student.parent_secondary_email = pyd_student.parent_secondary_email.lower().strip()
     if pyd_student.enable_notifications is None:
@@ -46,9 +49,14 @@ async def create_student(pyd_student: PydanticStudentRegistration, session: Sess
     session.add(contact_info)
     session.flush()
 
+    # Verify that the student grade is valid and return the grade id for the specified grade.
+    grade_query = session.query(StudentGrade).filter(StudentGrade.Name == pyd_student.grade).first()
+    if not grade_query:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The provided student grade is invalid or does not exist!")
+
     # Create the student and add it to the database.
     try:
-        new_student = Student(student_id, pyd_student.first_name, pyd_student.last_name, contact_info.id, pyd_student.is_enabled)
+        new_student = Student(student_id, pyd_student.first_name, pyd_student.last_name, contact_info.id, grade_query.id, pyd_student.is_enabled)
         session.add(new_student)
         session.commit()
     except IntegrityError as err:
@@ -65,12 +73,13 @@ async def create_student(pyd_student: PydanticStudentRegistration, session: Sess
     # Remove unnecessary elements from response for the web interface.
     del created_student['entry_created']
     del created_student['contact_id']
+    del created_student['grade_id']
     return created_student
 
 
 async def update_students(student_updates: Dict[str, PydanticStudentUpdate], session: Session = None) -> List[Student]:
     if student_updates is None:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Provided request body did not contain any valid employee information!")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Provided request body did not contain any valid student information!")
     all_updated_students: List[Student] = []
     for student_id in student_updates.keys():
         updated_student = await update_student(student_id, student_updates[student_id], session)
@@ -82,7 +91,7 @@ async def update_students(student_updates: Dict[str, PydanticStudentUpdate], ses
 
 async def update_student(student_id: str, pyd_student_update: PydanticStudentUpdate, session: Session = None) -> Student:
     if pyd_student_update is None:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Provided request body did not contain any valid employee information!")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Provided request body did not contain any valid student information!")
     if student_id is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The student ID must be provided to update student information!")
 
@@ -93,6 +102,9 @@ async def update_student(student_id: str, pyd_student_update: PydanticStudentUpd
     student_contact_info = session.query(ContactInfo).filter(ContactInfo.id == student.ContactInfoID).first()
     if student_contact_info is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The student does not have contact information registered, please do that first!")
+    student_grade_info = session.query(StudentGrade).filter(StudentGrade.id == student.GradeID).first()
+    if student_grade_info is None:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The student does not have a student grade registered, please do that first!")
 
     # Check to see what data was provided and update as necessary.
     if pyd_student_update.first_name:
@@ -110,6 +122,12 @@ async def update_student(student_id: str, pyd_student_update: PydanticStudentUpd
         student_contact_info.LastUpdated = None
     if pyd_student_update.is_enabled:
         student_contact_info.EmployeeEnabled = pyd_student_update.is_enabled
+    if pyd_student_update.grade:
+        grade_query = session.query(StudentGrade).filter(StudentGrade.Name == pyd_student_update.grade.lower().strip()).first()
+        if not grade_query:
+            session.rollback()
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The provided student grade is invalid or does not exist!")
+        student.GradeID = grade_query.id
     session.commit()
     return student
 
@@ -141,6 +159,19 @@ async def get_student_contact_info(student: Student, session: Session = None) ->
     if matching_contact is None:
         raise RuntimeError('The student contact information was not found using the student entity. Please check for errors in the database or the provided data!')
     return matching_contact
+
+
+async def get_student_grade(student: Student, session: Session = None) -> ContactInfo:
+    if student is None:
+        raise RuntimeError('The student object was not provided! Please check for errors in the provided data!')
+    if session is None:
+        session = next(get_db_session())
+    matching_grade = session.query(StudentGrade).filter(
+        student.GradeID == StudentGrade.id
+    ).first()
+    if matching_grade is None:
+        raise RuntimeError('The student grade information was not found using the student entity. Please check for errors in the database or the provided data!')
+    return matching_grade
 
 
 async def remove_students(student_ids: PydanticStudentsRemoval | str, session: Session = None) -> List[Student]:

@@ -32,7 +32,7 @@ class StudentsRouter:
             """
             An endpoint that creates a new student record and adds it to the students' table in the database.
 
-            :param pyd_student: The new student's first name, last name, carpool number, parent full name, parent primary email, and optional parameters like parent secondary email and enabling email notifications.
+            :param pyd_student: The new student's first name, last name, carpool number, parent full name, parent primary email, student grade, and optional parameters like parent secondary email and enabling email notifications.
             :type pyd_student: PydanticStudentRegistration, required
             :param token: The JSON Web Token responsible for authenticating the user to this endpoint.
             :type token: str, required
