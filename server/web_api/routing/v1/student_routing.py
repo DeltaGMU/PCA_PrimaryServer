@@ -8,7 +8,7 @@ from fastapi import Body, status, HTTPException, Depends
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
 from config import ENV_SETTINGS
-from server.lib.database_access.student_interface import create_student, get_student_by_id, get_student_contact_info, update_students, update_student, remove_students
+from server.lib.database_access.student_interface import create_student, get_student_by_id, get_student_contact_info, update_students, update_student, remove_students, get_student_grade
 from server.web_api.models import ResponseModel
 from server.lib.data_classes.student import Student, PydanticStudentRegistration, PydanticMultipleStudentsUpdate, PydanticStudentUpdate, PydanticStudentsRemoval
 from server.lib.database_manager import get_db_session
@@ -111,7 +111,8 @@ class StudentsRouter:
             if student is None:
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The student could not be retrieved.")
             full_student_information = student.as_dict()
-            full_student_information.update((await get_student_contact_info(student)).as_dict())
+            full_student_information.update((await get_student_contact_info(student, session)).as_dict())
+            full_student_information.update((await get_student_grade(student, session)).as_dict())
             return ResponseModel(status.HTTP_200_OK, "success", {"student": full_student_information})
 
     class Update:
