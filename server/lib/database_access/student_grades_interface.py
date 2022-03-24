@@ -1,12 +1,13 @@
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
-from server.lib.data_classes.student_grade import StudentGrade
+from server.lib.data_classes.student_grade import StudentGrade, PydanticStudentGrade
 from server.lib.database_manager import get_db_session
 from sqlalchemy.exc import IntegrityError
 
 
-async def create_student_grade(student_grade: str, session: Session = None):
-    if student_grade is None or len(student_grade) == 0:
+async def create_student_grade(student_grade: PydanticStudentGrade, session: Session = None):
+    student_grade = student_grade.student_grade
+    if len(student_grade) == 0:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The student grade name cannot be empty!")
     if session is None:
         session = next(get_db_session())
@@ -24,5 +25,10 @@ async def create_student_grade(student_grade: str, session: Session = None):
     return new_student_grade
 
 
-async def remove_student_grade(student_grade: str, session: Session = None):
+async def remove_student_grade(student_grade: PydanticStudentGrade, session: Session = None):
+    student_grade = student_grade.student_grade
+    if len(student_grade) == 0:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The student grade name cannot be empty!")
+    if session is None:
+        session = next(get_db_session())
     return {}

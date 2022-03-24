@@ -6,6 +6,7 @@ from fastapi import Body, status, HTTPException, Depends
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
 from config import ENV_SETTINGS
+from server.lib.data_classes.student_grade import PydanticStudentGrade
 from server.lib.database_access.student_grades_interface import create_student_grade, remove_student_grade
 from server.lib.database_manager import get_db_session
 from server.web_api.web_security import token_is_valid, oauth_scheme
@@ -25,7 +26,7 @@ class StudentGradesRouter:
     class Create:
         @staticmethod
         @router.post(ENV_SETTINGS.API_ROUTES.StudentGrade.grades, status_code=status.HTTP_201_CREATED)
-        async def create_student_grade(student_grade: str, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
+        async def create_student_grade(student_grade: PydanticStudentGrade, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint that creates a student grade in the database system.
 
@@ -47,7 +48,7 @@ class StudentGradesRouter:
     class Delete:
         @staticmethod
         @router.delete(ENV_SETTINGS.API_ROUTES.StudentGrade.grades, status_code=status.HTTP_200_OK)
-        async def delete_student_grade(student_grade: str, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
+        async def delete_student_grade(student_grade: PydanticStudentGrade, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint that deletes an employee time sheet report provided the starting reporting period as a year and month in the YYYY-MM format.
 
