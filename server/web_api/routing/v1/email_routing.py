@@ -24,4 +24,4 @@ class EmailRouter:
             if not await token_is_valid(token, ["administrator"]):
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
             json_resp = send_test_email()
-            return ResponseModel(status.HTTP_201_CREATED, "success", json_resp)
+            return ResponseModel(status.HTTP_200_OK, "success", json_resp)
