@@ -1,7 +1,3 @@
-"""
-Requires GTK-3 Runtime Libraries!
-"""
-
 from jinja2 import Environment, FileSystemLoader
 import pdfkit
 from datetime import datetime
