@@ -18,7 +18,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 
 web_app = FastAPI(
     title="PCA Web API",
-    description="This is the REST API for the PCA server built with FastAPI",
+    description="This is the REST API for the PCA Timesheet & Student Care Service server built with FastAPI",
     version=META_VERSION,
     redoc_url=None
 )
