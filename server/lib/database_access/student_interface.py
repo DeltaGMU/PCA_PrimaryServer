@@ -66,10 +66,9 @@ async def create_student(pyd_student: PydanticStudentRegistration, session: Sess
     created_student = session.query(Student).filter(Student.StudentID == student_id).one()
     created_student = created_student.as_detail_dict()
     # Add contact information elements into response for the web interface.
-    created_student['parent_full_name'] = contact_info.FullNameOfContact
-    created_student['parent_primary_email'] = contact_info.PrimaryEmail
-    created_student['parent_secondary_email'] = contact_info.SecondaryEmail
-    created_student['email_notifications_enabled'] = contact_info.EnableNotifications
+    created_student.update(contact_info.as_dict())
+    # Add student grade information into response for the web interface.
+    created_student.update(grade_query.as_dict())
     # Remove unnecessary elements from response for the web interface.
     del created_student['entry_created']
     del created_student['contact_id']
