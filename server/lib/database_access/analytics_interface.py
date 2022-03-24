@@ -16,7 +16,6 @@ async def get_all_time_sheets_for_report(start_date: str, end_date: str, session
         employee_time_sheet_records = session.query(Employee, EmployeeHours, EmployeeRole).filter(
             Employee.EmployeeEnabled == 1,
             EmployeeRole.id == Employee.EmployeeRoleID,
-            EmployeeRole.Name != 'administrator',
             EmployeeHours.EmployeeID == Employee.EmployeeID,
             EmployeeHours.DateWorked.between(start_date, end_date)
         ).order_by(Employee.FirstName).all()
