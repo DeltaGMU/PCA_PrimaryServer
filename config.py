@@ -17,6 +17,12 @@ class DefaultData:
     }
 
 
+class ThirdPartyRoutes:
+    class Email:
+        login = '/auth/authenticate-user'
+        send_email = '/mail/message-put'
+
+
 class APIRoutes:
     index = '/'
     core = '/api/v1'
@@ -28,6 +34,9 @@ class APIRoutes:
     register = '/api/v1/register'
     reset = '/api/v1/reset'
     forgot_password = '/api/v1/forgot_password'
+
+    class Email:
+        send_test_email = '/api/v1/email/test'
 
     class Reports:
         reports = '/api/v1/reports'
@@ -63,6 +72,7 @@ class APIRoutes:
 
 class Settings(BaseSettings):
     API_ROUTES: APIRoutes = APIRoutes()
+    THIRD_PARTY_ROUTES: ThirdPartyRoutes = ThirdPartyRoutes()
     mariadb_user: str
     mariadb_pass: str
     mariadb_host: str
@@ -74,6 +84,8 @@ class Settings(BaseSettings):
     server_secret: str
     cors_domains: str
     pca_email_api: str
+    pca_email_username: str
+    pca_email_password: str
     sys_debug_mode: Optional[bool] = False
     api_debug_mode: Optional[bool] = False
     db_debug_mode: Optional[bool] = False
@@ -88,6 +100,7 @@ class Settings(BaseSettings):
     student_after_care_check_in_time: str
     student_after_care_check_out_time: str
     all_account_roles: str
+
 
     class Config:
         env_file = f'.env'
