@@ -69,10 +69,11 @@ async def create_student(pyd_student: PydanticStudentRegistration, session: Sess
     created_student.update(contact_info.as_dict())
     # Add student grade information into response for the web interface.
     created_student.update(grade_query.as_dict())
-    # Remove unnecessary elements from response for the web interface.
-    del created_student['entry_created']
+    # Remove unnecessary elements from response
     del created_student['contact_id']
     del created_student['grade_id']
+    del created_student['entry_created']
+
     return created_student
 
 

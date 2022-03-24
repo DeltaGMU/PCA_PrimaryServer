@@ -62,15 +62,13 @@ async def create_employee(pyd_employee: PydanticEmployeeRegistration, session: S
     created_employee = session.query(Employee).filter(Employee.EmployeeID == employee_id).one()
     created_employee = created_employee.as_detail_dict()
     # Add contact information elements into response for the web interface.
-    created_employee['role_name'] = role_query.Name
-    created_employee['primary_email'] = contact_info.PrimaryEmail
-    created_employee['secondary_email'] = contact_info.SecondaryEmail
-    created_employee['email_notifications_enabled'] = contact_info.EnableNotifications
-    # Remove unnecessary elements from response for the web interface.
-    del created_employee['password_hash']
-    del created_employee['entry_created']
-    del created_employee['role_id']
+    created_employee.update(contact_info.as_dict())
+    # Add role information into response for the web interface.
+    created_employee.update(role_query.as_dict())
+    # Remove unnecessary elements from response
     del created_employee['contact_id']
+    del created_employee['entry_created']
+
     return created_employee
 
 
