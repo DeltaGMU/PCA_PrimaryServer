@@ -25,6 +25,7 @@ class PydanticStudentRegistration(BaseModel):
     parent_full_name: str
     parent_primary_email: str
     parent_secondary_email: Optional[str]
+    grade: str
     is_enabled: Optional[bool] = True
     enable_notifications: Optional[bool] = True
 
@@ -36,6 +37,7 @@ class PydanticStudentUpdate(BaseModel):
     parent_full_name: Optional[str]
     parent_primary_email: Optional[str]
     parent_secondary_email: Optional[str]
+    grade: Optional[str]
     is_enabled: Optional[bool]
     enable_notifications: Optional[bool]
 
@@ -70,7 +72,7 @@ class Student(Base):
     EntryCreated = Column(DateTime, nullable=False, default=sql.func.now())
 
     # Do not initialize this except for creating blank student templates!
-    def __init__(self, student_id: str, first_name: str, last_name: str, contact_info_id: int, enabled: bool = True):
+    def __init__(self, student_id: str, first_name: str, last_name: str, contact_info_id: int, grade_id: int, enabled: bool = True):
         """
         The constructor for the ``Student`` data class that is utilized internally by the SQLAlchemy library.
         Only manually instantiate this data class to create employee hours records in the database within database sessions.
@@ -81,6 +83,10 @@ class Student(Base):
         :type first_name: str, required
         :param last_name: The last name of the student.
         :type last_name: str, required
+        :param contact_info_id: The ID number of the contact info record in the database to relate to.
+        :type contact_info_id: int, required
+        :param grade_id: The ID number of the student grade record in the database to relate to.
+        :type grade_id: int, required
         :param enabled: Determines if the individual is active as a student of PCA. Disable this if the student no longer attends PCA or is on indefinite leave.
         :type enabled: bool, optional
         """
@@ -88,6 +94,7 @@ class Student(Base):
         self.FirstName = first_name
         self.LastName = last_name
         self.ContactInfoID = contact_info_id
+        self.GradeID = grade_id
         self.StudentEnabled = enabled
 
     def as_detail_dict(self):
@@ -101,6 +108,7 @@ class Student(Base):
         return {
             "student_id": self.StudentID,
             "contact_id": self.ContactInfoID,
+            "grade_id": self.GradeID,
             "first_name": self.FirstName,
             "last_name": self.LastName,
             "is_enabled": self.StudentEnabled,
