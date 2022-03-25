@@ -25,15 +25,15 @@ class StudentCareRouter:
     """
     class Read:
         @staticmethod
-        @router.post(ENV_SETTINGS.API_ROUTES.StudentCare.check_in, status_code=status.HTTP_201_CREATED)
+        @router.get(ENV_SETTINGS.API_ROUTES.StudentCare.check_in, status_code=status.HTTP_201_CREATED)
         async def read_checked_in_students(pyd_checked_in_students: PydanticRetrieveCheckedInStudents, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             # Not Implemented!
             if not await token_is_valid(token, ["administrator"]):
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
 
         @staticmethod
-        @router.post(ENV_SETTINGS.API_ROUTES.StudentCare.check_in, status_code=status.HTTP_201_CREATED)
-        async def read_checked_in_students(pyd_checked_out_students: PydanticRetrieveCheckedOutStudents, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
+        @router.get(ENV_SETTINGS.API_ROUTES.StudentCare.check_out, status_code=status.HTTP_201_CREATED)
+        async def read_checked_out_students(pyd_checked_out_students: PydanticRetrieveCheckedOutStudents, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             # Not Implemented!
             if not await token_is_valid(token, ["administrator"]):
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")

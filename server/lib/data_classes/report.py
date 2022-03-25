@@ -1,10 +1,16 @@
 from pydantic import BaseModel
 
 
-class PydanticRetrieveEmployeeReport(BaseModel):
+class PydanticEmployeeRetrieveReport(BaseModel):
     start_date: str
     end_date: str
 
 
-class PydanticDeleteEmployeeReport(BaseModel):
+class PydanticStudentRetrieveReport(BaseModel):
+    start_date: str
+    end_date: str
+    grade: str
+
+
+class PydanticDeleteReport(BaseModel):
     date: str
