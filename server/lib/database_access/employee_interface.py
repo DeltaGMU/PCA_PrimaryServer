@@ -2,9 +2,9 @@ from __future__ import annotations
 from sqlalchemy.orm import Session
 from typing import List, Dict
 from server.lib.utils.employee_utils import generate_employee_id, create_employee_password_hashes
-from server.lib.data_classes.employee import Employee, PydanticEmployeeRegistration, PydanticEmployeesRemoval, PydanticEmployeeUpdate, PydanticMultipleEmployeesUpdate
+from server.lib.data_classes.employee import Employee, PydanticEmployeeRegistration, PydanticEmployeesRemoval, PydanticEmployeeUpdate
 from server.lib.data_classes.employee_role import EmployeeRole
-from server.lib.data_classes.contact_info import ContactInfo
+from server.lib.data_classes.employee_contact_info import EmployeeContactInfo
 from server.lib.database_manager import get_db_session
 from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException, status
@@ -44,15 +44,15 @@ async def create_employee(pyd_employee: PydanticEmployeeRegistration, session: S
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The employee first name or last name is invalid and cannot be used to create an employee ID!")
 
     # Create employee contact information.
-    contact_info = ContactInfo(employee_id, f"{pyd_employee.first_name} {pyd_employee.last_name}", pyd_employee.primary_email, pyd_employee.secondary_email, pyd_employee.enable_notifications)
+    contact_info = EmployeeContactInfo(employee_id, pyd_employee.primary_email, pyd_employee.secondary_email, pyd_employee.enable_notifications)
     if contact_info is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The contact information for the employee could not be created due to invalid parameters!")
-    session.add(contact_info)
-    session.flush()
+    # session.add(contact_info)
+    # session.flush()
 
     # Create the employee and add it to the database.
     try:
-        new_employee = Employee(employee_id, pyd_employee.first_name, pyd_employee.last_name, password_hash, role_query.id, contact_info.id, pyd_employee.is_enabled)
+        new_employee = Employee(employee_id, pyd_employee.first_name, pyd_employee.last_name, password_hash, role_query.id, contact_info, pyd_employee.is_enabled)
         session.add(new_employee)
         session.commit()
     except IntegrityError as err:
@@ -61,12 +61,11 @@ async def create_employee(pyd_employee: PydanticEmployeeRegistration, session: S
     # Retrieve the created employee from the database to ensure it has been properly added.
     created_employee = session.query(Employee).filter(Employee.EmployeeID == employee_id).one()
     created_employee = created_employee.as_detail_dict()
-    # Add contact information elements into response for the web interface.
-    created_employee.update(contact_info.as_dict())
     # Add role information into response for the web interface.
     created_employee.update(role_query.as_dict())
     # Remove unnecessary elements from response
-    del created_employee['contact_id']
+    del created_employee['role_id']
+    del created_employee['last_updated']
     del created_employee['entry_created']
     return created_employee
 
@@ -122,36 +121,38 @@ async def update_employee(employee_id, pyd_employee_update: PydanticEmployeeUpda
     employee_role = session.query(EmployeeRole).filter(EmployeeRole.id == employee.EmployeeRoleID).first()
     if employee_role is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The employee does not have role information registered, please do that first!")
-    employee_contact_info = session.query(ContactInfo).filter(ContactInfo.id == employee.ContactInfoID).first()
-    if employee_contact_info is None:
+    if employee.EmployeeContactInfo is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The employee does not have contact information registered, please do that first!")
 
     # Check to see what data was provided and update as necessary.
     if pyd_employee_update.plain_password:
         employee.PasswordHash = create_employee_password_hashes(pyd_employee_update.plain_password)
+        employee.LastUpdated = None
     if pyd_employee_update.first_name:
         employee.FirstName = pyd_employee_update.first_name.lower().strip()
-        employee_contact_info.FullNameOfContact = f"{employee.FirstName} {employee.LastName}"
+        employee.LastUpdated = None
     if pyd_employee_update.last_name:
         employee.LastName = pyd_employee_update.last_name.lower().strip()
-        employee_contact_info.FullNameOfContact = f"{employee.FirstName} {employee.LastName}"
+        employee.LastUpdated = None
     if pyd_employee_update.primary_email:
-        employee_contact_info.PrimaryEmail = pyd_employee_update.primary_email.lower().strip()
-        employee_contact_info.LastUpdated = None
+        employee.EmployeeContactInfo.PrimaryEmail = pyd_employee_update.primary_email.lower().strip()
+        employee.EmployeeContactInfo.LastUpdated = None
     if pyd_employee_update.secondary_email:
-        employee_contact_info.SecondaryEmail = pyd_employee_update.secondary_email.lower().strip()
-        employee_contact_info.LastUpdated = None
+        employee.EmployeeContactInfo.SecondaryEmail = pyd_employee_update.secondary_email.lower().strip()
+        employee.EmployeeContactInfo.LastUpdated = None
     if pyd_employee_update.enable_notifications:
-        employee_contact_info.EnableNotifications = pyd_employee_update.enable_notifications
-        employee_contact_info.LastUpdated = None
+        employee.EmployeeContactInfo.EnableNotifications = pyd_employee_update.enable_notifications
+        employee.EmployeeContactInfo.LastUpdated = None
     if pyd_employee_update.role:
         role_query = session.query(EmployeeRole).filter(EmployeeRole.Name == pyd_employee_update.role).first()
         if not role_query:
             session.rollback()
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The provided employee role is invalid or does not exist!")
         employee.EmployeeRoleID = role_query.id
+        employee.LastUpdated = None
     if pyd_employee_update.is_enabled:
         employee.EmployeeEnabled = pyd_employee_update.is_enabled
+        employee.LastUpdated = None
     session.commit()
     return employee
 
@@ -168,14 +169,11 @@ async def get_employee(username: str, session: Session = None) -> Employee:
         Employee.EmployeeID == username
     ).first()
     if matching_employee is None:
-        matching_employee = session.query(Employee, ContactInfo).filter(
-            Employee.ContactInfoID == ContactInfo.id,
-            Employee.EmployeeID == ContactInfo.OwnerID,
-            ContactInfo.PrimaryEmail == username
+        matching_employee = session.query(Employee).filter(
+            Employee.EmployeeContactInfo.PrimaryEmail == username
         ).first()
         if matching_employee is None:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='The employee was not found by the employee ID or the employee email. Please check for errors in the provided data!')
-        matching_employee = matching_employee[0]
     return matching_employee
 
 
@@ -216,16 +214,17 @@ async def get_employee_role(user: Employee, session: Session = None) -> Employee
     return matching_role
 
 
-async def get_employee_contact_info(user: Employee, session: Session = None) -> ContactInfo:
-    if user is None:
-        raise RuntimeError('The user object was not provided! Please check for errors in the provided data!')
+async def get_employee_contact_info(employee_id: str, session: Session = None) -> EmployeeContactInfo:
+    if employee_id is None:
+        raise RuntimeError('The employee ID was not provided! Please check for errors in the provided data!')
     if session is None:
         session = next(get_db_session())
-    matching_contact = session.query(ContactInfo).filter(
-        user.ContactInfoID == ContactInfo.id
+    matching_employee = session.query(Employee).filter(
+        Employee.EmployeeID == employee_id
     ).first()
+    matching_contact = matching_employee.EmployeeContactInfo
     if matching_contact is None:
-        raise RuntimeError('The employee contact information was not found using the user entity. Please check for errors in the database or the provided data!')
+        raise RuntimeError('The employee contact information was not found using the employee ID. Please check for errors in the database or the provided data!')
     return matching_contact
 
 

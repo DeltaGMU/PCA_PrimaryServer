@@ -3,7 +3,7 @@ from typing import Dict, List
 
 from server.lib.data_classes.student_grade import StudentGrade
 from server.lib.database_manager import get_db_session
-from server.lib.data_classes.contact_info import ContactInfo
+from server.lib.data_classes.student_contact_info import StudentContactInfo
 from server.lib.utils.student_utils import generate_student_id
 from server.lib.data_classes.student import PydanticStudentRegistration, Student, PydanticStudentUpdate, PydanticStudentsRemoval
 from sqlalchemy.orm import Session
@@ -17,11 +17,16 @@ async def create_student(pyd_student: PydanticStudentRegistration, session: Sess
 
     pyd_student.first_name = pyd_student.first_name.lower().strip()
     pyd_student.last_name = pyd_student.last_name.lower().strip()
-    pyd_student.parent_full_name = pyd_student.parent_full_name.lower().strip()
-    pyd_student.parent_primary_email = pyd_student.parent_primary_email.lower().strip()
+    pyd_student.parent_one_first_name = pyd_student.parent_one_first_name.lower().strip()
+    pyd_student.parent_one_last_name = pyd_student.parent_one_last_name.lower().strip()
+    if pyd_student.parent_two_first_name:
+        pyd_student.parent_two_first_name = pyd_student.parent_two_first_name.lower().strip()
+    if pyd_student.parent_two_last_name:
+        pyd_student.parent_two_last_name = pyd_student.parent_two_last_name.lower().strip()
+    pyd_student.primary_email = pyd_student.primary_email.lower().strip()
     pyd_student.grade = pyd_student.grade.lower().strip()
-    if pyd_student.parent_secondary_email:
-        pyd_student.parent_secondary_email = pyd_student.parent_secondary_email.lower().strip()
+    if pyd_student.secondary_email:
+        pyd_student.secondary_email = pyd_student.secondary_email.lower().strip()
     if pyd_student.enable_notifications is None:
         pyd_student.enable_notifications = True
     if pyd_student.is_enabled is None:
@@ -29,9 +34,9 @@ async def create_student(pyd_student: PydanticStudentRegistration, session: Sess
 
     if len(pyd_student.first_name) == 0 or len(pyd_student.last_name) == 0:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The first and last name of the student must not be empty!")
-    if len(pyd_student.parent_full_name) == 0:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The full name for the point of contact cannot be empty!")
-    if len(pyd_student.parent_primary_email) == 0:
+    if len(pyd_student.parent_one_first_name) == 0 or len(pyd_student.parent_one_last_name) == 0:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Parent #1 first and last names cannot be empty!")
+    if len(pyd_student.primary_email) == 0:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The primary email must not be empty!")
     if pyd_student.car_pool_number < 0:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The car pool number cannot be a negative number!")
@@ -43,11 +48,18 @@ async def create_student(pyd_student: PydanticStudentRegistration, session: Sess
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The student first name, last name, or car pool number is invalid and cannot be used to create a student ID!")
 
     # Create student contact information.
-    contact_info = ContactInfo(student_id, pyd_student.parent_full_name, pyd_student.parent_primary_email, pyd_student.parent_secondary_email, pyd_student.enable_notifications)
+    contact_info = StudentContactInfo(student_id,
+                                      pyd_student.parent_one_first_name,
+                                      pyd_student.parent_one_last_name,
+                                      pyd_student.parent_primary_email,
+                                      pyd_student.parent_two_first_name,
+                                      pyd_student.parent_two_last_name,
+                                      pyd_student.parent_secondary_email,
+                                      pyd_student.enable_notifications)
     if contact_info is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The contact information for the student could not be created due to invalid parameters!")
-    session.add(contact_info)
-    session.flush()
+    # session.add(contact_info)
+    # session.flush()
 
     # Verify that the student grade is valid and return the grade id for the specified grade.
     grade_query = session.query(StudentGrade).filter(StudentGrade.Name == pyd_student.grade).first()
@@ -56,7 +68,7 @@ async def create_student(pyd_student: PydanticStudentRegistration, session: Sess
 
     # Create the student and add it to the database.
     try:
-        new_student = Student(student_id, pyd_student.first_name, pyd_student.last_name, contact_info.id, grade_query.id, pyd_student.is_enabled)
+        new_student = Student(student_id, pyd_student.first_name, pyd_student.last_name, contact_info, grade_query.id, pyd_student.is_enabled)
         session.add(new_student)
         session.commit()
     except IntegrityError as err:
@@ -65,13 +77,11 @@ async def create_student(pyd_student: PydanticStudentRegistration, session: Sess
     # Retrieve the created student from the database to ensure it has been properly added.
     created_student = session.query(Student).filter(Student.StudentID == student_id).one()
     created_student = created_student.as_detail_dict()
-    # Add contact information elements into response for the web interface.
-    created_student.update(contact_info.as_dict())
     # Add student grade information into response for the web interface.
     created_student.update(grade_query.as_dict())
     # Remove unnecessary elements from response
-    del created_student['contact_id']
     del created_student['grade_id']
+    del created_student['last_updated']
     del created_student['entry_created']
 
     return created_student
@@ -99,7 +109,7 @@ async def update_student(student_id: str, pyd_student_update: PydanticStudentUpd
     student = session.query(Student).filter(Student.StudentID == student_id).first()
     if student is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The student ID is incorrect or the student does not exist!")
-    student_contact_info = session.query(ContactInfo).filter(ContactInfo.id == student.ContactInfoID).first()
+    student_contact_info = student.StudentContactInfo
     if student_contact_info is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The student does not have contact information registered, please do that first!")
     student_grade_info = session.query(StudentGrade).filter(StudentGrade.id == student.GradeID).first()
@@ -109,25 +119,41 @@ async def update_student(student_id: str, pyd_student_update: PydanticStudentUpd
     # Check to see what data was provided and update as necessary.
     if pyd_student_update.first_name:
         student.FirstName = pyd_student_update.first_name.lower().strip()
+        student.LastUpdated = None
     if pyd_student_update.last_name:
         student.LastName = pyd_student_update.last_name.lower().strip()
+        student.LastUpdated = None
+    if pyd_student_update.parent_one_first_name:
+        student_contact_info.ParentOneFirstName = pyd_student_update.parent_one_first_name.lower().strip()
+        student_contact_info.LastUpdated = None
+    if pyd_student_update.parent_one_last_name:
+        student_contact_info.ParentOneLastName = pyd_student_update.parent_one_last_name.lower().strip()
+        student_contact_info.LastUpdated = None
+    if pyd_student_update.parent_two_first_name:
+        student_contact_info.ParentTwoFirstName = pyd_student_update.parent_two_first_name.lower().strip()
+        student_contact_info.LastUpdated = None
+    if pyd_student_update.parent_two_last_name:
+        student_contact_info.ParentTwoLastName = pyd_student_update.parent_two_last_name.lower().strip()
+        student_contact_info.LastUpdated = None
     if pyd_student_update.parent_primary_email:
-        student_contact_info.PrimaryEmail = pyd_student_update.parent_primary_email.lower().strip()
+        student_contact_info.PrimaryEmail = pyd_student_update.primary_email.lower().strip()
         student_contact_info.LastUpdated = None
     if pyd_student_update.parent_secondary_email:
-        student_contact_info.SecondaryEmail = pyd_student_update.parent_secondary_email.lower().strip()
+        student_contact_info.SecondaryEmail = pyd_student_update.secondary_email.lower().strip()
         student_contact_info.LastUpdated = None
     if pyd_student_update.enable_notifications:
         student_contact_info.EnableNotifications = pyd_student_update.enable_notifications
         student_contact_info.LastUpdated = None
     if pyd_student_update.is_enabled:
         student_contact_info.EmployeeEnabled = pyd_student_update.is_enabled
+        student.LastUpdated = None
     if pyd_student_update.grade:
         grade_query = session.query(StudentGrade).filter(StudentGrade.Name == pyd_student_update.grade.lower().strip()).first()
         if not grade_query:
             session.rollback()
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The provided student grade is invalid or does not exist!")
         student.GradeID = grade_query.id
+        student.LastUpdated = None
     session.commit()
     return student
 
@@ -148,20 +174,22 @@ async def get_student_by_id(student_id: str, session: Session = None):
     return matching_student
 
 
-async def get_student_contact_info(student: Student, session: Session = None) -> ContactInfo:
-    if student is None:
-        raise RuntimeError('The student object was not provided! Please check for errors in the provided data!')
+async def get_student_contact_info(student_id: str, session: Session = None) -> StudentContactInfo:
+    if student_id is None:
+        raise RuntimeError('The student ID was not provided! Please check for errors in the provided data!')
+    student_id = student_id.lower().strip()
     if session is None:
         session = next(get_db_session())
-    matching_contact = session.query(ContactInfo).filter(
-        student.ContactInfoID == ContactInfo.id
+    matching_student = session.query(Student).filter(
+        Student.StudentID == student_id
     ).first()
-    if matching_contact is None:
-        raise RuntimeError('The student contact information was not found using the student entity. Please check for errors in the database or the provided data!')
-    return matching_contact
+    contact_info = matching_student.StudentContactInfo
+    if contact_info is None:
+        raise RuntimeError('The student contact information was not found using the student ID. Please check for errors in the database or the provided data!')
+    return contact_info
 
 
-async def get_student_grade(student: Student, session: Session = None) -> ContactInfo:
+async def get_student_grade(student: Student, session: Session = None) -> StudentGrade:
     if student is None:
         raise RuntimeError('The student object was not provided! Please check for errors in the provided data!')
     if session is None:

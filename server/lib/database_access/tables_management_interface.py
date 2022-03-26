@@ -9,7 +9,7 @@ from server.lib.data_classes.access_token import TokenBlacklist
 from server.lib.data_classes.reset_token import ResetToken
 from server.lib.data_classes.employee import Employee
 from server.lib.data_classes.employee_role import EmployeeRole
-from server.lib.data_classes.contact_info import ContactInfo
+from server.lib.data_classes.employee_contact_info import EmployeeContactInfo
 
 
 def initialize_tables():
@@ -83,20 +83,19 @@ def create_default_admin_account():
             raise RuntimeError("The provided default administrator role is invalid or does not exist in the database!")
         default_admin_role_id = role_query.id
         # Create the Contact Info record for the administrator account.
-        default_admin_contact_info = ContactInfo(
-            owner_id=default_info['employee_id'],
-            full_name_of_contact=f"{default_info['first_name']} {default_info['last_name']}",
+        default_admin_contact_info = EmployeeContactInfo(
+            employee_id=default_info['employee_id'],
             primary_email=default_info['primary_email'],
             enable_notifications=default_info['enable_notifications']
         )
-        session.add(default_admin_contact_info)
-        session.flush()
-        default_admin_contact_id = default_admin_contact_info.id
+        # session.add(default_admin_contact_info)
+        # session.flush()
+
         # Create the administrator account password hashes.
         default_admin_password = create_employee_password_hashes_sync(default_info['plain_password'])
         # Create the administrator account from the computed information.
         default_admin = Employee(default_info['employee_id'], default_info['first_name'], default_info['last_name'],
-                                 default_admin_password, default_admin_role_id, default_admin_contact_id, enabled=True)
+                                 default_admin_password, default_admin_role_id, default_admin_contact_info, enabled=True)
         session.add(default_admin)
         session.commit()
     except SQLAlchemyError as err:

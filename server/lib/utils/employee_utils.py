@@ -7,7 +7,7 @@ a new employee record is being added to the database.
 from __future__ import annotations
 from sqlalchemy import func
 from sqlalchemy.orm import Session
-from server.lib.data_classes.contact_info import ContactInfo
+from server.lib.data_classes.employee_contact_info import EmployeeContactInfo
 from server.lib.logging_manager import LoggingManager
 from server.lib.error_codes import ERR_DB_SERVICE_INACTIVE
 from sqlalchemy.exc import SQLAlchemyError
@@ -49,10 +49,10 @@ async def generate_employee_id(first_name: str, last_name: str, session: Session
             blank_role = EmployeeRole('BlankRole')
             session.add(blank_role)
             session.flush()
-            blank_contact_info = ContactInfo("BlankID", "BlankName", "blank@name.com")
-            session.add(blank_contact_info)
-            session.flush()
-            blank_employee = Employee("BlankID", "BlankEmployee", "BlankEmployee", "BlankPasswordHash", blank_role.id, blank_contact_info.id, enabled=False)
+            blank_contact_info = EmployeeContactInfo("BlankID", "BlankName", "blank@name.com")
+            # session.add(blank_contact_info)
+            # session.flush()
+            blank_employee = Employee("BlankID", "BlankEmployee", "BlankEmployee", "BlankPasswordHash", blank_role.id, blank_contact_info, enabled=False)
             session.add(blank_employee)
             session.flush()
             session.delete(blank_employee)

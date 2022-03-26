@@ -111,7 +111,7 @@ class StudentsRouter:
             if student is None:
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The student could not be retrieved.")
             full_student_information = student.as_dict()
-            full_student_information.update((await get_student_contact_info(student, session)).as_dict())
+            full_student_information.update(student.StudentContactInfo.as_dict())
             full_student_information.update((await get_student_grade(student, session)).as_dict())
             return ResponseModel(status.HTTP_200_OK, "success", {"student": full_student_information})
 

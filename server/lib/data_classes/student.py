@@ -22,9 +22,12 @@ class PydanticStudentRegistration(BaseModel):
     first_name: str
     last_name: str
     car_pool_number: int
-    parent_full_name: str
-    parent_primary_email: str
-    parent_secondary_email: Optional[str]
+    parent_one_first_name: str
+    parent_one_last_name: str
+    parent_two_first_name: Optional[str]
+    parent_two_last_name: Optional[str]
+    primary_email: str
+    secondary_email: Optional[str]
     grade: str
     is_enabled: Optional[bool] = True
     enable_notifications: Optional[bool] = True
@@ -34,9 +37,12 @@ class PydanticStudentUpdate(BaseModel):
     first_name: Optional[str]
     last_name: Optional[str]
     car_pool_number: Optional[int]
-    parent_full_name: Optional[str]
-    parent_primary_email: Optional[str]
-    parent_secondary_email: Optional[str]
+    parent_one_first_name: Optional[str]
+    parent_one_last_name: Optional[str]
+    parent_two_first_name: Optional[str]
+    parent_two_last_name: Optional[str]
+    primary_email: Optional[str]
+    secondary_email: Optional[str]
     grade: Optional[str]
     is_enabled: Optional[bool]
     enable_notifications: Optional[bool]
@@ -65,14 +71,15 @@ class Student(Base):
     StudentID = Column(VARCHAR(length=50), unique=True, nullable=False)
     FirstName = Column(VARCHAR(length=50), nullable=False)
     LastName = Column(VARCHAR(length=50), nullable=False)
-    ContactInfoID = Column(Integer, ForeignKey('contact_info.id'), nullable=False)
     GradeID = Column(Integer, ForeignKey('student_grade.id'), nullable=False)
     StudentEnabled = Column(Boolean(), nullable=False, default=True)
+    StudentContactInfo = relationship("StudentContactInfo", back_populates="StudentParentRelationship", uselist=False, cascade='all, delete')
     StudentCareHoursRelationship = relationship('StudentCareHours', cascade='all, delete')
+    LastUpdated = Column(DateTime, nullable=False, default=sql.func.now())
     EntryCreated = Column(DateTime, nullable=False, default=sql.func.now())
 
     # Do not initialize this except for creating blank student templates!
-    def __init__(self, student_id: str, first_name: str, last_name: str, contact_info_id: int, grade_id: int, enabled: bool = True):
+    def __init__(self, student_id: str, first_name: str, last_name: str, contact_info: StudentContactInfo, grade_id: int, enabled: bool = True):
         """
         The constructor for the ``Student`` data class that is utilized internally by the SQLAlchemy library.
         Only manually instantiate this data class to create employee hours records in the database within database sessions.
@@ -83,9 +90,9 @@ class Student(Base):
         :type first_name: str, required
         :param last_name: The last name of the student.
         :type last_name: str, required
-        :param contact_info_id: The ID number of the contact info record in the database to relate to.
-        :type contact_info_id: int, required
-        :param grade_id: The ID number of the student grade record in the database to relate to.
+        :param contact_info: The contact info record in the database to relate to.
+        :type contact_info: int, required
+        :param grade_id: The ID number of the student grade record to be added to the database.
         :type grade_id: int, required
         :param enabled: Determines if the individual is active as a student of PCA. Disable this if the student no longer attends PCA or is on indefinite leave.
         :type enabled: bool, optional
@@ -93,7 +100,7 @@ class Student(Base):
         self.StudentID = student_id
         self.FirstName = first_name
         self.LastName = last_name
-        self.ContactInfoID = contact_info_id
+        self.StudentContactInfo = contact_info
         self.GradeID = grade_id
         self.StudentEnabled = enabled
 
@@ -107,11 +114,12 @@ class Student(Base):
         """
         return {
             "student_id": self.StudentID,
-            "contact_id": self.ContactInfoID,
+            "contact_info": self.StudentContactInfo.as_dict(),
             "grade_id": self.GradeID,
             "first_name": self.FirstName,
             "last_name": self.LastName,
             "is_enabled": self.StudentEnabled,
+            "last_updated": self.LastUpdated,
             "entry_created": self.EntryCreated
         }
 
@@ -127,5 +135,6 @@ class Student(Base):
             "student_id": self.StudentID,
             "first_name": self.FirstName,
             "last_name": self.LastName,
+            "contact_info": self.StudentContactInfo.as_dict(),
             "is_enabled": self.StudentEnabled
         }

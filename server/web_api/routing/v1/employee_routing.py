@@ -156,7 +156,7 @@ class EmployeesRouter:
             if employee is None:
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The employee could not be retrieved.")
             full_employee_information = employee.as_dict()
-            full_employee_information.update((await get_employee_contact_info(employee)).as_dict())
+            full_employee_information.update(employee.EmployeeContactInfo.as_dict())
             full_employee_information.update((await get_employee_role(employee)).as_dict())
             return ResponseModel(status.HTTP_200_OK, "success", {"employee": full_employee_information})
 

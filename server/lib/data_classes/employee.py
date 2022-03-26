@@ -73,13 +73,14 @@ class Employee(Base):
     PasswordHash = Column(VARCHAR(length=60), nullable=False)
     EmployeeEnabled = Column(Boolean(), nullable=False, default=True)
     EmployeeRoleID = Column(Integer, ForeignKey('employee_role.id'), nullable=False)
-    ContactInfoID = Column(Integer, ForeignKey('contact_info.id'), nullable=False)
+    EmployeeContactInfo = relationship("EmployeeContactInfo", back_populates="EmployeeParentRelationship", uselist=False, cascade='all, delete')
     EmployeeHoursRelationship = relationship('EmployeeHours', cascade='all, delete')
     EmployeeResetTokenRelationship = relationship('ResetToken', cascade='all, delete')
+    LastUpdated = Column(DateTime, nullable=False, default=sql.func.now())
     EntryCreated = Column(DateTime, nullable=False, default=sql.func.now())
 
     # Do not initialize this except for creating blank employee templates!
-    def __init__(self, employee_id: str, first_name: str, last_name: str, phash: str, role_id: int, contact_id: int, enabled: bool = True):
+    def __init__(self, employee_id: str, first_name: str, last_name: str, phash: str, role_id: int, contact_info: EmployeeContactInfo, enabled: bool = True):
         """
         The constructor for the ``Employee`` data class that is utilized internally by the SQLAlchemy library.
         Only manually instantiate this data class to create employee records in the database within database sessions.
@@ -92,6 +93,10 @@ class Employee(Base):
         :type last_name: str, required
         :param phash: The hash representation of the employee password generated from the employee utility module.
         :type phash: str, required
+        :param role_id: The ID number of the employee role record in the database to relate to.
+        :type role_id: int, required
+        :param contact_info: The employee contact info record to be added to the database.
+        :type contact_info: int, required
         :param enabled: Determines if the individual is active as an employee of PCA. Disable this if the employee no longer works at PCA or is on indefinite leave.
         :type enabled: bool, optional
         """
@@ -100,7 +105,7 @@ class Employee(Base):
         self.LastName = last_name
         self.PasswordHash = phash
         self.EmployeeRoleID = role_id
-        self.ContactInfoID = contact_id
+        self.EmployeeContactInfo = contact_info
         self.EmployeeEnabled = enabled
 
     def as_dict(self):
@@ -115,6 +120,7 @@ class Employee(Base):
             "employee_id": self.EmployeeID,
             "first_name": self.FirstName,
             "last_name": self.LastName,
+            "contact_info": self.EmployeeContactInfo.as_dict(),
             "is_enabled": self.EmployeeEnabled
         }
 
@@ -129,10 +135,11 @@ class Employee(Base):
         return {
             "employee_id": self.EmployeeID,
             "role_id": self.EmployeeRoleID,
-            "contact_id": self.ContactInfoID,
+            "contact_info": self.EmployeeContactInfo.as_dict(),
             "first_name": self.FirstName,
             "last_name": self.LastName,
             "password_hash": self.PasswordHash,
             "is_enabled": self.EmployeeEnabled,
+            "last_updated": self.LastUpdated,
             "entry_created": self.EntryCreated
         }
