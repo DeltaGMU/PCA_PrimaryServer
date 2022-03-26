@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from jinja2 import Environment, FileSystemLoader
 from server.lib.strings import ROOT_DIR
-from server.lib.database_access.analytics_interface import get_all_time_sheets_for_report, get_all_student_care_for_report
+from server.lib.database_access.report_interface import get_all_time_sheets_for_report, get_all_student_care_for_report
 from server.lib.utils.date_utils import check_date_formats
 from server.lib.utils.reports_utils import delete_time_sheet_report
 from server.lib.data_classes.student_grade import StudentGrade, PydanticStudentGrade
