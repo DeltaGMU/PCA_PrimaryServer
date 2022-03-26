@@ -51,10 +51,10 @@ async def create_student(pyd_student: PydanticStudentRegistration, session: Sess
     contact_info = StudentContactInfo(student_id,
                                       pyd_student.parent_one_first_name,
                                       pyd_student.parent_one_last_name,
-                                      pyd_student.parent_primary_email,
+                                      pyd_student.primary_email,
                                       pyd_student.parent_two_first_name,
                                       pyd_student.parent_two_last_name,
-                                      pyd_student.parent_secondary_email,
+                                      pyd_student.secondary_email,
                                       pyd_student.enable_notifications)
     if contact_info is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The contact information for the student could not be created due to invalid parameters!")
