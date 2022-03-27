@@ -50,6 +50,7 @@ class APIRoutes:
         all_employees = '/api/v1/employees/all'
         one_employee = '/api/v1/employees/{employee_id}'
         employees = '/api/v1/employees'
+        password = '/api/v1/employees/password/new'
         employee_token = '/api/v1/employees/token'
 
     class Students:

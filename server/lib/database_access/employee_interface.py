@@ -131,11 +131,33 @@ async def update_employees(employee_updates: Dict[str, PydanticEmployeeUpdate], 
     return all_updated_employees
 
 
+async def update_employee_password(employee_id: str, new_password: str, session: Session = None):
+    if employee_id is None:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The employee ID must be provided to update an employee!")
+    if session is None:
+        session = next(get_db_session())
+
+    employee_id = employee_id.lower().strip()
+    # Get employee information from the database.
+    employee = session.query(Employee).filter(Employee.EmployeeID == employee_id).first()
+    if employee is None:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The employee id is incorrect or the employee does not exist!")
+    password_hash = await create_employee_password_hashes(new_password)
+    if password_hash is None:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The plain text password provided to be hashed is invalid!")
+    employee.PasswordHash = password_hash
+    session.commit()
+    return employee
+
+
 async def update_employee(employee_id, pyd_employee_update: PydanticEmployeeUpdate, session: Session = None) -> Employee:
     if pyd_employee_update is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Provided request body did not contain any valid employee information!")
     if employee_id is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The employee ID must be provided to update an employee!")
+
+    if session is None:
+        session = next(get_db_session())
 
     # Get employee information from the database.
     employee = session.query(Employee).filter(Employee.EmployeeID == employee_id).first()

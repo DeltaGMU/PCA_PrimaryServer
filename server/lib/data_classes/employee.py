@@ -59,6 +59,11 @@ class PydanticRetrieveMultipleEmployees(BaseModel):
     employee_ids: List[str]
 
 
+class PydanticUpdatePassword(BaseModel):
+    employee_id: str
+    new_password: str
+
+
 class Employee(Base):
     """
     A MariaDB data class that represents the table structure of the employee table in the database server.
