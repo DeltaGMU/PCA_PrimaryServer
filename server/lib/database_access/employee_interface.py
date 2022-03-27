@@ -72,8 +72,6 @@ async def create_employee(pyd_employee: PydanticEmployeeRegistration, session: S
     # Retrieve the created employee from the database to ensure it has been properly added.
     created_employee = session.query(Employee).filter(Employee.EmployeeID == employee_id).one()
     created_employee = created_employee.as_dict()
-    # Add role information into response for the web interface.
-    created_employee.update(role_query.as_dict())
     # Send notification to enabled emails that the account has been created.
     send_emails_to = []
     if new_employee.EmployeeContactInfo.EnablePrimaryEmailNotifications:
@@ -94,6 +92,8 @@ async def create_employee(pyd_employee: PydanticEmployeeRegistration, session: S
 
 
 async def remove_employees(employee_ids: PydanticEmployeesRemoval | str, session: Session = None) -> List[Employee]:
+    if session is None:
+        session = next(get_db_session())
     if isinstance(employee_ids, PydanticEmployeesRemoval):
         employee_ids = employee_ids.employee_ids
         if employee_ids is None:

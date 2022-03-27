@@ -78,7 +78,7 @@ class Employee(Base):
     PasswordHash = Column(VARCHAR(length=60), nullable=False)
     EmployeeEnabled = Column(Boolean(), nullable=False, default=True)
     EmployeeRoleID = Column(Integer, ForeignKey('employee_role.id'), nullable=False)
-    EmployeeRole = relationship("EmployeeRole")
+    EmployeeRole = relationship("EmployeeRole", lazy='subquery')
     EmployeeContactInfo = relationship("EmployeeContactInfo", back_populates="EmployeeParentRelationship", uselist=False, cascade='all, delete')
     EmployeeHoursRelationship = relationship('EmployeeHours', cascade='all, delete')
     EmployeeResetTokenRelationship = relationship('ResetToken', cascade='all, delete')
