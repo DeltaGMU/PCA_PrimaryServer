@@ -6,24 +6,14 @@ from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Date, Larg
 from server.lib.database_access.sqlalchemy_base_interface import MainEngineBase as Base
 
 
-class PydanticRetrieveCheckedInStudents(BaseModel):
+class PydanticRetrieveStudentsByCareDate(BaseModel):
     """
     A Pydantic class used to represent the retrieval of multiple student entities that have been checked into student care.
     Do not try to initialize this class as an independent entity or extend it into a subclass.
     """
     student_ids: Optional[List[str]]
-    check_in_date: Optional[str]
-    care_type: bool
-
-
-class PydanticRetrieveCheckedOutStudents(BaseModel):
-    """
-    A Pydantic class used to represent the retrieval of multiple student entities that have been checked out from student care.
-    Do not try to initialize this class as an independent entity or extend it into a subclass.
-    """
-    student_ids: Optional[List[str]]
-    check_out_date: Optional[str]
-    care_type: bool
+    care_date: Optional[str]
+    care_type: Optional[bool]
 
 
 class PydanticStudentCareHoursCheckIn(BaseModel):
@@ -114,6 +104,7 @@ class StudentCareHours(Base):
             "care_type": self.CareType,
             "check_in_signature": self.CheckInSignature,
             "check_out_signature": self.CheckOutSignature,
+            "manually_checked_out": self.ManuallyCheckedOut,
             "entry_created": self.EntryCreated
         }
 
@@ -132,5 +123,6 @@ class StudentCareHours(Base):
             "care_date": self.CareDate,
             "care_type": self.CareType,
             "check_in_signature": self.CheckInSignature,
-            "check_out_signature": self.CheckOutSignature
+            "check_out_signature": self.CheckOutSignature,
+            "manually_checked_out": self.ManuallyCheckedOut
         }

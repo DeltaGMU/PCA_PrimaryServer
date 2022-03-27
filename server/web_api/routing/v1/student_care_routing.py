@@ -6,10 +6,10 @@ from fastapi import Body, status, HTTPException, Depends
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
 from config import ENV_SETTINGS
-from server.lib.database_access.student_care_interface import check_in_student, check_out_student
+from server.lib.database_access.student_care_interface import check_in_student, check_out_student, get_students_by_care_date
 from server.web_api.models import ResponseModel
 from server.lib.data_classes.student_care_hours import PydanticStudentCareHoursCheckIn, PydanticStudentCareHoursCheckOut, \
-    PydanticRetrieveCheckedOutStudents, PydanticRetrieveCheckedInStudents
+    PydanticRetrieveStudentsByCareDate
 from server.lib.database_manager import get_db_session
 from server.web_api.web_security import token_is_valid, oauth_scheme
 
@@ -25,18 +25,29 @@ class StudentCareRouter:
     """
     class Read:
         @staticmethod
-        @router.get(ENV_SETTINGS.API_ROUTES.StudentCare.check_in, status_code=status.HTTP_201_CREATED)
-        async def read_checked_in_students(pyd_checked_in_students: PydanticRetrieveCheckedInStudents, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
-            # Not Implemented!
-            if not await token_is_valid(token, ["administrator"]):
-                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
+        @router.post(ENV_SETTINGS.API_ROUTES.StudentCare.care, status_code=status.HTTP_201_CREATED)
+        async def read_students_by_care_date(pyd_care_students: PydanticRetrieveStudentsByCareDate, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
+            """
+            An endpoint that returns a list of the students that are participating in before/after-care for the provided date.
+            Alternatively, a list of student IDs can be provided to retrieve those specific students.
+            If a care type is not provided, then the results will be from both before-care and after-care.
+            This list includes students that are checked-in or checked-out for the day.
 
-        @staticmethod
-        @router.get(ENV_SETTINGS.API_ROUTES.StudentCare.check_out, status_code=status.HTTP_201_CREATED)
-        async def read_checked_out_students(pyd_checked_out_students: PydanticRetrieveCheckedOutStudents, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
-            # Not Implemented!
+            :param pyd_care_students: Either a list of student IDs or the care date to retrieve all students for that date, as well as the care type (false => before-care, true => after-care). Not providing a care date will show results
+            from both before-care and after-care.
+            :type pyd_care_students: PydanticRetrieveStudentsByCareDate, required
+            :param token: The JSON Web Token responsible for authenticating the user to this endpoint.
+            :type token: str, required
+            :param session: The database session to use to identify students that used the care service.
+            :type session: sqlalchemy.orm.session, optional
+            :return: A response model containing the list of students that used the care service.
+            :rtype: server.web_api.models.ResponseModel
+            :raises HTTPException: If the data provided in the request body is invalid, or the student is already checked in to the care service for the provided date.
+            """
             if not await token_is_valid(token, ["administrator"]):
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
+            list_of_student_care = await get_students_by_care_date(pyd_care_students, session)
+            return ResponseModel(status.HTTP_201_CREATED, "success", {"students": list_of_student_care})
 
     class Service:
         @staticmethod
