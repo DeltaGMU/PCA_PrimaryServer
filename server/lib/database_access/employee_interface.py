@@ -69,9 +69,6 @@ async def create_employee(pyd_employee: PydanticEmployeeRegistration, session: S
     except IntegrityError as err:
         session.rollback()
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(err)) from err
-    # Retrieve the created employee from the database to ensure it has been properly added.
-    created_employee = session.query(Employee).filter(Employee.EmployeeID == employee_id).one()
-    created_employee = created_employee.as_dict()
     # Send notification to enabled emails that the account has been created.
     send_emails_to = []
     if new_employee.EmployeeContactInfo.EnablePrimaryEmailNotifications:
@@ -88,7 +85,7 @@ async def create_employee(pyd_employee: PydanticEmployeeRegistration, session: S
                   f"<b>Temporary Password:</b> {temp_password}"],
         message_is_html=True
     )
-    return created_employee
+    return new_employee.as_dict()
 
 
 async def remove_employees(employee_ids: PydanticEmployeesRemoval | str, session: Session = None) -> List[Employee]:

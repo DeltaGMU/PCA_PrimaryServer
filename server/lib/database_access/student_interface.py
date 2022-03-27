@@ -77,17 +77,7 @@ async def create_student(pyd_student: PydanticStudentRegistration, session: Sess
     except IntegrityError as err:
         session.rollback()
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(err)) from err
-    # Retrieve the created student from the database to ensure it has been properly added.
-    created_student = session.query(Student).filter(Student.StudentID == student_id).one()
-    created_student = created_student.as_detail_dict()
-    # Add student grade information into response for the web interface.
-    created_student.update(grade_query.as_dict())
-    # Remove unnecessary elements from response
-    del created_student['grade_id']
-    del created_student['last_updated']
-    del created_student['entry_created']
-
-    return created_student
+    return new_student.as_dict()
 
 
 async def update_students(student_updates: Dict[str, PydanticStudentUpdate], session: Session = None) -> List[Student]:
