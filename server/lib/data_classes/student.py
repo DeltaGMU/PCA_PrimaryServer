@@ -73,6 +73,7 @@ class Student(Base):
     StudentID = Column(VARCHAR(length=50), unique=True, nullable=False)
     FirstName = Column(VARCHAR(length=50), nullable=False)
     LastName = Column(VARCHAR(length=50), nullable=False)
+    CarpoolNumber = Column(Integer, nullable=False)
     GradeID = Column(Integer, ForeignKey('student_grade.id'), nullable=False)
     StudentGrade = relationship("StudentGrade")
     StudentEnabled = Column(Boolean(), nullable=False, default=True)
@@ -82,7 +83,7 @@ class Student(Base):
     EntryCreated = Column(DateTime, nullable=False, default=sql.func.now())
 
     # Do not initialize this except for creating blank student templates!
-    def __init__(self, student_id: str, first_name: str, last_name: str, contact_info: StudentContactInfo, grade_id: int, enabled: bool = True):
+    def __init__(self, student_id: str, first_name: str, last_name: str, carpool_number: int, contact_info: StudentContactInfo, grade_id: int, enabled: bool = True):
         """
         The constructor for the ``Student`` data class that is utilized internally by the SQLAlchemy library.
         Only manually instantiate this data class to create employee hours records in the database within database sessions.
@@ -93,6 +94,8 @@ class Student(Base):
         :type first_name: str, required
         :param last_name: The last name of the student.
         :type last_name: str, required
+        :param carpool_number: The carpool number for student.
+        :type carpool_number: int, required
         :param contact_info: The contact info record in the database to relate to.
         :type contact_info: int, required
         :param grade_id: The ID number of the student grade record to be added to the database.
@@ -103,6 +106,7 @@ class Student(Base):
         self.StudentID = student_id
         self.FirstName = first_name
         self.LastName = last_name
+        self.CarpoolNumber = carpool_number
         self.StudentContactInfo = contact_info
         self.GradeID = grade_id
         self.StudentEnabled = enabled
@@ -120,6 +124,7 @@ class Student(Base):
             "contact_info": self.StudentContactInfo.as_dict(),
             "grade": self.StudentGrade.as_dict(),
             "grade_id": self.GradeID,
+            "carpool_number": self.CarpoolNumber,
             "first_name": self.FirstName,
             "last_name": self.LastName,
             "is_enabled": self.StudentEnabled,
@@ -139,6 +144,7 @@ class Student(Base):
             "student_id": self.StudentID,
             "first_name": self.FirstName,
             "last_name": self.LastName,
+            "carpool_number": self.CarpoolNumber,
             "contact_info": self.StudentContactInfo.as_dict(),
             "grade": self.StudentGrade.as_dict(),
             "is_enabled": self.StudentEnabled

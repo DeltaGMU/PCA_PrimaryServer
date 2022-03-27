@@ -70,7 +70,8 @@ async def create_student(pyd_student: PydanticStudentRegistration, session: Sess
 
     # Create the student and add it to the database.
     try:
-        new_student = Student(student_id, pyd_student.first_name, pyd_student.last_name, contact_info, grade_query.id, pyd_student.is_enabled)
+        new_student = Student(student_id, pyd_student.first_name, pyd_student.last_name, pyd_student.car_pool_number,
+                              contact_info, grade_query.id, pyd_student.is_enabled)
         session.add(new_student)
         session.commit()
     except IntegrityError as err:
