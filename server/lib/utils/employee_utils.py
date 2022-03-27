@@ -49,7 +49,7 @@ async def generate_employee_id(first_name: str, last_name: str, session: Session
             blank_role = EmployeeRole('BlankRole')
             session.add(blank_role)
             session.flush()
-            blank_contact_info = EmployeeContactInfo("BlankID", "BlankName", "blank@name.com")
+            blank_contact_info = EmployeeContactInfo("BlankID", "BlankName", "blank@name.com", False, False)
             # session.add(blank_contact_info)
             # session.flush()
             blank_employee = Employee("BlankID", "BlankEmployee", "BlankEmployee", "BlankPasswordHash", blank_role.id, blank_contact_info, enabled=False)

@@ -25,7 +25,8 @@ class PydanticEmployeeRegistration(BaseModel):
     secondary_email: Optional[str]
     role: str
     is_enabled: Optional[bool] = True
-    enable_notifications: Optional[bool] = True
+    enable_primary_email_notifications: Optional[bool] = True
+    enable_secondary_email_notifications: Optional[bool] = False
 
 
 class PydanticEmployeeUpdate(BaseModel):
@@ -40,7 +41,8 @@ class PydanticEmployeeUpdate(BaseModel):
     secondary_email: Optional[str]
     role: Optional[str]
     is_enabled: Optional[bool]
-    enable_notifications: Optional[bool]
+    enable_primary_email_notifications: Optional[bool]
+    enable_secondary_email_notifications: Optional[bool]
 
 
 class PydanticMultipleEmployeesUpdate(BaseModel):

@@ -17,8 +17,10 @@ async def create_employee(pyd_employee: PydanticEmployeeRegistration, session: S
     if pyd_employee.secondary_email:
         pyd_employee.secondary_email = pyd_employee.secondary_email.lower().strip()
     pyd_employee.role = pyd_employee.role.lower().strip()
-    if pyd_employee.enable_notifications is None:
-        pyd_employee.enable_notifications = True
+    if pyd_employee.enable_primary_email_notifications is None:
+        pyd_employee.enable_primary_email_notifications = True
+    if pyd_employee.enable_secondary_email_notifications is None:
+        pyd_employee.enable_secondary_email_notifications = False
     if pyd_employee.is_enabled is None:
         pyd_employee.is_enabled = True
 
@@ -44,7 +46,8 @@ async def create_employee(pyd_employee: PydanticEmployeeRegistration, session: S
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The employee first name or last name is invalid and cannot be used to create an employee ID!")
 
     # Create employee contact information.
-    contact_info = EmployeeContactInfo(employee_id, pyd_employee.primary_email, pyd_employee.secondary_email, pyd_employee.enable_notifications)
+    contact_info = EmployeeContactInfo(employee_id, pyd_employee.primary_email, pyd_employee.secondary_email,
+                                       pyd_employee.enable_primary_email_notifications, pyd_employee.enable_secondary_email_notifications)
     if contact_info is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The contact information for the employee could not be created due to invalid parameters!")
     # session.add(contact_info)
@@ -140,8 +143,11 @@ async def update_employee(employee_id, pyd_employee_update: PydanticEmployeeUpda
     if pyd_employee_update.secondary_email:
         employee.EmployeeContactInfo.SecondaryEmail = pyd_employee_update.secondary_email.lower().strip()
         employee.EmployeeContactInfo.LastUpdated = None
-    if pyd_employee_update.enable_notifications:
-        employee.EmployeeContactInfo.EnableNotifications = pyd_employee_update.enable_notifications
+    if pyd_employee_update.enable_primary_email_notifications:
+        employee.EmployeeContactInfo.EnablePrimaryEmailNotifications = pyd_employee_update.enable_primary_email_notifications
+        employee.EmployeeContactInfo.LastUpdated = None
+    if pyd_employee_update.enable_secondary_email_notifications:
+        employee.EmployeeContactInfo.EnableSecondaryEmailNotifications = pyd_employee_update.enable_secondary_email_notifications
         employee.EmployeeContactInfo.LastUpdated = None
     if pyd_employee_update.role:
         role_query = session.query(EmployeeRole).filter(EmployeeRole.Name == pyd_employee_update.role).first()

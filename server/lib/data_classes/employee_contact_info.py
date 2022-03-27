@@ -22,7 +22,8 @@ class PydanticEmployeeContactInfoRegistration(BaseModel):
     full_name_of_contact: str
     primary_email: str
     secondary_email: Optional[str]
-    enable_notifications: Optional[bool]
+    enable_primary_email_notifications: Optional[bool]
+    enable_secondary_email_notifications: Optional[bool]
 
 
 class EmployeeContactInfo(Base):
@@ -37,13 +38,15 @@ class EmployeeContactInfo(Base):
     EmployeeID = Column(VARCHAR(length=50), ForeignKey('employee.EmployeeID'), nullable=False)
     PrimaryEmail = Column(VARCHAR(length=100), nullable=False)
     SecondaryEmail = Column(VARCHAR(length=100), nullable=True)
-    EnableNotifications = Column(Boolean(), nullable=False, default=True)
+    EnablePrimaryEmailNotifications = Column(Boolean(), nullable=False, default=True)
+    EnableSecondaryEmailNotifications = Column(Boolean(), nullable=False, default=False)
     LastUpdated = Column(DateTime, nullable=False, default=sql.func.now())
     EntryCreated = Column(DateTime, nullable=False, default=sql.func.now())
     EmployeeParentRelationship = relationship("Employee", back_populates="EmployeeContactInfo")
 
     # Do not initialize this except for creating blank contact info templates!
-    def __init__(self, employee_id: str, primary_email: str, secondary_email: str = None, enable_notifications: bool = True):
+    def __init__(self, employee_id: str, primary_email: str, secondary_email: str = None,
+                 enable_primary_email_notifications: bool = True, enable_secondary_email_notifications: bool = False):
         """
         The constructor for the ``EmployeeContactInfo`` data class that is utilized internally by the SQLAlchemy library.
         Only manually instantiate this data class to create contact info records in the database within database sessions.
@@ -54,13 +57,16 @@ class EmployeeContactInfo(Base):
         :type primary_email: str, required
         :param secondary_email: The secondary email address on file if email notifications need to be sent to multiple emails.
         :type secondary_email: str, optional
-        :param enable_notifications: Enables or disables the use of email notifications for the employee or student that owns the contact information.
-        :type enable_notifications: bool, optional
+        :param enable_primary_email_notifications: Enables or disables the use of email notifications to the primary email provided.
+        :type enable_primary_email_notifications: bool, optional
+        :param enable_secondary_email_notifications: Enables or disables the use of email notifications to the secondary email provided.
+        :type enable_secondary_email_notifications: bool, optional
         """
         self.EmployeeID = employee_id
         self.PrimaryEmail = primary_email
         self.SecondaryEmail = secondary_email
-        self.EnableNotifications = enable_notifications
+        self.EnablePrimaryEmailNotifications = enable_primary_email_notifications
+        self.EnableSecondaryEmailNotifications = enable_secondary_email_notifications
 
     def as_dict(self):
         """
@@ -73,7 +79,8 @@ class EmployeeContactInfo(Base):
         return {
             "primary_email": self.PrimaryEmail,
             "secondary_email": self.SecondaryEmail,
-            "enable_notifications": self.EnableNotifications,
+            "enable_primary_email_notifications": self.EnablePrimaryEmailNotifications,
+            "enable_secondary_email_notifications": self.EnableSecondaryEmailNotifications,
         }
 
     def as_detail_dict(self):
@@ -88,7 +95,8 @@ class EmployeeContactInfo(Base):
             "employee_id": self.EmployeeID,
             "primary_email": self.PrimaryEmail,
             "secondary_email": self.SecondaryEmail,
-            "enable_notifications": self.EnableNotifications,
+            "enable_primary_email_notifications": self.EnablePrimaryEmailNotifications,
+            "enable_secondary_email_notifications": self.EnableSecondaryEmailNotifications,
             "last_updated": self.LastUpdated,
             "entry_created": self.EntryCreated
         }

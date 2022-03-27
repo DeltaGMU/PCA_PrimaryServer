@@ -30,7 +30,8 @@ class PydanticStudentRegistration(BaseModel):
     secondary_email: Optional[str]
     grade: str
     is_enabled: Optional[bool] = True
-    enable_notifications: Optional[bool] = True
+    enable_primary_email_notifications: Optional[bool] = True
+    enable_secondary_email_notifications: Optional[bool] = False
 
 
 class PydanticStudentUpdate(BaseModel):
@@ -45,7 +46,8 @@ class PydanticStudentUpdate(BaseModel):
     secondary_email: Optional[str]
     grade: Optional[str]
     is_enabled: Optional[bool]
-    enable_notifications: Optional[bool]
+    enable_primary_email_notifications: Optional[bool]
+    enable_secondary_email_notifications: Optional[bool]
 
 
 class PydanticMultipleStudentsUpdate(BaseModel):

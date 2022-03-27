@@ -12,7 +12,7 @@ class DefaultData:
         'last_name': 'administrator',
         'plain_password': 'admin123',
         'primary_email': "admin@admin.com",
-        'enable_notifications': False,
+        'enable_primary_email_notifications': False,
         'role': 'administrator'
     }
 

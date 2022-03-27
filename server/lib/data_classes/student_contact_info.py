@@ -25,7 +25,8 @@ class PydanticStudentContactInfoRegistration(BaseModel):
     parent_two_last_name: Optional[str]
     primary_email: str
     secondary_email: Optional[str]
-    enable_notifications: Optional[bool]
+    enable_primary_email_notifications: Optional[bool]
+    enable_secondary_email_notifications: Optional[bool]
 
 
 class StudentContactInfo(Base):
@@ -44,7 +45,8 @@ class StudentContactInfo(Base):
     ParentTwoLastName = Column(VARCHAR(length=100))
     PrimaryEmail = Column(VARCHAR(length=100), nullable=False)
     SecondaryEmail = Column(VARCHAR(length=100), nullable=True)
-    EnableNotifications = Column(Boolean(), nullable=False, default=True)
+    EnablePrimaryEmailNotifications = Column(Boolean(), nullable=False, default=True)
+    EnableSecondaryEmailNotifications = Column(Boolean(), nullable=False, default=False)
     LastUpdated = Column(DateTime, nullable=False, default=sql.func.now())
     EntryCreated = Column(DateTime, nullable=False, default=sql.func.now())
     StudentParentRelationship = relationship("Student", back_populates="StudentContactInfo")
@@ -52,7 +54,7 @@ class StudentContactInfo(Base):
     # Do not initialize this except for creating blank contact info templates!
     def __init__(self, student_id: str, parent_one_first_name: str, parent_one_last_name: str, primary_email: str,
                  parent_two_first_name: str = None, parent_two_last_name: str = None,
-                 secondary_email: str = None, enable_notifications: bool = True):
+                 secondary_email: str = None, enable_primary_email_notifications: bool = True, enable_secondary_email_notifications: bool = False):
         """
         The constructor for the ``StudentContactInfo`` data class that is utilized internally by the SQLAlchemy library.
         Only manually instantiate this data class to create contact info records in the database within database sessions.
@@ -63,8 +65,10 @@ class StudentContactInfo(Base):
         :type primary_email: str, required
         :param secondary_email: The secondary email address on file if email notifications need to be sent to multiple emails.
         :type secondary_email: str, optional
-        :param enable_notifications: Enables or disables the use of email notifications for the employee or student that owns the contact information.
-        :type enable_notifications: bool, optional
+        :param enable_primary_email_notifications: Enables or disables the use of email notifications to the primary email provided.
+        :type enable_primary_email_notifications: bool, optional
+        :param enable_secondary_email_notifications: Enables or disables the use of email notifications to the secondary email provided.
+        :type enable_secondary_email_notifications: bool, optional
         """
         self.StudentID = student_id
         self.ParentOneFirstName = parent_one_first_name
@@ -73,7 +77,8 @@ class StudentContactInfo(Base):
         self.ParentTwoLastName = parent_two_last_name
         self.PrimaryEmail = primary_email
         self.SecondaryEmail = secondary_email
-        self.EnableNotifications = enable_notifications
+        self.EnablePrimaryEmailNotifications = enable_primary_email_notifications
+        self.EnableSecondaryEmailNotifications = enable_secondary_email_notifications
 
     def as_dict(self):
         """
@@ -90,7 +95,8 @@ class StudentContactInfo(Base):
             "parent_two_last_name": self.ParentTwoLastName,
             "primary_email": self.PrimaryEmail,
             "secondary_email": self.SecondaryEmail,
-            "enable_notifications": self.EnableNotifications,
+            "enable_primary_email_notifications": self.EnablePrimaryEmailNotifications,
+            "enable_secondary_email_notifications": self.EnableSecondaryEmailNotifications,
         }
 
     def as_detail_dict(self):
@@ -109,7 +115,8 @@ class StudentContactInfo(Base):
             "parent_two_last_name": self.ParentTwoLastName,
             "primary_email": self.PrimaryEmail,
             "secondary_email": self.SecondaryEmail,
-            "enable_notifications": self.EnableNotifications,
+            "enable_primary_email_notifications": self.EnablePrimaryEmailNotifications,
+            "enable_secondary_email_notifications": self.EnableSecondaryEmailNotifications,
             "last_updated": self.LastUpdated,
             "entry_created": self.EntryCreated
         }

@@ -86,7 +86,7 @@ def create_default_admin_account():
         default_admin_contact_info = EmployeeContactInfo(
             employee_id=default_info['employee_id'],
             primary_email=default_info['primary_email'],
-            enable_notifications=default_info['enable_notifications']
+            enable_primary_email_notifications=default_info['enable_primary_email_notifications']
         )
         # session.add(default_admin_contact_info)
         # session.flush()

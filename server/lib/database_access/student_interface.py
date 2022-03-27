@@ -1,6 +1,5 @@
 from __future__ import annotations
 from typing import Dict, List
-
 from server.lib.data_classes.student_grade import StudentGrade
 from server.lib.database_manager import get_db_session
 from server.lib.data_classes.student_contact_info import StudentContactInfo
@@ -27,8 +26,10 @@ async def create_student(pyd_student: PydanticStudentRegistration, session: Sess
     pyd_student.grade = pyd_student.grade.lower().strip()
     if pyd_student.secondary_email:
         pyd_student.secondary_email = pyd_student.secondary_email.lower().strip()
-    if pyd_student.enable_notifications is None:
-        pyd_student.enable_notifications = True
+    if pyd_student.enable_primary_email_notifications is None:
+        pyd_student.enable_primary_email_notifications = True
+    if pyd_student.enable_secondary_email_notifications is None:
+        pyd_student.enable_secondary_email_notifications = False
     if pyd_student.is_enabled is None:
         pyd_student.is_enabled = True
 
@@ -55,7 +56,8 @@ async def create_student(pyd_student: PydanticStudentRegistration, session: Sess
                                       pyd_student.parent_two_first_name,
                                       pyd_student.parent_two_last_name,
                                       pyd_student.secondary_email,
-                                      pyd_student.enable_notifications)
+                                      pyd_student.enable_primary_email_notifications,
+                                      pyd_student.enable_secondary_email_notifications)
     if contact_info is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The contact information for the student could not be created due to invalid parameters!")
     # session.add(contact_info)
@@ -141,8 +143,11 @@ async def update_student(student_id: str, pyd_student_update: PydanticStudentUpd
     if pyd_student_update.parent_secondary_email:
         student_contact_info.SecondaryEmail = pyd_student_update.secondary_email.lower().strip()
         student_contact_info.LastUpdated = None
-    if pyd_student_update.enable_notifications:
-        student_contact_info.EnableNotifications = pyd_student_update.enable_notifications
+    if pyd_student_update.enable_primary_email_notifications:
+        student_contact_info.EnablePrimaryEmailNotifications = pyd_student_update.enable_primary_email_notifications
+        student_contact_info.LastUpdated = None
+    if pyd_student_update.enable_secondary_email_notifications:
+        student_contact_info.EnableSecondaryEmailNotifications = pyd_student_update.enable_secondary_email_notifications
         student_contact_info.LastUpdated = None
     if pyd_student_update.is_enabled:
         student_contact_info.EmployeeEnabled = pyd_student_update.is_enabled
