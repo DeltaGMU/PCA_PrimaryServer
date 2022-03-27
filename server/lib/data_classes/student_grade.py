@@ -41,7 +41,7 @@ class StudentGrade(Base):
         """
         return {
             "id": self.id,
-            "grade": self.Name
+            "name": self.Name
         }
 
     def as_dict(self):
@@ -53,5 +53,5 @@ class StudentGrade(Base):
         :rtype: Dict[str, any]
         """
         return {
-            "grade": self.Name
+            "name": self.Name
         }
