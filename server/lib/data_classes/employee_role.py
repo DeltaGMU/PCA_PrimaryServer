@@ -43,7 +43,7 @@ class EmployeeRole(Base):
         """
         return {
             "id": self.id,
-            "role": self.Name
+            "name": self.Name
         }
 
     def as_dict(self):
@@ -55,5 +55,5 @@ class EmployeeRole(Base):
         :rtype: Dict[str, any]
         """
         return {
-            "role": self.Name
+            "name": self.Name
         }
