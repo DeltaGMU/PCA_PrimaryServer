@@ -78,6 +78,7 @@ class Employee(Base):
     PasswordHash = Column(VARCHAR(length=60), nullable=False)
     EmployeeEnabled = Column(Boolean(), nullable=False, default=True)
     EmployeeRoleID = Column(Integer, ForeignKey('employee_role.id'), nullable=False)
+    EmployeeRole = relationship("EmployeeRole")
     EmployeeContactInfo = relationship("EmployeeContactInfo", back_populates="EmployeeParentRelationship", uselist=False, cascade='all, delete')
     EmployeeHoursRelationship = relationship('EmployeeHours', cascade='all, delete')
     EmployeeResetTokenRelationship = relationship('ResetToken', cascade='all, delete')
@@ -126,6 +127,7 @@ class Employee(Base):
             "first_name": self.FirstName,
             "last_name": self.LastName,
             "contact_info": self.EmployeeContactInfo.as_dict(),
+            "role": self.EmployeeRole.as_dict(),
             "is_enabled": self.EmployeeEnabled
         }
 
@@ -141,6 +143,7 @@ class Employee(Base):
             "employee_id": self.EmployeeID,
             "role_id": self.EmployeeRoleID,
             "contact_info": self.EmployeeContactInfo.as_dict(),
+            "role": self.EmployeeRole.as_dict(),
             "first_name": self.FirstName,
             "last_name": self.LastName,
             "password_hash": self.PasswordHash,
