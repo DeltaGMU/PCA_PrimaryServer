@@ -216,6 +216,35 @@ class EmployeesRouter:
 
     class Delete:
         @staticmethod
+        @router.delete(ENV_SETTINGS.API_ROUTES.Employees.all_employees, status_code=status.HTTP_200_OK)
+        async def delete_all_employees(are_you_sure: str, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
+            """
+            An endpoint to remove ALL employee records from the employee's table in the database.
+            Removal of multiple employees using this endpoint will permanently delete the employee records from the database
+            and all records related to the employee records in other tables through a cascading delete.
+
+            :param are_you_sure: An additional parameter that must say 'yes' to fulfill this request, to prevent accidental deletion.
+            :type are_you_sure: str, required
+            :param token: The JSON Web Token responsible for authenticating the user to this endpoint.
+            :type token: str, required
+            :param session: The database session to use to delete the employee records.
+            :type session: sqlalchemy.orm.session, optional
+            :return: A response model containing the number of employees deleted.
+            :rtype: server.web_api.models.ResponseModel
+            :raises HTTPException: If the provided request body contains invalid parameters.
+            """
+            if not await token_is_valid(token, ["administrator"]):
+                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
+            if are_you_sure is None:
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid parameters provided!")
+            if are_you_sure.lower().strip() == 'yes':
+                employees = session.query(Employee).all()
+                for employee in employees:
+                    session.delete(employee)
+                session.commit()
+            return ResponseModel(status.HTTP_200_OK, "success")
+
+        @staticmethod
         @router.delete(ENV_SETTINGS.API_ROUTES.Employees.employees, status_code=status.HTTP_200_OK)
         async def delete_employees(employee_ids: PydanticEmployeesRemoval, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """

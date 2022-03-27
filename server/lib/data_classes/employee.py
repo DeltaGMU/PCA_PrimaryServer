@@ -18,7 +18,6 @@ class PydanticEmployeeRegistration(BaseModel):
     A Pydantic class used to represent an employee entity when creating a new employee record from an HTTP request to the API.
     Do not try to initialize this class as an independent entity or extend it into a subclass.
     """
-    plain_password: str
     first_name: str
     last_name: str
     primary_email: str
@@ -34,7 +33,6 @@ class PydanticEmployeeUpdate(BaseModel):
     A Pydantic class used to represent an employee entity when updating an existing employee record from an HTTP request to the API.
     Do not try to initialize this class as an independent entity or extend it into a subclass.
     """
-    plain_password: Optional[str]
     first_name: Optional[str]
     last_name: Optional[str]
     primary_email: Optional[str]

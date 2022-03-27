@@ -1,6 +1,8 @@
 from __future__ import annotations
 from sqlalchemy.orm import Session
 from typing import List, Dict
+from random import choice, randint
+from server.lib.utils.email_utils import send_email
 from server.lib.utils.employee_utils import generate_employee_id, create_employee_password_hashes
 from server.lib.data_classes.employee import Employee, PydanticEmployeeRegistration, PydanticEmployeesRemoval, PydanticEmployeeUpdate
 from server.lib.data_classes.employee_role import EmployeeRole
@@ -16,15 +18,21 @@ async def create_employee(pyd_employee: PydanticEmployeeRegistration, session: S
     pyd_employee.primary_email = pyd_employee.primary_email.lower().strip()
     if pyd_employee.secondary_email:
         pyd_employee.secondary_email = pyd_employee.secondary_email.lower().strip()
+        if pyd_employee.primary_email == pyd_employee.secondary_email:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The secondary email address cannot be the same as the primary email address!")
     pyd_employee.role = pyd_employee.role.lower().strip()
     if pyd_employee.enable_primary_email_notifications is None:
         pyd_employee.enable_primary_email_notifications = True
-    if pyd_employee.enable_secondary_email_notifications is None:
+    if pyd_employee.enable_secondary_email_notifications is None or pyd_employee.secondary_email is None:
         pyd_employee.enable_secondary_email_notifications = False
     if pyd_employee.is_enabled is None:
         pyd_employee.is_enabled = True
 
-    password_hash = await create_employee_password_hashes(pyd_employee.plain_password)
+    # Generate a temporary password.
+    rand_characters = "".join([char.upper() if randint(0, 1) == 0 else char for char in pyd_employee.last_name])
+    rand_numbers = "".join([str(randint(1, 9)) for _ in range(0, 4)])
+    temp_password = f"{rand_characters}{rand_numbers}"
+    password_hash = await create_employee_password_hashes(temp_password)
     if password_hash is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The plain text password provided to be hashed is invalid!")
     if len(pyd_employee.first_name) == 0 or len(pyd_employee.last_name) == 0:
@@ -63,13 +71,25 @@ async def create_employee(pyd_employee: PydanticEmployeeRegistration, session: S
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(err)) from err
     # Retrieve the created employee from the database to ensure it has been properly added.
     created_employee = session.query(Employee).filter(Employee.EmployeeID == employee_id).one()
-    created_employee = created_employee.as_detail_dict()
+    created_employee = created_employee.as_dict()
     # Add role information into response for the web interface.
     created_employee.update(role_query.as_dict())
-    # Remove unnecessary elements from response
-    del created_employee['role_id']
-    del created_employee['last_updated']
-    del created_employee['entry_created']
+    # Send notification to enabled emails that the account has been created.
+    send_emails_to = []
+    if new_employee.EmployeeContactInfo.EnablePrimaryEmailNotifications:
+        send_emails_to.append(new_employee.EmployeeContactInfo.PrimaryEmail)
+    if new_employee.EmployeeContactInfo.EnableSecondaryEmailNotifications:
+        send_emails_to.append(new_employee.EmployeeContactInfo.SecondaryEmail)
+    send_email(
+        to_user=f'{new_employee.FirstName} {new_employee.LastName}',
+        to_email=send_emails_to,
+        subj="Account Created",
+        messages=["Your employee account has been created!",
+                  "Your login credentials are provided below, please be sure to change your temporary password as soon as possible.",
+                  f"<b>Employee ID:</b> {new_employee.EmployeeID}",
+                  f"<b>Temporary Password:</b> {temp_password}"],
+        message_is_html=True
+    )
     return created_employee
 
 
@@ -128,9 +148,6 @@ async def update_employee(employee_id, pyd_employee_update: PydanticEmployeeUpda
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The employee does not have contact information registered, please do that first!")
 
     # Check to see what data was provided and update as necessary.
-    if pyd_employee_update.plain_password:
-        employee.PasswordHash = create_employee_password_hashes(pyd_employee_update.plain_password)
-        employee.LastUpdated = None
     if pyd_employee_update.first_name:
         employee.FirstName = pyd_employee_update.first_name.lower().strip()
         employee.LastUpdated = None
