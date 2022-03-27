@@ -75,7 +75,7 @@ class Student(Base):
     LastName = Column(VARCHAR(length=50), nullable=False)
     CarpoolNumber = Column(Integer, nullable=False)
     GradeID = Column(Integer, ForeignKey('student_grade.id'), nullable=False)
-    StudentGrade = relationship("StudentGrade")
+    StudentGrade = relationship("StudentGrade", lazy='subquery')
     StudentEnabled = Column(Boolean(), nullable=False, default=True)
     StudentContactInfo = relationship("StudentContactInfo", back_populates="StudentParentRelationship", uselist=False, cascade='all, delete')
     StudentCareHoursRelationship = relationship('StudentCareHours', cascade='all, delete')
