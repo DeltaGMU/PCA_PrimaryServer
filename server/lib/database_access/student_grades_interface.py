@@ -60,15 +60,22 @@ async def create_student_grade(student_grade: PydanticStudentGrade, session: Ses
 
 
 async def remove_student_grade(student_grade: PydanticStudentGrade, session: Session = None):
-    student_grade = student_grade.student_grade
+    student_grade = student_grade.student_grade.lower().strip()
     if len(student_grade) == 0:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The student grade name cannot be empty!")
     if session is None:
         session = next(get_db_session())
     try:
-        session.query(StudentGrade).filter(StudentGrade.Name == student_grade)
+        matching_grade = session.query(StudentGrade).filter(StudentGrade.Name == student_grade).first()
+        if matching_grade is None:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The provided student grade does not exist!")
+        session.delete(matching_grade)
+        session.commit()
+    except IntegrityError:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Cannot remove a student grade that is currently in use!")
     except SQLAlchemyError as err:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(err)) from err
+    return matching_grade
 
 
 async def delete_time_sheet_report_from_date(file_name: str):

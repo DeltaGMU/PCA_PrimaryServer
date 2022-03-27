@@ -104,5 +104,5 @@ class StudentGradesRouter:
             """
             if not await token_is_valid(token, ["administrator"]):
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
-            await remove_student_grade(student_grade, session)
-            return ResponseModel(status.HTTP_200_OK, "NOT IMPLEMENTED!")
+            removed_grade = await remove_student_grade(student_grade, session)
+            return ResponseModel(status.HTTP_200_OK, "success", {"grade": removed_grade.as_dict()})
