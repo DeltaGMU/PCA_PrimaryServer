@@ -83,7 +83,7 @@ async def logged_in_welcome(token: str = Depends(oauth_scheme)):
     user = await get_user_from_token(token, )
     if user is None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token is invalid or expired!")
-    return ResponseModel(status.HTTP_200_OK, "logged in successfully!", {"user": f"{user.FirstName} {user.LastName}"})
+    return ResponseModel(status.HTTP_200_OK, "logged in successfully!", {"user": f"{user.FirstName} {user.LastName}".title()})
 
 
 @web_app.post(ENV_SETTINGS.API_ROUTES.logout, status_code=status.HTTP_200_OK)
