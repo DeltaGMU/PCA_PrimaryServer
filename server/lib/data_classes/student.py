@@ -74,6 +74,7 @@ class Student(Base):
     FirstName = Column(VARCHAR(length=50), nullable=False)
     LastName = Column(VARCHAR(length=50), nullable=False)
     GradeID = Column(Integer, ForeignKey('student_grade.id'), nullable=False)
+    StudentGrade = relationship("StudentGrade")
     StudentEnabled = Column(Boolean(), nullable=False, default=True)
     StudentContactInfo = relationship("StudentContactInfo", back_populates="StudentParentRelationship", uselist=False, cascade='all, delete')
     StudentCareHoursRelationship = relationship('StudentCareHours', cascade='all, delete')
@@ -117,6 +118,7 @@ class Student(Base):
         return {
             "student_id": self.StudentID,
             "contact_info": self.StudentContactInfo.as_dict(),
+            "grade": self.StudentGrade.as_dict(),
             "grade_id": self.GradeID,
             "first_name": self.FirstName,
             "last_name": self.LastName,
@@ -138,5 +140,6 @@ class Student(Base):
             "first_name": self.FirstName,
             "last_name": self.LastName,
             "contact_info": self.StudentContactInfo.as_dict(),
+            "grade": self.StudentGrade.as_dict(),
             "is_enabled": self.StudentEnabled
         }
