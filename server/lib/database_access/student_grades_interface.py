@@ -7,7 +7,7 @@ from jinja2 import Environment, FileSystemLoader
 from server.lib.strings import ROOT_DIR
 from server.lib.database_access.report_interface import get_all_time_sheets_for_report, get_all_student_care_for_report
 from server.lib.utils.date_utils import check_date_formats
-from server.lib.utils.reports_utils import delete_time_sheet_report
+from server.lib.utils.reports_utils import delete_time_sheet_report, delete_care_report
 from server.lib.data_classes.student_grade import StudentGrade, PydanticStudentGrade
 from server.lib.database_manager import get_db_session
 
@@ -78,11 +78,18 @@ async def remove_student_grade(student_grade: PydanticStudentGrade, session: Ses
     return matching_grade
 
 
-async def delete_time_sheet_report_from_date(file_name: str):
+async def delete_time_sheet_report_by_file_name(file_name: str):
     if delete_time_sheet_report(file_name):
         return file_name
     else:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='The provided date was invalid! Please ensure it is in the YYYY-MM format!')
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='The provided file name was invalid! Please ensure it is in the "YYYY-MM_YYYY-MM_EmployeeReport" format!')
+
+
+async def delete_care_report_by_file_name(file_name: str):
+    if delete_care_report(file_name):
+        return file_name
+    else:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='The provided file name was invalid! Please ensure it is in the "YYYY-MM_YYYY-MM_StudentReport" format!')
 
 
 async def create_time_sheets_report(start_date: str, end_date: str, session: Session = None):

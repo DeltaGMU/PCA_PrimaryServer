@@ -16,3 +16,10 @@ def delete_time_sheet_report(file_name) -> bool:
         unlink(f"{ROOT_DIR}/reports/employees/{file_name}")
         return True
     return False
+
+
+def delete_care_report(file_name) -> bool:
+    if path.exists(f"{ROOT_DIR}/reports/students/{file_name}"):
+        unlink(f"{ROOT_DIR}/reports/students/{file_name}")
+        return True
+    return False

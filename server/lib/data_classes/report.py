@@ -13,4 +13,4 @@ class PydanticStudentRetrieveReport(BaseModel):
 
 
 class PydanticDeleteReport(BaseModel):
-    date: str
+    file_name: str
