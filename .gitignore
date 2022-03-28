@@ -177,7 +177,6 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env
 .venv
 env/
 venv/
@@ -213,4 +212,4 @@ cython_debug/
 .idea*
 *.pdf
 *.pem
-!server/docs/*
+!server/docs/*!/.env
