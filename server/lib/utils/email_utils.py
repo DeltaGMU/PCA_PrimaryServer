@@ -34,7 +34,7 @@ def send_test_email():
     return email_request.json()
 
 
-def send_email(to_user: str, to_email: List[str], subj: str, messages: List[str], message_is_html=False):
+def send_email(to_user: str, to_email: List[str], subj: str, messages: List[str]):
     # Validate provided information and email address.
     if None in (to_user, to_email, subj, messages):
         raise RuntimeError("Cannot send an email with the 'to', 'subject', or 'message' fields being blank!")
@@ -52,15 +52,13 @@ def send_email(to_user: str, to_email: List[str], subj: str, messages: List[str]
         raise RuntimeError("Cannot send an email with a blank message!")
 
     # Prepare the HTML email if enabled...
-    html_out = ""
-    if message_is_html:
-        template = env.get_template(f'generic_email_template.html')
-        template_vars = {
-            "title": f"Automated Email",
-            "username": to_user.lower().strip().title(),
-            "messages": messages
-        }
-        html_out = template.render(template_vars)
+    template = env.get_template(f'generic_email_template.html')
+    template_vars = {
+        "title": f"Automated Email",
+        "username": to_user.lower().strip().title(),
+        "messages": messages
+    }
+    html_out = template.render(template_vars)
 
     # Authenticate self first...
     auth_request = requests.post(f"{ENV_SETTINGS.pca_email_api}{ENV_SETTINGS.THIRD_PARTY_ROUTES.Email.login}", data={
@@ -77,12 +75,10 @@ def send_email(to_user: str, to_email: List[str], subj: str, messages: List[str]
         email_opts = {
             "from": ENV_SETTINGS.pca_email_username.strip(),
             "to": email,
-            "subject": subj
+            "subject": subj,
+            "messageHTML": html_out,
+            "messagePlainText": "\n".join(messages)
         }
-        if message_is_html:
-            email_opts["messageHTML"] = html_out
-        else:
-            email_opts["messagePlainText"] = f"Hi {to_user.lower().strip().capitalize()},\n"+"\n".join(messages)
         # Send the email...
         requests.post(f"{ENV_SETTINGS.pca_email_api}{ENV_SETTINGS.THIRD_PARTY_ROUTES.Email.send_email}",
                       data=email_opts, headers=headers)
