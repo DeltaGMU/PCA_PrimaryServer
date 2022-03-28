@@ -1,5 +1,7 @@
 from __future__ import annotations
 from typing import Dict, List
+
+from server.lib.utils.email_utils import send_email
 from server.lib.data_classes.student_grade import StudentGrade
 from server.lib.database_manager import get_db_session
 from server.lib.data_classes.student_contact_info import StudentContactInfo
@@ -77,6 +79,31 @@ async def create_student(pyd_student: PydanticStudentRegistration, session: Sess
     except IntegrityError as err:
         session.rollback()
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(err)) from err
+    # Send notification to enabled emails that the account has been created.
+    if new_student.StudentContactInfo.EnablePrimaryEmailNotifications:
+        send_email(
+            to_user=f'{new_student.StudentContactInfo.ParentOneFirstName} {new_student.StudentContactInfo.ParentOneLastName}',
+            to_email=[new_student.StudentContactInfo.PrimaryEmail],
+            subj="New Student Registration Confirmed",
+            messages=["Your student's account has been created!",
+                      "Your student's information is provided below:",
+                      f"<b>Student Name:</b> {new_student.FirstName.title()} {new_student.LastName.title()}",
+                      f"<b>Student ID:</b> {new_student.StudentID}",
+                      "<b>Please remember the Student ID as this will be used to check-in/check-out your student from before/after-care services.</b>",
+                      "If any of the information provided is incorrect, please contact PCA administration to make corrections."]
+        )
+    if new_student.StudentContactInfo.EnableSecondaryEmailNotifications:
+        send_email(
+            to_user=f'{new_student.StudentContactInfo.ParentTwoFirstName} {new_student.StudentContactInfo.ParentTwoLastName}',
+            to_email=[new_student.StudentContactInfo.SecondaryEmail],
+            subj="New Student Registration Confirmed",
+            messages=["Your student's account has been created!",
+                      "Your student's information is provided below:",
+                      f"<b>Student Name:</b> {new_student.FirstName.title()} {new_student.LastName.title()}",
+                      f"<b>Student ID:</b> {new_student.StudentID}",
+                      "<b>Please remember the Student ID as this will be used to check-in/check-out your student from before/after-care services.</b>",
+                      "If any of the information provided is incorrect, please contact PCA administration to make corrections."]
+        )
     return new_student.as_dict()
 
 
