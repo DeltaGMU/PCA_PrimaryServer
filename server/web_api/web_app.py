@@ -18,7 +18,6 @@ from server.lib.utils.employee_utils import verify_employee_password
 from server.lib.strings import META_VERSION, ROOT_DIR
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
-
 web_app = FastAPI(
     title="PCA Web API",
     description="This is the REST API for the PCA Timesheet & Student Care Service server built with FastAPI",
@@ -34,10 +33,12 @@ web_app.add_middleware(
 )
 if ConfigManager().config().getboolean('API Server', 'use_https'):
     from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
+
     web_app.add_middleware(HTTPSRedirectMiddleware)
-web_app.mount("/wiki",
-              StaticFiles(directory=f"{ROOT_DIR}/docs/build/html", html=True),
-              name="wiki")
+if ConfigManager().config().getboolean('API Server', 'enable_docs'):
+    web_app.mount("/wiki",
+                  StaticFiles(directory=f"{ROOT_DIR}/docs/build/html", html=True),
+                  name="wiki")
 web_app.mount("/favicon.ico", FileResponse(f"{ROOT_DIR}/web_api/static/favicon.ico"))
 web_app.include_router(core_routing.router)
 web_app.include_router(employee_routing.router)
