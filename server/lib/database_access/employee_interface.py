@@ -27,6 +27,10 @@ async def create_employee(pyd_employee: PydanticEmployeeRegistration, session: S
         pyd_employee.enable_secondary_email_notifications = False
     if pyd_employee.is_enabled is None:
         pyd_employee.is_enabled = True
+    if pyd_employee.pto_hours_enabled is None:
+        pyd_employee.pto_hours_enabled = True
+    if pyd_employee.extra_hours_enabled is None:
+        pyd_employee.extra_hours_enabled = True
 
     # Generate a temporary password.
     rand_characters = "".join([char.upper() if randint(0, 1) == 0 else char for char in pyd_employee.last_name])
@@ -63,7 +67,8 @@ async def create_employee(pyd_employee: PydanticEmployeeRegistration, session: S
 
     # Create the employee and add it to the database.
     try:
-        new_employee = Employee(employee_id, pyd_employee.first_name, pyd_employee.last_name, password_hash, role_query.id, contact_info, pyd_employee.is_enabled)
+        new_employee = Employee(employee_id, pyd_employee.first_name, pyd_employee.last_name, password_hash, role_query.id, contact_info,
+                                pyd_employee.pto_hours_enabled, pyd_employee.extra_hours_enabled, pyd_employee.is_enabled)
         session.add(new_employee)
         session.commit()
     except IntegrityError as err:
@@ -190,6 +195,12 @@ async def update_employee(employee_id, pyd_employee_update: PydanticEmployeeUpda
             session.rollback()
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The provided employee role is invalid or does not exist!")
         employee.EmployeeRoleID = role_query.id
+        employee.LastUpdated = None
+    if pyd_employee_update.pto_hours_enabled:
+        employee.PTOHoursEnabled = pyd_employee_update.pto_hours_enabled
+        employee.LastUpdated = None
+    if pyd_employee_update.extra_hours_enabled:
+        employee.ExtraHoursEnabled = pyd_employee_update.extra_hours_enabled
         employee.LastUpdated = None
     if pyd_employee_update.is_enabled:
         employee.EmployeeEnabled = pyd_employee_update.is_enabled

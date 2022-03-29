@@ -23,6 +23,8 @@ class PydanticEmployeeRegistration(BaseModel):
     primary_email: str
     secondary_email: Optional[str]
     role: str
+    pto_hours_enabled: Optional[bool] = True
+    extra_hours_enabled: Optional[bool] = True
     is_enabled: Optional[bool] = True
     enable_primary_email_notifications: Optional[bool] = True
     enable_secondary_email_notifications: Optional[bool] = False
@@ -38,6 +40,8 @@ class PydanticEmployeeUpdate(BaseModel):
     primary_email: Optional[str]
     secondary_email: Optional[str]
     role: Optional[str]
+    pto_hours_enabled: Optional[bool]
+    extra_hours_enabled: Optional[bool]
     is_enabled: Optional[bool]
     enable_primary_email_notifications: Optional[bool]
     enable_secondary_email_notifications: Optional[bool]
@@ -76,6 +80,8 @@ class Employee(Base):
     FirstName = Column(VARCHAR(length=50), nullable=False)
     LastName = Column(VARCHAR(length=50), nullable=False)
     PasswordHash = Column(VARCHAR(length=60), nullable=False)
+    PTOHoursEnabled = Column(Boolean(), nullable=False, default=True)
+    ExtraHoursEnabled = Column(Boolean(), nullable=False, default=True)
     EmployeeEnabled = Column(Boolean(), nullable=False, default=True)
     EmployeeRoleID = Column(Integer, ForeignKey('employee_role.id'), nullable=False)
     EmployeeRole = relationship("EmployeeRole", lazy='subquery')
@@ -86,7 +92,8 @@ class Employee(Base):
     EntryCreated = Column(DateTime, nullable=False, default=sql.func.now())
 
     # Do not initialize this except for creating blank employee templates!
-    def __init__(self, employee_id: str, first_name: str, last_name: str, phash: str, role_id: int, contact_info: EmployeeContactInfo, enabled: bool = True):
+    def __init__(self, employee_id: str, first_name: str, last_name: str, phash: str, role_id: int,
+                 contact_info: EmployeeContactInfo, pto_hours_enabled: bool = True, extra_hours_enabled: bool = True, enabled: bool = True):
         """
         The constructor for the ``Employee`` data class that is utilized internally by the SQLAlchemy library.
         Only manually instantiate this data class to create employee records in the database within database sessions.
@@ -103,6 +110,10 @@ class Employee(Base):
         :type role_id: int, required
         :param contact_info: The employee contact info record to be added to the database.
         :type contact_info: int, required
+        :param pto_hours_enabled: Enable or disable the employee's ability to enter PTO hours in their timesheet.
+        :type pto_hours_enabled: bool, optional
+        :param extra_hours_enabled: Enable or disable the employee's ability to enter Extra hours in their timesheet.
+        :type extra_hours_enabled: bool, optional
         :param enabled: Determines if the individual is active as an employee of PCA. Disable this if the employee no longer works at PCA or is on indefinite leave.
         :type enabled: bool, optional
         """
@@ -112,6 +123,8 @@ class Employee(Base):
         self.PasswordHash = phash
         self.EmployeeRoleID = role_id
         self.EmployeeContactInfo = contact_info
+        self.PTOHoursEnabled = pto_hours_enabled
+        self.ExtraHoursEnabled = extra_hours_enabled
         self.EmployeeEnabled = enabled
 
     def as_dict(self):
@@ -128,6 +141,8 @@ class Employee(Base):
             "last_name": self.LastName,
             "contact_info": self.EmployeeContactInfo.as_dict(),
             "role": self.EmployeeRole.as_dict(),
+            "pto_hours_enabled": self.PTOHoursEnabled,
+            "extra_hours_enabled": self.ExtraHoursEnabled,
             "is_enabled": self.EmployeeEnabled
         }
 
@@ -146,7 +161,8 @@ class Employee(Base):
             "role": self.EmployeeRole.as_dict(),
             "first_name": self.FirstName,
             "last_name": self.LastName,
-            "password_hash": self.PasswordHash,
+            "pto_hours_enabled": self.PTOHoursEnabled,
+            "extra_hours_enabled": self.ExtraHoursEnabled,
             "is_enabled": self.EmployeeEnabled,
             "last_updated": self.LastUpdated,
             "entry_created": self.EntryCreated
