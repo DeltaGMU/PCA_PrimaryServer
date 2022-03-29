@@ -213,4 +213,5 @@ cython_debug/
 .idea*
 .pdf
 .pem
+server/reports/
 !server/docs/*!/.env
