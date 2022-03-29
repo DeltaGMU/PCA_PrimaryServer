@@ -149,3 +149,20 @@ class Student(Base):
             "grade": self.StudentGrade.as_dict(),
             "is_enabled": self.StudentEnabled
         }
+
+    def as_limited_dict(self):
+        """
+        A utility method to convert the class attributes into a dictionary format.
+        This web friendly version hides anything more than basic identification.
+
+        :return: Dictionary representation of the data class attributes.
+        :rtype: Dict[str, any]
+        """
+        return {
+            "student_id": self.StudentID,
+            "first_name": self.FirstName,
+            "last_name": self.LastName,
+            "carpool_number": self.CarpoolNumber,
+            "grade": self.StudentGrade.as_dict(),
+            "is_enabled": self.StudentEnabled
+        }

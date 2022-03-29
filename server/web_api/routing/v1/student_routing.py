@@ -2,13 +2,11 @@
 This module consists of FastAPI routing for Students.
 This handles all the REST API logic for creating, destroying, and updating student-related data.
 """
-import time
-from datetime import datetime, timedelta
-from fastapi import Body, status, HTTPException, Depends
+from fastapi import status, HTTPException, Depends
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
-from config import ENV_SETTINGS
-from server.lib.database_access.student_interface import create_student, get_student_by_id, get_student_contact_info, update_students, update_student, remove_students, get_student_grade
+from server.web_api.api_routes import API_ROUTES
+from server.lib.database_access.student_interface import create_student, get_student_by_id, update_students, update_student, remove_students
 from server.web_api.models import ResponseModel
 from server.lib.data_classes.student import Student, PydanticStudentRegistration, PydanticMultipleStudentsUpdate, PydanticStudentUpdate, PydanticStudentsRemoval
 from server.lib.database_manager import get_db_session
@@ -27,7 +25,7 @@ class StudentsRouter:
 
     class Create:
         @staticmethod
-        @router.post(ENV_SETTINGS.API_ROUTES.Students.students, status_code=status.HTTP_201_CREATED)
+        @router.post(API_ROUTES.Students.students, status_code=status.HTTP_201_CREATED)
         async def create_new_student(pyd_student: PydanticStudentRegistration, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint that creates a new student record and adds it to the students' table in the database.
@@ -49,7 +47,7 @@ class StudentsRouter:
 
     class Read:
         @staticmethod
-        @router.get(ENV_SETTINGS.API_ROUTES.Students.count, status_code=status.HTTP_200_OK)
+        @router.get(API_ROUTES.Students.count, status_code=status.HTTP_200_OK)
         async def read_students_count(token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint that counts the number of students that are registered in the database.
@@ -67,7 +65,7 @@ class StudentsRouter:
             return ResponseModel(status.HTTP_200_OK, "success", {"count": students_count})
 
         @staticmethod
-        @router.get(ENV_SETTINGS.API_ROUTES.Students.students, status_code=status.HTTP_200_OK)
+        @router.get(API_ROUTES.Students.students, status_code=status.HTTP_200_OK)
         async def read_all_students(token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint that retrieves all the students from the database.
@@ -89,7 +87,7 @@ class StudentsRouter:
             return ResponseModel(status.HTTP_200_OK, "success", {"students": all_students})
 
         @staticmethod
-        @router.get(ENV_SETTINGS.API_ROUTES.Students.one_student, status_code=status.HTTP_200_OK)
+        @router.get(API_ROUTES.Students.one_student, status_code=status.HTTP_200_OK)
         async def read_one_student(student_id: str, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint that retrieves a single student from the database.
@@ -115,7 +113,7 @@ class StudentsRouter:
 
     class Update:
         @staticmethod
-        @router.put(ENV_SETTINGS.API_ROUTES.Students.students, status_code=status.HTTP_201_CREATED)
+        @router.put(API_ROUTES.Students.students, status_code=status.HTTP_201_CREATED)
         async def update_multiple_students(multi_student_update: PydanticMultipleStudentsUpdate, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint that updates multiple students from the database from the provided employee information and employee ID.
@@ -138,7 +136,7 @@ class StudentsRouter:
             return ResponseModel(status.HTTP_200_OK, "success", {"students": [student.as_dict() for student in updated_students]})
 
         @staticmethod
-        @router.put(ENV_SETTINGS.API_ROUTES.Students.one_student, status_code=status.HTTP_201_CREATED)
+        @router.put(API_ROUTES.Students.one_student, status_code=status.HTTP_201_CREATED)
         async def update_one_student(student_id: str, student_update: PydanticStudentUpdate, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint that updates a single student from the database from the provided student information and student ID.
@@ -166,7 +164,7 @@ class StudentsRouter:
 
     class Delete:
         @staticmethod
-        @router.delete(ENV_SETTINGS.API_ROUTES.Students.students, status_code=status.HTTP_200_OK)
+        @router.delete(API_ROUTES.Students.students, status_code=status.HTTP_200_OK)
         async def delete_students(student_ids: PydanticStudentsRemoval, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint to remove multiple student records from the student's table in the database.
@@ -190,7 +188,7 @@ class StudentsRouter:
             return ResponseModel(status.HTTP_200_OK, "success", {"students": [student.as_dict() for student in removed_students]})
 
         @staticmethod
-        @router.delete(ENV_SETTINGS.API_ROUTES.Students.one_student, status_code=status.HTTP_200_OK)
+        @router.delete(API_ROUTES.Students.one_student, status_code=status.HTTP_200_OK)
         async def delete_student(student_id: str, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint to remove a student record from the student's table in the database.

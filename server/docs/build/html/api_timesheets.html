@@ -155,7 +155,6 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Requirements and Installation</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="getting_started.html">Getting Started</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="project_overview.html">Project Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="launch_parameters.html">Launch Parameters</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="core_api.html">Developer Documentation</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
@@ -633,6 +632,33 @@ Front-end interaction can send requests to this endpoint with any valid date in 
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Read</span></span><a class="headerlink" href="#server.web_api.routing.v1.employee_hours_routing.EmployeeHoursRouter.Read" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py method">
+<dt class="sig sig-object py" id="server.web_api.routing.v1.employee_hours_routing.EmployeeHoursRouter.Read.read_employee_time_sheet_hours">
+<em class="property"><span class="pre">async</span><span class="w"> </span><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">read_employee_time_sheet_hours</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">employee_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date_start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date_end</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(OAuth2PasswordBearer)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_db_session)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.employee_hours_routing.EmployeeHoursRouter.Read.read_employee_time_sheet_hours" title="Permalink to this definition">#</a></dt>
+<dd><p>An endpoint to accumulate and return the total work hours, pto hours, overtime/extra hours for an employee within a provided date range without the full list of time sheets.
+Front-end interaction can send requests to this endpoint with any valid date range, which would
+be useful for presenting total work hours over the course of a week, 2 weeks, a month, or a year.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>employee_id</strong> (<em>str</em><em>, </em><em>required</em>) – The ID of the employee.</p></li>
+<li><p><strong>date_start</strong> (<em>str</em><em>, </em><em>required</em>) – The starting date for the range of time sheets to query.</p></li>
+<li><p><strong>date_end</strong> (<em>str</em><em>, </em><em>optional</em>) – The ending date for the range of time sheets to query. If an ending date is not provided, it will only query the time sheets from the starting date.</p></li>
+<li><p><strong>token</strong> (<em>str</em><em>, </em><em>required</em>) – The JSON Web Token responsible for authenticating the user to this endpoint.</p></li>
+<li><p><strong>session</strong> (<em>sqlalchemy.orm.session</em><em>, </em><em>optional</em>) – The database session to use to retrieve all the employee data.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A response model containing the total number of work hours, PTO hours, and extra/overtime hours from the days within the provided date range.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="api_response_model.html#server.web_api.models.ResponseModel" title="server.web_api.models.ResponseModel">server.web_api.models.ResponseModel</a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>HTTPException</strong> – If the provided employee has no hours logged into the system, or the employee does not exist in the database.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
 <dt class="sig sig-object py" id="server.web_api.routing.v1.employee_hours_routing.EmployeeHoursRouter.Read.read_employee_time_sheets">
 <em class="property"><span class="pre">async</span><span class="w"> </span><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">read_employee_time_sheets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">employee_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date_start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">date_end</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(OAuth2PasswordBearer)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_db_session)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.employee_hours_routing.EmployeeHoursRouter.Read.read_employee_time_sheets" title="Permalink to this definition">#</a></dt>
 <dd><p>An endpoint to accumulate and return the total work hours, pto hours, overtime/extra hours for an employee within a provided date range.
@@ -673,7 +699,7 @@ Front-end interaction can send requests to this endpoint with any valid date in 
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>employee_id</strong> (<em>str</em><em>, </em><em>required</em>) – The ID of the employee.</p></li>
-<li><p><strong>updated_employee_hours</strong> (<em>PydanticEmployeeTimesheetUpdate</em><em>, </em><em>required</em>) – The date and the updated work/pto/extra hours.</p></li>
+<li><p><strong>updated_employee_hours</strong> (<em>PydanticEmployeeTimesheetUpdate</em><em>, </em><em>required</em>) – The date, updated work/pto/extra hours, and comments.</p></li>
 <li><p><strong>token</strong> (<em>str</em><em>, </em><em>required</em>) – The JSON Web Token responsible for authenticating the user to this endpoint.</p></li>
 <li><p><strong>session</strong> (<em>sqlalchemy.orm.session</em><em>, </em><em>optional</em>) – The database session to use to update the timesheet data.</p></li>
 </ul>

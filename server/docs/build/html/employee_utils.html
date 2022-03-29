@@ -155,7 +155,6 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Requirements and Installation</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="getting_started.html">Getting Started</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="project_overview.html">Project Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="launch_parameters.html">Launch Parameters</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="core_api.html">Developer Documentation</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
@@ -235,7 +234,23 @@ a new employee record is being added to the database.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="server.lib.utils.employee_utils.create_employee_password_hashes">
 <em class="property"><span class="k"><span class="pre">async</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">server.lib.utils.employee_utils.</span></span><span class="sig-name descname"><span class="pre">create_employee_password_hashes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#server.lib.utils.employee_utils.create_employee_password_hashes" title="Permalink to this definition">#</a></dt>
-<dd><p>This utility method creates a hashed and salted digest of a provided plain text password using BCrypt.</p>
+<dd><p>This asynchronous utility method creates a hashed and salted digest of a provided plain text password using BCrypt.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>password</strong> (<em>str</em><em>, </em><em>required</em>) – The plain text password that needs the hash and salt generated.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the newly generated employee password hash if successful, or None if the provided parameters are invalid.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str | None</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt class="sig sig-object py" id="server.lib.utils.employee_utils.create_employee_password_hashes_sync">
+<span class="sig-prename descclassname"><span class="pre">server.lib.utils.employee_utils.</span></span><span class="sig-name descname"><span class="pre">create_employee_password_hashes_sync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="headerlink" href="#server.lib.utils.employee_utils.create_employee_password_hashes_sync" title="Permalink to this definition">#</a></dt>
+<dd><p>This synchronous utility method creates a hashed and salted digest of a provided plain text password using BCrypt.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>password</strong> (<em>str</em><em>, </em><em>required</em>) – The plain text password that needs the hash and salt generated.</p>

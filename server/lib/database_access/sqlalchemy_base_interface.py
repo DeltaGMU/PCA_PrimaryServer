@@ -1,14 +1,22 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.scoping import scoped_session
-from config import ENV_SETTINGS
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy_utils import create_database, database_exists
+from server.lib.config_manager import ConfigManager
 
-
+con_opts = {
+    "connector": "mariadb+mariadbconnector://",
+    "username": ConfigManager().config()['Database']['username'],
+    "password": ConfigManager().config()['Database']['password'],
+    "host": ConfigManager().config()['Database']['host'],
+    "port": int(ConfigManager().config()['Database']['port']),
+    "database": ConfigManager().config()['Database']['database_name'],
+    "debug": ConfigManager().config().getboolean('Debug Mode', 'db_debug')
+}
 main_engine = create_engine(
-    f"mariadb+mariadbconnector://{ENV_SETTINGS.mariadb_user}:{ENV_SETTINGS.mariadb_pass}@{ENV_SETTINGS.mariadb_host}:{ENV_SETTINGS.mariadb_port}/{ENV_SETTINGS.mariadb_database}",
-    echo=ENV_SETTINGS.db_debug_mode,
+    f"{con_opts['connector']}{con_opts['username']}:{con_opts['password']}@{con_opts['host']}:{con_opts['port']}/{con_opts['database']}",
+    echo=con_opts['debug'],
     pool_recycle=3600
 )
 if not database_exists(main_engine.url):

@@ -15,6 +15,8 @@ ERR_WEB_SESSION_MNGR_NOT_INITIALIZED = 'WM01'
 ERR_LOGGING_MNGR_INCORRECT_PARAMS = 'LM00'
 # The error code for trying to use an uninitialized logging manager.
 ERR_LOGGING_MNGR_NOT_INITIALIZED = 'LM01'
+# The error code for trying to initialize the config manager with a non-existent config file.
+ERR_CONFIG_MNGR_INCORRECT_PARAMS = 'CM00'
 # Generic error code for an unknown error in the application.
 ERR_APP_UNKNOWN = 'CS00'
 # Generic error code for a caught exception in the application.

@@ -1,8 +1,4 @@
-from pydantic import BaseSettings
 from typing import Optional
-from dotenv import load_dotenv
-
-load_dotenv()
 
 
 class DefaultData:
@@ -69,6 +65,10 @@ class APIRoutes:
         check_in = '/api/v1/care/checkin'
         check_out = '/api/v1/care/checkout'
 
+    class StudentCareKiosk:
+        one_student_info = '/api/v1/kiosk/info/{student_id}'
+        one_student_care = '/api/v1/kiosk/care/{student_id}'
+
     class Timesheet:
         count = '/api/v1/timesheet/count'
         timesheet = '/api/v1/timesheet'
@@ -76,42 +76,5 @@ class APIRoutes:
         hours_only = '/api/v1/timesheet/hours/{employee_id}'
 
 
-class Settings(BaseSettings):
-    API_ROUTES: APIRoutes = APIRoutes()
-    THIRD_PARTY_ROUTES: ThirdPartyRoutes = ThirdPartyRoutes()
-    mariadb_user: str
-    mariadb_pass: str
-    mariadb_host: str
-    mariadb_port: int
-    mariadb_database: str
-    web_host: str
-    web_port: int
-    use_https: Optional[bool] = False
-    server_secret: str
-    cors_domains: str
-    pca_email_api: str
-    pca_email_username: str
-    pca_email_password: str
-    sys_debug_mode: Optional[bool] = False
-    api_debug_mode: Optional[bool] = False
-    db_debug_mode: Optional[bool] = False
-    quiet_mode: Optional[bool] = False
-    enable_logs: Optional[bool] = True
-    log_level: Optional[str] = 'info'
-    max_logs: Optional[int] = 10
-    max_log_size: Optional[int] = 10485760
-    log_directory: Optional[str] = None
-    student_before_care_check_in_time: str
-    student_before_care_check_out_time: str
-    student_after_care_check_in_time: str
-    student_after_care_check_out_time: str
-    all_account_roles: str
-
-
-    class Config:
-        env_file = f'.env'
-        env_file_encoding = 'utf-8'
-
-
-load_dotenv()
-ENV_SETTINGS = Settings()
+API_ROUTES: APIRoutes = APIRoutes()
+THIRD_PARTY_ROUTES: ThirdPartyRoutes = ThirdPartyRoutes()

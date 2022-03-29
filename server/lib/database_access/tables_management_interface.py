@@ -1,6 +1,7 @@
 import traceback
 from sqlalchemy.exc import SQLAlchemyError
-from config import DefaultData, ENV_SETTINGS
+from server.web_api.api_routes import DefaultData
+from server.lib.config_manager import ConfigManager
 from server.lib.logging_manager import LoggingManager
 from server.lib.strings import LOG_ORIGIN_DATABASE, LOG_ERROR_DATABASE
 from server.lib.database_manager import get_db_session, MainEngineBase
@@ -53,7 +54,7 @@ def initialize_roles():
     if MainEngineBase is None:
         return
     session = next(get_db_session())
-    account_roles = [role.strip() for role in ENV_SETTINGS.all_account_roles.lower().strip().split(',')]
+    account_roles = [role.strip() for role in ConfigManager().config()['System Settings']['account_roles'].lower().strip().split(',')]
     try:
         role_query = session.query(EmployeeRole).filter(
             EmployeeRole.Name.in_(account_roles)

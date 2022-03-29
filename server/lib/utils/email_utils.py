@@ -2,8 +2,9 @@ import re
 from typing import List
 import requests
 from jinja2 import Environment, FileSystemLoader
-from config import ENV_SETTINGS
+from server.lib.config_manager import ConfigManager
 from server.lib.strings import ROOT_DIR
+from server.web_api.api_routes import THIRD_PARTY_ROUTES
 
 email_validator_regex = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
 env = Environment(loader=FileSystemLoader(
@@ -14,10 +15,11 @@ env = Environment(loader=FileSystemLoader(
 
 
 def send_test_email():
+    email_api = f"{'https://' if ConfigManager().config().getboolean('Email Settings', 'pca_email_use_https') else 'http://'}{ConfigManager().config()['Email Settings']['pca_email_api']}"
     # Authenticate self first...
-    auth_request = requests.post(f"{ENV_SETTINGS.pca_email_api}{ENV_SETTINGS.THIRD_PARTY_ROUTES.Email.login}", data={
-        "username": ENV_SETTINGS.pca_email_username.strip(),
-        "password": ENV_SETTINGS.pca_email_password.strip()
+    auth_request = requests.post(f"{email_api}{THIRD_PARTY_ROUTES.Email.login}", data={
+        "username": ConfigManager().config()['Email Settings']['pca_email_username'].strip(),
+        "password": ConfigManager().config()['Email Settings']['pca_email_password'].strip()
     })
     resp_json = auth_request.json()
     access_token = resp_json['accessToken']
@@ -25,9 +27,9 @@ def send_test_email():
     # Configure authentication header...
     headers = {'Authorization': f'Bearer {access_token}'}
     # Send the email and check the response...
-    email_request = requests.post(f"{ENV_SETTINGS.pca_email_api}{ENV_SETTINGS.THIRD_PARTY_ROUTES.Email.send_email}", data={
-        "from": ENV_SETTINGS.pca_email_username.strip(),
-        "to": ENV_SETTINGS.pca_email_username.strip(),
+    email_request = requests.post(f"{email_api}{THIRD_PARTY_ROUTES.Email.send_email}", data={
+        "from": ConfigManager().config()['Email Settings']['pca_email_username'].strip(),
+        "to": ConfigManager().config()['Email Settings']['pca_email_username'].strip(),
         "subject": "self test email - please ignore!",
         "messagePlainText": "self test email - please ignore!"
     }, headers=headers)
@@ -35,6 +37,7 @@ def send_test_email():
 
 
 def send_email(to_user: str, to_email: List[str], subj: str, messages: List[str]):
+    email_api = f"{'https://' if ConfigManager().config().getboolean('Email Settings', 'pca_email_use_https') else 'http://'}{ConfigManager().config()['Email Settings']['pca_email_api']}"
     # Validate provided information and email address.
     if None in (to_user, to_email, subj, messages):
         raise RuntimeError("Cannot send an email with the 'to', 'subject', or 'message' fields being blank!")
@@ -61,9 +64,9 @@ def send_email(to_user: str, to_email: List[str], subj: str, messages: List[str]
     html_out = template.render(template_vars)
 
     # Authenticate self first...
-    auth_request = requests.post(f"{ENV_SETTINGS.pca_email_api}{ENV_SETTINGS.THIRD_PARTY_ROUTES.Email.login}", data={
-        "username": ENV_SETTINGS.pca_email_username.strip(),
-        "password": ENV_SETTINGS.pca_email_password.strip()
+    auth_request = requests.post(f"{email_api}{THIRD_PARTY_ROUTES.Email.login}", data={
+        "username": ConfigManager().config()['Email Settings']['pca_email_username'].strip(),
+        "password": ConfigManager().config()['Email Settings']['pca_email_password'].strip()
     })
     resp_json = auth_request.json()
     access_token = resp_json['accessToken']
@@ -73,12 +76,12 @@ def send_email(to_user: str, to_email: List[str], subj: str, messages: List[str]
     # Configure email options...
     for email in to:
         email_opts = {
-            "from": ENV_SETTINGS.pca_email_username.strip(),
+            "from": ConfigManager().config()['Email Settings']['pca_email_username'].strip(),
             "to": email,
             "subject": subj,
             "messageHTML": html_out,
             "messagePlainText": "\n".join(messages)
         }
         # Send the email...
-        requests.post(f"{ENV_SETTINGS.pca_email_api}{ENV_SETTINGS.THIRD_PARTY_ROUTES.Email.send_email}",
+        requests.post(f"{email_api}{THIRD_PARTY_ROUTES.Email.send_email}",
                       data=email_opts, headers=headers)

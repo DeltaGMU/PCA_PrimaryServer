@@ -23,6 +23,10 @@ Required python packages for documentation generation:
 * furo==2022.2.23
 * sphinx==4.4.0
 
+Other required packages:
+
+* GTK-3 Runtime Environment for Windows Installations
+
 Installation and Setup
 ~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -42,26 +46,7 @@ Installation and Setup
     * ``pip install -r docs/requirements.txt``
 5) Install the MariaDB Connector (Linux Only):
     * Debian/Ubuntu: ``sudo apt-get install libmariadb3 libmariadb-dev``
-6) Setup an environment file in the root directory of the project:
-    .. code-block::
-
-        MARIADB_USER = "my_db_user"
-        MARIADB_PASS = "my_db_password"
-        MARIADB_HOST = "my_db_ip_address"
-        MARIADB_PORT = "my_db_port"
-        MARIADB_DATABASE = "my_db_name"
-        WEB_HOST = "0.0.0.0"
-        WEB_PORT = "56709"
-        DEBUG_MODE = "False"
-        QUIET_MODE = "False"
-        ENABLE_LOGS = "True"
-        LOG_LEVEL = "info"
-        MAX_LOGS = "10"
-        MAX_LOG_SIZE = "10485760"
+6) Setup the server configuration file in the server configs directory.
+    * ``<path_to_project>/PCAServer/server/configs/server_config.ini``
 7) Run the server:
-    * Normal run: ``python3 PCAServer/``
-    * Run with debug mode: ``python3 PCAServer/ --debug-mode``
-    * Run with quiet mode: ``python3 PCAServer/ --quiet-mode``
-
-For a full list of launch parameters, visit the documentation here: :ref:`launch_parameters_page`
-
+    * ``python3 PCAServer/``

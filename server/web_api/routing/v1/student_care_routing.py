@@ -2,11 +2,12 @@
 This module consists of FastAPI routing for Students.
 This handles all the REST API logic for creating, destroying, and updating student-related data.
 """
-from fastapi import Body, status, HTTPException, Depends
+from fastapi import status, HTTPException, Depends
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
-from config import ENV_SETTINGS
-from server.lib.database_access.student_care_interface import check_in_student, check_out_student, get_students_by_care_date
+from server.web_api.api_routes import API_ROUTES
+from server.lib.database_access.student_interface import get_student_by_id
+from server.lib.database_access.student_care_interface import check_in_student, check_out_student, get_students_by_care_date, get_one_student_care
 from server.web_api.models import ResponseModel
 from server.lib.data_classes.student_care_hours import PydanticStudentCareHoursCheckIn, PydanticStudentCareHoursCheckOut, \
     PydanticRetrieveStudentsByCareDate
@@ -25,7 +26,50 @@ class StudentCareRouter:
     """
     class Read:
         @staticmethod
-        @router.post(ENV_SETTINGS.API_ROUTES.StudentCare.care, status_code=status.HTTP_201_CREATED)
+        @router.get(API_ROUTES.StudentCareKiosk.one_student_info, status_code=status.HTTP_200_OK)
+        async def read_one_student_limited(student_id: str, session=Depends(get_db_session)):
+            """
+            An endpoint that retrieves limited information about a single student from the database.
+
+            :param student_id: The ID of the student.
+            :type student_id: str, required
+            :param session: The database session to use to retrieve a single student record.
+            :type session: sqlalchemy.orm.session, optional
+            :return: A single student from the database.
+            :rtype: server.web_api.models.ResponseModel
+            """
+            if student_id is None or not isinstance(student_id, str):
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The student ID must be a valid string!")
+            student = await get_student_by_id(student_id.strip(), session)
+            if student is None:
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The student could not be retrieved.")
+            full_student_information = student.as_limited_dict()
+            return ResponseModel(status.HTTP_200_OK, "success", {"student": full_student_information})
+
+        @staticmethod
+        @router.get(API_ROUTES.StudentCareKiosk.one_student_care, status_code=status.HTTP_200_OK)
+        async def read_one_student_care(student_id: str, care_date: str, session=Depends(get_db_session)):
+            """
+            An endpoint that retrieves information about a single student's student care from the database.
+
+            :param student_id: The ID of the student.
+            :type student_id: str, required
+            :param care_date: The date of the care service provided in YYYY-MM-DD format.
+            :type care_date: str, required
+            :param session: The database session to use to retrieve a single student record.
+            :type session: sqlalchemy.orm.session, optional
+            :return: A single student from the database.
+            :rtype: server.web_api.models.ResponseModel
+            """
+            if student_id is None or not isinstance(student_id, str):
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The student ID must be a valid string!")
+            student_care = await get_one_student_care(student_id.strip(), care_date.strip(), session)
+            if student_care is None:
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The student care information not be retrieved.")
+            return ResponseModel(status.HTTP_200_OK, "success", {"care": student_care})
+
+        @staticmethod
+        @router.post(API_ROUTES.StudentCare.care, status_code=status.HTTP_201_CREATED)
         async def read_students_by_care_date(pyd_care_students: PydanticRetrieveStudentsByCareDate, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint that returns a list of the students that are participating in before/after-care for the provided date.
@@ -51,7 +95,7 @@ class StudentCareRouter:
 
     class Service:
         @staticmethod
-        @router.post(ENV_SETTINGS.API_ROUTES.StudentCare.check_in, status_code=status.HTTP_201_CREATED)
+        @router.post(API_ROUTES.StudentCare.check_in, status_code=status.HTTP_201_CREATED)
         async def check_in_student(pyd_student_checkin: PydanticStudentCareHoursCheckIn, session=Depends(get_db_session)):
             """
             An endpoint that checks-in a student into the before-care or after-care service and records the time of check-in.
@@ -71,7 +115,7 @@ class StudentCareRouter:
             return ResponseModel(status.HTTP_201_CREATED, "success", {"check-in": checked_in_student.as_dict()})
 
         @staticmethod
-        @router.post(ENV_SETTINGS.API_ROUTES.StudentCare.check_out, status_code=status.HTTP_200_OK)
+        @router.post(API_ROUTES.StudentCare.check_out, status_code=status.HTTP_200_OK)
         async def check_out_student(pyd_student_checkout: PydanticStudentCareHoursCheckOut, session=Depends(get_db_session)):
             """
             An endpoint that checks-out a student from the before-care or after-care service and records the time of check-out.

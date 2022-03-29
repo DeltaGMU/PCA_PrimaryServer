@@ -3,15 +3,15 @@ This module consists of FastAPI routing for Employees.
 This handles all the REST API logic for creating, reading, updating, and destroying employee-related data.
 """
 
-from fastapi import Body, status, HTTPException, Depends, Security
+from fastapi import status, HTTPException, Depends
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
-from config import ENV_SETTINGS
+from server.web_api.api_routes import API_ROUTES
 from server.web_api.models import ResponseModel
 from server.lib.data_classes.employee import Employee, PydanticEmployeeRegistration, PydanticEmployeesRemoval, PydanticEmployeeUpdate, \
     PydanticRetrieveMultipleEmployees, PydanticMultipleEmployeesUpdate, PydanticUpdatePassword
 from server.lib.database_manager import get_db_session
-from server.lib.database_access.employee_interface import get_employee_role, get_all_employees, get_employee, \
+from server.lib.database_access.employee_interface import get_all_employees, get_employee, \
     create_employee, remove_employees, update_employee, get_multiple_employees, update_employees, is_admin, update_employee_password
 from server.web_api.web_security import token_is_valid, oauth_scheme, get_user_from_token
 
@@ -23,7 +23,7 @@ router = InferringRouter()
 class EmployeesRouter:
     class Create:
         @staticmethod
-        @router.post(ENV_SETTINGS.API_ROUTES.Employees.employees, status_code=status.HTTP_201_CREATED)
+        @router.post(API_ROUTES.Employees.employees, status_code=status.HTTP_201_CREATED)
         async def register_new_employee(pyd_employee: PydanticEmployeeRegistration, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint to create a new employee entity and adds it to the employees' table in the database.
@@ -45,7 +45,7 @@ class EmployeesRouter:
 
     class Read:
         @staticmethod
-        @router.get(ENV_SETTINGS.API_ROUTES.Employees.count, status_code=status.HTTP_200_OK)
+        @router.get(API_ROUTES.Employees.count, status_code=status.HTTP_200_OK)
         async def read_employees_count(token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint that counts the number of employees that are registered in the database.
@@ -64,7 +64,7 @@ class EmployeesRouter:
             return ResponseModel(status.HTTP_200_OK, "success", {"count": employees_count})
 
         @staticmethod
-        @router.get(ENV_SETTINGS.API_ROUTES.Employees.all_employees, status_code=status.HTTP_200_OK)
+        @router.get(API_ROUTES.Employees.all_employees, status_code=status.HTTP_200_OK)
         async def read_all_employees(token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint that retrieves all the employees from the database and formats it into a list.
@@ -84,7 +84,7 @@ class EmployeesRouter:
             return ResponseModel(status.HTTP_200_OK, "success", {"count": len(all_employees), "employees": all_employee_data})
 
         @staticmethod
-        @router.get(ENV_SETTINGS.API_ROUTES.Employees.employee_token, status_code=status.HTTP_200_OK)
+        @router.get(API_ROUTES.Employees.employee_token, status_code=status.HTTP_200_OK)
         async def read_employee_from_token(token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint that retrieves the employee from the database that matches a provided valid access token.
@@ -105,7 +105,7 @@ class EmployeesRouter:
             return ResponseModel(status.HTTP_200_OK, "success", {"employee": employee.as_dict()})
 
         @staticmethod
-        @router.get(ENV_SETTINGS.API_ROUTES.Employees.employees, status_code=status.HTTP_200_OK)
+        @router.get(API_ROUTES.Employees.employees, status_code=status.HTTP_200_OK)
         async def read_multiple_employees(employee_ids: PydanticRetrieveMultipleEmployees, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint that retrieves a single employee from the database from the given employee ID
@@ -130,7 +130,7 @@ class EmployeesRouter:
             return ResponseModel(status.HTTP_200_OK, "success", {"employees": employees})
 
         @staticmethod
-        @router.get(ENV_SETTINGS.API_ROUTES.Employees.one_employee, status_code=status.HTTP_200_OK)
+        @router.get(API_ROUTES.Employees.one_employee, status_code=status.HTTP_200_OK)
         async def read_one_employee(employee_id: str, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint that retrieves a single employee from the database from the given employee ID
@@ -160,7 +160,7 @@ class EmployeesRouter:
 
     class Update:
         @staticmethod
-        @router.put(ENV_SETTINGS.API_ROUTES.Employees.employees, status_code=status.HTTP_200_OK)
+        @router.put(API_ROUTES.Employees.employees, status_code=status.HTTP_200_OK)
         async def update_multiple_employees(multi_employee_update: PydanticMultipleEmployeesUpdate, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint that updates a single employee from the database from the provided employee information and employee ID.
@@ -183,7 +183,7 @@ class EmployeesRouter:
             return ResponseModel(status.HTTP_200_OK, "success", {"employees": [employee.as_dict() for employee in updated_employees]})
 
         @staticmethod
-        @router.put(ENV_SETTINGS.API_ROUTES.Employees.one_employee, status_code=status.HTTP_200_OK)
+        @router.put(API_ROUTES.Employees.one_employee, status_code=status.HTTP_200_OK)
         async def update_one_employee(employee_id: str, employee_update: PydanticEmployeeUpdate, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint that updates a single employee from the database from the provided employee information and employee ID.
@@ -213,7 +213,7 @@ class EmployeesRouter:
             return ResponseModel(status.HTTP_200_OK, "success", {"employee": updated_employee.as_dict()})
 
         @staticmethod
-        @router.put(ENV_SETTINGS.API_ROUTES.Employees.password, status_code=status.HTTP_200_OK)
+        @router.put(API_ROUTES.Employees.password, status_code=status.HTTP_200_OK)
         async def update_employee_password(new_password: PydanticUpdatePassword, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint that updates a single employee's password from the database from the provided employee information and employee ID.
@@ -237,7 +237,7 @@ class EmployeesRouter:
 
     class Delete:
         @staticmethod
-        @router.delete(ENV_SETTINGS.API_ROUTES.Employees.all_employees, status_code=status.HTTP_200_OK)
+        @router.delete(API_ROUTES.Employees.all_employees, status_code=status.HTTP_200_OK)
         async def delete_all_employees(are_you_sure: str, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint to remove ALL employee records from the employee's table in the database.
@@ -266,7 +266,7 @@ class EmployeesRouter:
             return ResponseModel(status.HTTP_200_OK, "success")
 
         @staticmethod
-        @router.delete(ENV_SETTINGS.API_ROUTES.Employees.employees, status_code=status.HTTP_200_OK)
+        @router.delete(API_ROUTES.Employees.employees, status_code=status.HTTP_200_OK)
         async def delete_employees(employee_ids: PydanticEmployeesRemoval, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint to remove multiple employee records from the employee's table in the database.
@@ -290,7 +290,7 @@ class EmployeesRouter:
             return ResponseModel(status.HTTP_200_OK, "success", {"employees": [employee.as_dict() for employee in removed_employees]})
 
         @staticmethod
-        @router.delete(ENV_SETTINGS.API_ROUTES.Employees.one_employee, status_code=status.HTTP_200_OK)
+        @router.delete(API_ROUTES.Employees.one_employee, status_code=status.HTTP_200_OK)
         async def delete_employee(employee_id: str, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint to remove an employee record from the employee's table in the database.

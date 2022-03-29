@@ -155,7 +155,6 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Requirements and Installation</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="getting_started.html">Getting Started</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="project_overview.html">Project Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="launch_parameters.html">Launch Parameters</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="core_api.html">Developer Documentation</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
@@ -423,7 +422,7 @@ The defined endpoints allow HTTP requests to conduct create, read, update, and d
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>pyd_student</strong> (<a class="reference internal" href="student_data_class.html#server.lib.data_classes.student.PydanticStudentRegistration" title="server.lib.data_classes.student.PydanticStudentRegistration"><em>PydanticStudentRegistration</em></a><em>, </em><em>required</em>) – The new student’s first name, last name, parent full name, parent full name, parent primary email, and optional parameters like parent secondary email and enabling email notifications.</p></li>
+<li><p><strong>pyd_student</strong> (<a class="reference internal" href="student_data_class.html#server.lib.data_classes.student.PydanticStudentRegistration" title="server.lib.data_classes.student.PydanticStudentRegistration"><em>PydanticStudentRegistration</em></a><em>, </em><em>required</em>) – The new student’s first name, last name, carpool number, parent full name, parent primary email, student grade, and optional parameters like parent secondary email and enabling email notifications.</p></li>
 <li><p><strong>token</strong> (<em>str</em><em>, </em><em>required</em>) – The JSON Web Token responsible for authenticating the user to this endpoint.</p></li>
 <li><p><strong>session</strong> (<em>sqlalchemy.orm.session</em><em>, </em><em>optional</em>) – The database session to use to create a new student record in the database.</p></li>
 </ul>
@@ -444,6 +443,57 @@ The defined endpoints allow HTTP requests to conduct create, read, update, and d
 <dt class="sig sig-object py" id="server.web_api.routing.v1.student_routing.StudentsRouter.Delete">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Delete</span></span><a class="headerlink" href="#server.web_api.routing.v1.student_routing.StudentsRouter.Delete" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="server.web_api.routing.v1.student_routing.StudentsRouter.Delete.delete_student">
+<em class="property"><span class="pre">async</span><span class="w"> </span><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">delete_student</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">student_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(OAuth2PasswordBearer)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_db_session)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.student_routing.StudentsRouter.Delete.delete_student" title="Permalink to this definition">#</a></dt>
+<dd><p>An endpoint to remove a student record from the student’s table in the database.
+Removal of a student using this endpoint will permanently delete the student record from the database
+and all records related to the student record in other tables through a cascading delete.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>student_id</strong> (<em>str</em><em>, </em><em>required</em>) – The ID of the student that needs to be deleted.</p></li>
+<li><p><strong>token</strong> (<em>str</em><em>, </em><em>required</em>) – The JSON Web Token responsible for authenticating the user to this endpoint.</p></li>
+<li><p><strong>session</strong> (<em>sqlalchemy.orm.session</em><em>, </em><em>optional</em>) – The database session to use to delete the student record.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A response model containing the student object that was deleted from the database.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="api_response_model.html#server.web_api.models.ResponseModel" title="server.web_api.models.ResponseModel">server.web_api.models.ResponseModel</a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>HTTPException</strong> – If the provided request body contains an invalid student ID, or if the student does not exist in the database.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="server.web_api.routing.v1.student_routing.StudentsRouter.Delete.delete_students">
+<em class="property"><span class="pre">async</span><span class="w"> </span><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">delete_students</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">student_ids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="student_data_class.html#server.lib.data_classes.student.PydanticStudentsRemoval" title="server.lib.data_classes.student.PydanticStudentsRemoval"><span class="pre">server.lib.data_classes.student.PydanticStudentsRemoval</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(OAuth2PasswordBearer)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_db_session)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.student_routing.StudentsRouter.Delete.delete_students" title="Permalink to this definition">#</a></dt>
+<dd><p>An endpoint to remove multiple student records from the student’s table in the database.
+Removal of multiple students using this endpoint will permanently delete the student records from the database
+and all records related to the student records in other tables through a cascading delete.
+To remove multiple student records, the student IDs must be provided in a list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>student_ids</strong> (<a class="reference internal" href="student_data_class.html#server.lib.data_classes.student.PydanticStudentsRemoval" title="server.lib.data_classes.student.PydanticStudentsRemoval"><em>PydanticStudentsRemoval</em></a><em>, </em><em>required</em>) – A list of IDs of students that needs to be deleted.</p></li>
+<li><p><strong>token</strong> (<em>str</em><em>, </em><em>required</em>) – The JSON Web Token responsible for authenticating the user to this endpoint.</p></li>
+<li><p><strong>session</strong> (<em>sqlalchemy.orm.session</em><em>, </em><em>optional</em>) – The database session to use to delete the student record.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A response model containing the student object that was deleted from the database.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="api_response_model.html#server.web_api.models.ResponseModel" title="server.web_api.models.ResponseModel">server.web_api.models.ResponseModel</a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>HTTPException</strong> – If the provided request body contains an invalid student ID, or if the student does not exist in the database.</p>
+</dd>
+</dl>
+</dd></dl>
 </dd></dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="server.web_api.routing.v1.student_routing.StudentsRouter.Read">
@@ -451,27 +501,59 @@ The defined endpoints allow HTTP requests to conduct create, read, update, and d
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="server.web_api.routing.v1.student_routing.StudentsRouter.Read.read_all_students">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">read_all_students</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_db_session)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.student_routing.StudentsRouter.Read.read_all_students" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">async</span><span class="w"> </span><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">read_all_students</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(OAuth2PasswordBearer)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_db_session)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.student_routing.StudentsRouter.Read.read_all_students" title="Permalink to this definition">#</a></dt>
 <dd><p>An endpoint that retrieves all the students from the database.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>List of all the students in the database.</p>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>token</strong> (<em>str</em><em>, </em><em>required</em>) – The JSON Web Token responsible for authenticating the user to this endpoint.</p></li>
+<li><p><strong>session</strong> (<em>sqlalchemy.orm.session</em><em>, </em><em>optional</em>) – The database session to use to retrieve all student records.</p></li>
+</ul>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="api_response_model.html#server.web_api.models.ResponseModel" title="server.web_api.models.ResponseModel">server.web_api.models.ResponseModel</a></p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of all the students in the database.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="api_response_model.html#server.web_api.models.ResponseModel" title="server.web_api.models.ResponseModel">server.web_api.models.ResponseModel</a></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="server.web_api.routing.v1.student_routing.StudentsRouter.Read.read_one_student">
+<em class="property"><span class="pre">async</span><span class="w"> </span><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">read_one_student</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">student_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(OAuth2PasswordBearer)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_db_session)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.student_routing.StudentsRouter.Read.read_one_student" title="Permalink to this definition">#</a></dt>
+<dd><p>An endpoint that retrieves a single student from the database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>student_id</strong> (<em>str</em><em>, </em><em>required</em>) – The ID of the student.</p></li>
+<li><p><strong>token</strong> (<em>str</em><em>, </em><em>required</em>) – The JSON Web Token responsible for authenticating the user to this endpoint.</p></li>
+<li><p><strong>session</strong> (<em>sqlalchemy.orm.session</em><em>, </em><em>optional</em>) – The database session to use to retrieve a single student record.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A single student from the database.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="api_response_model.html#server.web_api.models.ResponseModel" title="server.web_api.models.ResponseModel">server.web_api.models.ResponseModel</a></p>
 </dd>
 </dl>
 </dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="server.web_api.routing.v1.student_routing.StudentsRouter.Read.read_students_count">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">read_students_count</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_db_session)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.student_routing.StudentsRouter.Read.read_students_count" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">async</span><span class="w"> </span><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">read_students_count</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(OAuth2PasswordBearer)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_db_session)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.student_routing.StudentsRouter.Read.read_students_count" title="Permalink to this definition">#</a></dt>
 <dd><p>An endpoint that counts the number of students that are registered in the database.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>A response model containing the number of students in the database. The count will be 0 if there are no students registered in the database.</p>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>token</strong> (<em>str</em><em>, </em><em>required</em>) – The JSON Web Token responsible for authenticating the user to this endpoint.</p></li>
+<li><p><strong>session</strong> (<em>sqlalchemy.orm.session</em><em>, </em><em>optional</em>) – The database session to use to retrieve the number of student records.</p></li>
+</ul>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="api_response_model.html#server.web_api.models.ResponseModel" title="server.web_api.models.ResponseModel">server.web_api.models.ResponseModel</a></p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A response model containing the number of students in the database. The count will be 0 if there are no students registered in the database.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="api_response_model.html#server.web_api.models.ResponseModel" title="server.web_api.models.ResponseModel">server.web_api.models.ResponseModel</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -480,44 +562,53 @@ The defined endpoints allow HTTP requests to conduct create, read, update, and d
 <dt class="sig sig-object py" id="server.web_api.routing.v1.student_routing.StudentsRouter.Update">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Update</span></span><a class="headerlink" href="#server.web_api.routing.v1.student_routing.StudentsRouter.Update" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-</dd></dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="server.web_api.routing.v1.student_routing.StudentsRouter.check_in_student">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">check_in_student</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pyd_student_checkin</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">server.lib.data_classes.student_care_hours.PydanticStudentCareHoursCheckIn</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(StudentsRouter)</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_db_session)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.student_routing.StudentsRouter.check_in_student" title="Permalink to this definition">#</a></dt>
-<dd><p>An endpoint that checks-in a student into the before-care or after-care service and records the time of check-in.
-Any student checked into before-care is automatically checked out at the end of the before-care service.
-Any student checked into after-care can be checked out at any time after checking in.
-Failure to check out a student from after-care will result in the automatic check-out of the student at the end of after-care.</p>
+<dt class="sig sig-object py" id="server.web_api.routing.v1.student_routing.StudentsRouter.Update.update_multiple_students">
+<em class="property"><span class="pre">async</span><span class="w"> </span><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">update_multiple_students</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">multi_student_update</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="student_data_class.html#server.lib.data_classes.student.PydanticMultipleStudentsUpdate" title="server.lib.data_classes.student.PydanticMultipleStudentsUpdate"><span class="pre">server.lib.data_classes.student.PydanticMultipleStudentsUpdate</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(OAuth2PasswordBearer)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_db_session)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.student_routing.StudentsRouter.Update.update_multiple_students" title="Permalink to this definition">#</a></dt>
+<dd><p>An endpoint that updates multiple students from the database from the provided employee information and employee ID.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>pyd_student_checkin</strong> (<em>PydanticStudentCareHoursCheckIn</em>) – The Pydantic StudentCareHoursCheckIn reference. This means that HTTP requests to this endpoint must include the required fields in the Pydantic StudentCareHoursCheckIn class.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>multi_student_update</strong> (<a class="reference internal" href="student_data_class.html#server.lib.data_classes.student.PydanticMultipleStudentsUpdate" title="server.lib.data_classes.student.PydanticMultipleStudentsUpdate"><em>PydanticMultipleStudentsUpdate</em></a><em>, </em><em>required</em>) – A dictionary that consists of pairs of student IDs and update information as per the <code class="docutils literal notranslate"><span class="pre">PydanticStudentUpdate</span></code> parameters.</p></li>
+<li><p><strong>token</strong> (<em>str</em><em>, </em><em>required</em>) – The JSON Web Token responsible for authenticating the user to this endpoint.</p></li>
+<li><p><strong>session</strong> (<em>sqlalchemy.orm.session</em><em>, </em><em>optional</em>) – The database session to use to update multiple student data.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A response model containing information regarding the student and the check-in time and date that has been registered in the database.</p>
+<dd class="field-even"><p>A response model containing the multiple student updated data in the database.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="api_response_model.html#server.web_api.models.ResponseModel" title="server.web_api.models.ResponseModel">server.web_api.models.ResponseModel</a></p>
 </dd>
 <dt class="field-even">Raises</dt>
-<dd class="field-even"><p><strong>HTTPException</strong> – If the data provided in the request body is invalid, or the student is already checked in to the care service for the provided date.</p>
+<dd class="field-even"><p><strong>HTTPException</strong> – If the authentication token is invalid or the students could not be updated.</p>
 </dd>
 </dl>
 </dd></dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="server.web_api.routing.v1.student_routing.StudentsRouter.check_out_student">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">check_out_student</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">student_checkout</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">server.lib.data_classes.student_care_hours.PydanticStudentCareHoursCheckOut</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(StudentsRouter)</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_db_session)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.student_routing.StudentsRouter.check_out_student" title="Permalink to this definition">#</a></dt>
-<dd><p>Not Implemented!</p>
+<dt class="sig sig-object py" id="server.web_api.routing.v1.student_routing.StudentsRouter.Update.update_one_student">
+<em class="property"><span class="pre">async</span><span class="w"> </span><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">update_one_student</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">student_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">student_update</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="student_data_class.html#server.lib.data_classes.student.PydanticStudentUpdate" title="server.lib.data_classes.student.PydanticStudentUpdate"><span class="pre">server.lib.data_classes.student.PydanticStudentUpdate</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(OAuth2PasswordBearer)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_db_session)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.student_routing.StudentsRouter.Update.update_one_student" title="Permalink to this definition">#</a></dt>
+<dd><p>An endpoint that updates a single student from the database from the provided student information and student ID.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>student_checkout</strong> (<em>Not Implemented!</em>) – Not Implemented!</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>student_id</strong> (<em>str</em><em>, </em><em>required</em>) – The ID of the student.</p></li>
+<li><p><strong>student_update</strong> (<a class="reference internal" href="student_data_class.html#server.lib.data_classes.student.PydanticStudentUpdate" title="server.lib.data_classes.student.PydanticStudentUpdate"><em>PydanticStudentUpdate</em></a><em>, </em><em>required</em>) – The ID of the student and any other student information that needs to be updated.</p></li>
+<li><p><strong>token</strong> (<em>str</em><em>, </em><em>required</em>) – The JSON Web Token responsible for authenticating the user to this endpoint.</p></li>
+<li><p><strong>session</strong> (<em>sqlalchemy.orm.session</em><em>, </em><em>optional</em>) – The database session to use to update the student data.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Not Implemented!</p>
+<dd class="field-even"><p>A response model containing the student updated in the database.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Not Implemented!</p>
+<dd class="field-odd"><p><a class="reference internal" href="api_response_model.html#server.web_api.models.ResponseModel" title="server.web_api.models.ResponseModel">server.web_api.models.ResponseModel</a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>HTTPException</strong> – If the authentication token is invalid or the student could not be updated.</p>
 </dd>
 </dl>
+</dd></dl>
 </dd></dl>
 </dd></dl>
 </section>

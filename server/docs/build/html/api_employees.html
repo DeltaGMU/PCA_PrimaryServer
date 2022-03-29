@@ -155,7 +155,6 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Requirements and Installation</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="getting_started.html">Getting Started</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="project_overview.html">Project Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="launch_parameters.html">Launch Parameters</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="core_api.html">Developer Documentation</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
@@ -400,7 +399,7 @@ Headers:
 <span class="w">    </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="mi">200</span><span class="p">,</span><span class="w"></span>
 <span class="w">    </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"success"</span><span class="p">,</span><span class="w"></span>
 <span class="w">    </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
-<span class="w">        </span><span class="nt">"employees"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">        </span><span class="nt">"employee"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="w">            </span><span class="nt">"employee_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"jsmith317"</span><span class="p">,</span><span class="w"></span>
 <span class="w">            </span><span class="nt">"first_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"john"</span><span class="p">,</span><span class="w"></span>
 <span class="w">            </span><span class="nt">"last_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"smith"</span><span class="p">,</span><span class="w"></span>
@@ -618,6 +617,31 @@ This handles all the REST API logic for creating, reading, updating, and destroy
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Delete</span></span><a class="headerlink" href="#server.web_api.routing.v1.employee_routing.EmployeesRouter.Delete" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py method">
+<dt class="sig sig-object py" id="server.web_api.routing.v1.employee_routing.EmployeesRouter.Delete.delete_all_employees">
+<em class="property"><span class="pre">async</span><span class="w"> </span><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">delete_all_employees</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">are_you_sure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(OAuth2PasswordBearer)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_db_session)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.employee_routing.EmployeesRouter.Delete.delete_all_employees" title="Permalink to this definition">#</a></dt>
+<dd><p>An endpoint to remove ALL employee records from the employee’s table in the database.
+Removal of multiple employees using this endpoint will permanently delete the employee records from the database
+and all records related to the employee records in other tables through a cascading delete.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>are_you_sure</strong> (<em>str</em><em>, </em><em>required</em>) – An additional parameter that must say ‘yes’ to fulfill this request, to prevent accidental deletion.</p></li>
+<li><p><strong>token</strong> (<em>str</em><em>, </em><em>required</em>) – The JSON Web Token responsible for authenticating the user to this endpoint.</p></li>
+<li><p><strong>session</strong> (<em>sqlalchemy.orm.session</em><em>, </em><em>optional</em>) – The database session to use to delete the employee records.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A response model containing the number of employees deleted.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="api_response_model.html#server.web_api.models.ResponseModel" title="server.web_api.models.ResponseModel">server.web_api.models.ResponseModel</a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>HTTPException</strong> – If the provided request body contains invalid parameters.</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
 <dt class="sig sig-object py" id="server.web_api.routing.v1.employee_routing.EmployeesRouter.Delete.delete_employee">
 <em class="property"><span class="pre">async</span><span class="w"> </span><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">delete_employee</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">employee_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(OAuth2PasswordBearer)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_db_session)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.employee_routing.EmployeesRouter.Delete.delete_employee" title="Permalink to this definition">#</a></dt>
 <dd><p>An endpoint to remove an employee record from the employee’s table in the database.
@@ -790,6 +814,29 @@ To remove multiple employee records, the employee IDs must be provided in a list
 <dt class="sig sig-object py" id="server.web_api.routing.v1.employee_routing.EmployeesRouter.Update">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Update</span></span><a class="headerlink" href="#server.web_api.routing.v1.employee_routing.EmployeesRouter.Update" title="Permalink to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="server.web_api.routing.v1.employee_routing.EmployeesRouter.Update.update_employee_password">
+<em class="property"><span class="pre">async</span><span class="w"> </span><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">update_employee_password</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_password</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="employee_data_class.html#server.lib.data_classes.employee.PydanticUpdatePassword" title="server.lib.data_classes.employee.PydanticUpdatePassword"><span class="pre">server.lib.data_classes.employee.PydanticUpdatePassword</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(OAuth2PasswordBearer)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_db_session)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.employee_routing.EmployeesRouter.Update.update_employee_password" title="Permalink to this definition">#</a></dt>
+<dd><p>An endpoint that updates a single employee’s password from the database from the provided employee information and employee ID.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>new_password</strong> (<em>str</em><em>, </em><em>required</em>) – The new password for the employee.</p></li>
+<li><p><strong>token</strong> (<em>str</em><em>, </em><em>required</em>) – The JSON Web Token responsible for authenticating the user to this endpoint.</p></li>
+<li><p><strong>session</strong> (<em>sqlalchemy.orm.session</em><em>, </em><em>optional</em>) – The database session to use to update the employee data.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A response model containing the employee updated in the database.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="api_response_model.html#server.web_api.models.ResponseModel" title="server.web_api.models.ResponseModel">server.web_api.models.ResponseModel</a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>HTTPException</strong> – If the authentication token is invalid or the employee could not be updated.</p>
+</dd>
+</dl>
+</dd></dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="server.web_api.routing.v1.employee_routing.EmployeesRouter.Update.update_multiple_employees">
 <em class="property"><span class="pre">async</span><span class="w"> </span><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">update_multiple_employees</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">multi_employee_update</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="employee_data_class.html#server.lib.data_classes.employee.PydanticMultipleEmployeesUpdate" title="server.lib.data_classes.employee.PydanticMultipleEmployeesUpdate"><span class="pre">server.lib.data_classes.employee.PydanticMultipleEmployeesUpdate</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">token</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(OAuth2PasswordBearer)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Depends(get_db_session)</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.web_api.routing.v1.employee_routing.EmployeesRouter.Update.update_multiple_employees" title="Permalink to this definition">#</a></dt>

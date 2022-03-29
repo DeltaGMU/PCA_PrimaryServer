@@ -153,7 +153,6 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Requirements and Installation</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="getting_started.html">Getting Started</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="project_overview.html">Project Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="launch_parameters.html">Launch Parameters</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="core_api.html">Developer Documentation</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -228,7 +227,7 @@
           
 <section class="genindex-section">
   <h1 id="index">Index</h1>
-  <div class="genindex-jumpbox"><a href="#A"><strong>A</strong></a> | <a href="#C"><strong>C</strong></a> | <a href="#D"><strong>D</strong></a> | <a href="#E"><strong>E</strong></a> | <a href="#F"><strong>F</strong></a> | <a href="#G"><strong>G</strong></a> | <a href="#H"><strong>H</strong></a> | <a href="#I"><strong>I</strong></a> | <a href="#L"><strong>L</strong></a> | <a href="#M"><strong>M</strong></a> | <a href="#P"><strong>P</strong></a> | <a href="#R"><strong>R</strong></a> | <a href="#S"><strong>S</strong></a> | <a href="#U"><strong>U</strong></a> | <a href="#V"><strong>V</strong></a> | <a href="#W"><strong>W</strong></a></div>
+  <div class="genindex-jumpbox"><a href="#A"><strong>A</strong></a> | <a href="#C"><strong>C</strong></a> | <a href="#D"><strong>D</strong></a> | <a href="#E"><strong>E</strong></a> | <a href="#F"><strong>F</strong></a> | <a href="#G"><strong>G</strong></a> | <a href="#H"><strong>H</strong></a> | <a href="#I"><strong>I</strong></a> | <a href="#L"><strong>L</strong></a> | <a href="#M"><strong>M</strong></a> | <a href="#N"><strong>N</strong></a> | <a href="#P"><strong>P</strong></a> | <a href="#R"><strong>R</strong></a> | <a href="#S"><strong>S</strong></a> | <a href="#U"><strong>U</strong></a> | <a href="#V"><strong>V</strong></a> | <a href="#W"><strong>W</strong></a></div>
 </section>
 <section id="A" class="genindex-section">
   <h2>A</h2>
@@ -252,6 +251,8 @@
           <li><a href="api_response_model.html#server.web_api.models.ResponseModel.as_dict">(server.web_api.models.ResponseModel method)</a>
 </li>
         </ul></li>
+        <li><a href="student_data_class.html#server.lib.data_classes.student.Student.as_limited_dict">as_limited_dict() (server.lib.data_classes.student.Student method)</a>
+</li>
     </ul></td>
   </tr></table>
 </section>
@@ -261,24 +262,22 @@
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="student_data_class.html#server.lib.data_classes.student.PydanticStudentRegistration.car_pool_number">car_pool_number (server.lib.data_classes.student.PydanticStudentRegistration attribute)</a>
+
+        <ul>
+          <li><a href="student_data_class.html#server.lib.data_classes.student.PydanticStudentUpdate.car_pool_number">(server.lib.data_classes.student.PydanticStudentUpdate attribute)</a>
 </li>
-        <li><a href="api_students.html#server.web_api.routing.v1.student_routing.StudentsRouter.check_in_student">check_in_student() (server.web_api.routing.v1.student_routing.StudentsRouter static method)</a>
-</li>
-        <li><a href="api_students.html#server.web_api.routing.v1.student_routing.StudentsRouter.check_out_student">check_out_student() (server.web_api.routing.v1.student_routing.StudentsRouter static method)</a>
+        </ul></li>
+        <li><a href="student_data_class.html#server.lib.data_classes.student.Student.CarpoolNumber">CarpoolNumber (server.lib.data_classes.student.Student attribute)</a>
 </li>
         <li><a href="print_utils.html#server.lib.utils.print_utils.console_print">console_print() (in module server.lib.utils.print_utils)</a>
 </li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="employee_data_class.html#server.lib.data_classes.employee.Employee.ContactInfoID">ContactInfoID (server.lib.data_classes.employee.Employee attribute)</a>
-
-        <ul>
-          <li><a href="student_data_class.html#server.lib.data_classes.student.Student.ContactInfoID">(server.lib.data_classes.student.Student attribute)</a>
-</li>
-        </ul></li>
         <li><a href="api_status.html#server.web_api.routing.v1.core_routing.CoreRouter">CoreRouter (class in server.web_api.routing.v1.core_routing)</a>
 </li>
         <li><a href="employee_utils.html#server.lib.utils.employee_utils.create_employee_password_hashes">create_employee_password_hashes() (in module server.lib.utils.employee_utils)</a>
+</li>
+        <li><a href="employee_utils.html#server.lib.utils.employee_utils.create_employee_password_hashes_sync">create_employee_password_hashes_sync() (in module server.lib.utils.employee_utils)</a>
 </li>
         <li><a href="api_students.html#server.web_api.routing.v1.student_routing.StudentsRouter.Create.create_new_student">create_new_student() (server.web_api.routing.v1.student_routing.StudentsRouter.Create static method)</a>
 </li>
@@ -292,11 +291,17 @@
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="print_utils.html#server.lib.utils.print_utils.debug_print">debug_print() (in module server.lib.utils.print_utils)</a>
 </li>
+        <li><a href="api_employees.html#server.web_api.routing.v1.employee_routing.EmployeesRouter.Delete.delete_all_employees">delete_all_employees() (server.web_api.routing.v1.employee_routing.EmployeesRouter.Delete static method)</a>
+</li>
         <li><a href="api_employees.html#server.web_api.routing.v1.employee_routing.EmployeesRouter.Delete.delete_employee">delete_employee() (server.web_api.routing.v1.employee_routing.EmployeesRouter.Delete static method)</a>
 </li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="api_employees.html#server.web_api.routing.v1.employee_routing.EmployeesRouter.Delete.delete_employees">delete_employees() (server.web_api.routing.v1.employee_routing.EmployeesRouter.Delete static method)</a>
+</li>
+        <li><a href="api_students.html#server.web_api.routing.v1.student_routing.StudentsRouter.Delete.delete_student">delete_student() (server.web_api.routing.v1.student_routing.StudentsRouter.Delete static method)</a>
+</li>
+        <li><a href="api_students.html#server.web_api.routing.v1.student_routing.StudentsRouter.Delete.delete_students">delete_students() (server.web_api.routing.v1.student_routing.StudentsRouter.Delete static method)</a>
 </li>
         <li><a href="logging_manager.html#server.lib.logging_manager.LoggingManager.disable">disable() (server.lib.logging_manager.LoggingManager class method)</a>
 </li>
@@ -310,6 +315,8 @@
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="employee_data_class.html#server.lib.data_classes.employee.Employee">Employee (class in server.lib.data_classes.employee)</a>
 </li>
+        <li><a href="employee_data_class.html#server.lib.data_classes.employee.PydanticUpdatePassword.employee_id">employee_id (server.lib.data_classes.employee.PydanticUpdatePassword attribute)</a>
+</li>
         <li><a href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployeesRemoval.employee_ids">employee_ids (server.lib.data_classes.employee.PydanticEmployeesRemoval attribute)</a>
 
         <ul>
@@ -317,6 +324,8 @@
 </li>
         </ul></li>
         <li><a href="employee_data_class.html#server.lib.data_classes.employee.PydanticMultipleEmployeesUpdate.employee_updates">employee_updates (server.lib.data_classes.employee.PydanticMultipleEmployeesUpdate attribute)</a>
+</li>
+        <li><a href="employee_data_class.html#server.lib.data_classes.employee.Employee.EmployeeContactInfo">EmployeeContactInfo (server.lib.data_classes.employee.Employee attribute)</a>
 </li>
         <li><a href="employee_data_class.html#server.lib.data_classes.employee.Employee.EmployeeEnabled">EmployeeEnabled (server.lib.data_classes.employee.Employee attribute)</a>
 </li>
@@ -334,6 +343,10 @@
 </li>
         <li><a href="employee_data_class.html#server.lib.data_classes.employee.Employee.EmployeeID">EmployeeID (server.lib.data_classes.employee.Employee attribute)</a>
 </li>
+        <li><a href="employee_data_class.html#server.lib.data_classes.employee.Employee.EmployeeResetTokenRelationship">EmployeeResetTokenRelationship (server.lib.data_classes.employee.Employee attribute)</a>
+</li>
+        <li><a href="employee_data_class.html#server.lib.data_classes.employee.Employee.EmployeeRole">EmployeeRole (server.lib.data_classes.employee.Employee attribute)</a>
+</li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="employee_data_class.html#server.lib.data_classes.employee.Employee.EmployeeRoleID">EmployeeRoleID (server.lib.data_classes.employee.Employee attribute)</a>
@@ -350,12 +363,24 @@
 </li>
         <li><a href="logging_manager.html#server.lib.logging_manager.LoggingManager.enable">enable() (server.lib.logging_manager.LoggingManager class method)</a>
 </li>
-        <li><a href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployeeRegistration.enable_notifications">enable_notifications (server.lib.data_classes.employee.PydanticEmployeeRegistration attribute)</a>
+        <li><a href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployeeRegistration.enable_primary_email_notifications">enable_primary_email_notifications (server.lib.data_classes.employee.PydanticEmployeeRegistration attribute)</a>
 
         <ul>
-          <li><a href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployeeUpdate.enable_notifications">(server.lib.data_classes.employee.PydanticEmployeeUpdate attribute)</a>
+          <li><a href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployeeUpdate.enable_primary_email_notifications">(server.lib.data_classes.employee.PydanticEmployeeUpdate attribute)</a>
 </li>
-          <li><a href="student_data_class.html#server.lib.data_classes.student.PydanticStudentRegistration.enable_notifications">(server.lib.data_classes.student.PydanticStudentRegistration attribute)</a>
+          <li><a href="student_data_class.html#server.lib.data_classes.student.PydanticStudentRegistration.enable_primary_email_notifications">(server.lib.data_classes.student.PydanticStudentRegistration attribute)</a>
+</li>
+          <li><a href="student_data_class.html#server.lib.data_classes.student.PydanticStudentUpdate.enable_primary_email_notifications">(server.lib.data_classes.student.PydanticStudentUpdate attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployeeRegistration.enable_secondary_email_notifications">enable_secondary_email_notifications (server.lib.data_classes.employee.PydanticEmployeeRegistration attribute)</a>
+
+        <ul>
+          <li><a href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployeeUpdate.enable_secondary_email_notifications">(server.lib.data_classes.employee.PydanticEmployeeUpdate attribute)</a>
+</li>
+          <li><a href="student_data_class.html#server.lib.data_classes.student.PydanticStudentRegistration.enable_secondary_email_notifications">(server.lib.data_classes.student.PydanticStudentRegistration attribute)</a>
+</li>
+          <li><a href="student_data_class.html#server.lib.data_classes.student.PydanticStudentUpdate.enable_secondary_email_notifications">(server.lib.data_classes.student.PydanticStudentUpdate attribute)</a>
 </li>
         </ul></li>
         <li><a href="employee_data_class.html#server.lib.data_classes.employee.Employee.EntryCreated">EntryCreated (server.lib.data_classes.employee.Employee attribute)</a>
@@ -378,6 +403,8 @@
           <li><a href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployeeUpdate.first_name">(server.lib.data_classes.employee.PydanticEmployeeUpdate attribute)</a>
 </li>
           <li><a href="student_data_class.html#server.lib.data_classes.student.PydanticStudentRegistration.first_name">(server.lib.data_classes.student.PydanticStudentRegistration attribute)</a>
+</li>
+          <li><a href="student_data_class.html#server.lib.data_classes.student.PydanticStudentUpdate.first_name">(server.lib.data_classes.student.PydanticStudentUpdate attribute)</a>
 </li>
         </ul></li>
     </ul></td>
@@ -406,15 +433,15 @@
 </li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="logging_manager.html#server.lib.logging_manager.LoggingManager.Settings.get_log_directory">get_log_directory() (server.lib.logging_manager.LoggingManager.Settings class method)</a>
-</li>
-        <li><a href="logging_manager.html#server.lib.logging_manager.LoggingManager.Settings.get_log_level">get_log_level() (server.lib.logging_manager.LoggingManager.Settings class method)</a>
-</li>
         <li><a href="logging_manager.html#server.lib.logging_manager.LoggingManager.get_logger">get_logger() (server.lib.logging_manager.LoggingManager class method)</a>
 </li>
-        <li><a href="logging_manager.html#server.lib.logging_manager.LoggingManager.Settings.get_max_log_size">get_max_log_size() (server.lib.logging_manager.LoggingManager.Settings class method)</a>
+        <li><a href="student_data_class.html#server.lib.data_classes.student.PydanticStudentRegistration.grade">grade (server.lib.data_classes.student.PydanticStudentRegistration attribute)</a>
+
+        <ul>
+          <li><a href="student_data_class.html#server.lib.data_classes.student.PydanticStudentUpdate.grade">(server.lib.data_classes.student.PydanticStudentUpdate attribute)</a>
 </li>
-        <li><a href="logging_manager.html#server.lib.logging_manager.LoggingManager.Settings.get_max_logs">get_max_logs() (server.lib.logging_manager.LoggingManager.Settings class method)</a>
+        </ul></li>
+        <li><a href="student_data_class.html#server.lib.data_classes.student.Student.GradeID">GradeID (server.lib.data_classes.student.Student attribute)</a>
 </li>
     </ul></td>
   </tr></table>
@@ -465,6 +492,8 @@
 </li>
           <li><a href="student_data_class.html#server.lib.data_classes.student.PydanticStudentRegistration.is_enabled">(server.lib.data_classes.student.PydanticStudentRegistration attribute)</a>
 </li>
+          <li><a href="student_data_class.html#server.lib.data_classes.student.PydanticStudentUpdate.is_enabled">(server.lib.data_classes.student.PydanticStudentUpdate attribute)</a>
+</li>
         </ul></li>
         <li><a href="logging_manager.html#server.lib.logging_manager.LoggingManager.is_enabled">is_enabled() (server.lib.logging_manager.LoggingManager class method)</a>
 </li>
@@ -483,6 +512,8 @@
 </li>
           <li><a href="student_data_class.html#server.lib.data_classes.student.PydanticStudentRegistration.last_name">(server.lib.data_classes.student.PydanticStudentRegistration attribute)</a>
 </li>
+          <li><a href="student_data_class.html#server.lib.data_classes.student.PydanticStudentUpdate.last_name">(server.lib.data_classes.student.PydanticStudentUpdate attribute)</a>
+</li>
         </ul></li>
         <li><a href="employee_data_class.html#server.lib.data_classes.employee.Employee.LastName">LastName (server.lib.data_classes.employee.Employee attribute)</a>
 
@@ -490,12 +521,18 @@
           <li><a href="student_data_class.html#server.lib.data_classes.student.Student.LastName">(server.lib.data_classes.student.Student attribute)</a>
 </li>
         </ul></li>
+        <li><a href="employee_data_class.html#server.lib.data_classes.employee.Employee.LastUpdated">LastUpdated (server.lib.data_classes.employee.Employee attribute)</a>
+
+        <ul>
+          <li><a href="student_data_class.html#server.lib.data_classes.student.Student.LastUpdated">(server.lib.data_classes.student.Student attribute)</a>
+</li>
+        </ul></li>
+    </ul></td>
+    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="logging_manager.html#server.lib.logging_manager.LoggingManager.log">log() (server.lib.logging_manager.LoggingManager class method)</a>
 </li>
         <li><a href="logging_manager.html#server.lib.logging_manager.LoggingManager.LogLevel.LOG_CRITICAL">LOG_CRITICAL (server.lib.logging_manager.LoggingManager.LogLevel attribute)</a>
 </li>
-    </ul></td>
-    <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="logging_manager.html#server.lib.logging_manager.LoggingManager.LogLevel.LOG_DEBUG">LOG_DEBUG (server.lib.logging_manager.LoggingManager.LogLevel attribute)</a>
 </li>
         <li><a href="logging_manager.html#server.lib.logging_manager.LoggingManager.LogLevel.LOG_ERROR">LOG_ERROR (server.lib.logging_manager.LoggingManager.LogLevel attribute)</a>
@@ -507,8 +544,6 @@
         <li><a href="logging_manager.html#server.lib.logging_manager.LoggingManager">LoggingManager (class in server.lib.logging_manager)</a>
 </li>
         <li><a href="logging_manager.html#server.lib.logging_manager.LoggingManager.LogLevel">LoggingManager.LogLevel (class in server.lib.logging_manager)</a>
-</li>
-        <li><a href="logging_manager.html#server.lib.logging_manager.LoggingManager.Settings">LoggingManager.Settings (class in server.lib.logging_manager)</a>
 </li>
     </ul></td>
   </tr></table>
@@ -561,28 +596,54 @@
   </tr></table>
 </section>
 
+<section id="N" class="genindex-section">
+  <h2>N</h2>
+  <table style="width: 100%" class="indextable genindextable"><tr>
+    <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="employee_data_class.html#server.lib.data_classes.employee.PydanticUpdatePassword.new_password">new_password (server.lib.data_classes.employee.PydanticUpdatePassword attribute)</a>
+</li>
+    </ul></td>
+  </tr></table>
+</section>
+
 <section id="P" class="genindex-section">
   <h2>P</h2>
   <table style="width: 100%" class="indextable genindextable"><tr>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="student_data_class.html#server.lib.data_classes.student.PydanticStudentRegistration.parent_full_name">parent_full_name (server.lib.data_classes.student.PydanticStudentRegistration attribute)</a>
-</li>
-        <li><a href="student_data_class.html#server.lib.data_classes.student.PydanticStudentRegistration.parent_primary_email">parent_primary_email (server.lib.data_classes.student.PydanticStudentRegistration attribute)</a>
-</li>
-        <li><a href="student_data_class.html#server.lib.data_classes.student.PydanticStudentRegistration.parent_secondary_email">parent_secondary_email (server.lib.data_classes.student.PydanticStudentRegistration attribute)</a>
-</li>
-        <li><a href="employee_data_class.html#server.lib.data_classes.employee.Employee.PasswordHash">PasswordHash (server.lib.data_classes.employee.Employee attribute)</a>
-</li>
-        <li><a href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployeeRegistration.plain_password">plain_password (server.lib.data_classes.employee.PydanticEmployeeRegistration attribute)</a>
+        <li><a href="student_data_class.html#server.lib.data_classes.student.PydanticStudentRegistration.parent_one_first_name">parent_one_first_name (server.lib.data_classes.student.PydanticStudentRegistration attribute)</a>
 
         <ul>
-          <li><a href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployeeUpdate.plain_password">(server.lib.data_classes.employee.PydanticEmployeeUpdate attribute)</a>
+          <li><a href="student_data_class.html#server.lib.data_classes.student.PydanticStudentUpdate.parent_one_first_name">(server.lib.data_classes.student.PydanticStudentUpdate attribute)</a>
 </li>
         </ul></li>
+        <li><a href="student_data_class.html#server.lib.data_classes.student.PydanticStudentRegistration.parent_one_last_name">parent_one_last_name (server.lib.data_classes.student.PydanticStudentRegistration attribute)</a>
+
+        <ul>
+          <li><a href="student_data_class.html#server.lib.data_classes.student.PydanticStudentUpdate.parent_one_last_name">(server.lib.data_classes.student.PydanticStudentUpdate attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="student_data_class.html#server.lib.data_classes.student.PydanticStudentRegistration.parent_two_first_name">parent_two_first_name (server.lib.data_classes.student.PydanticStudentRegistration attribute)</a>
+
+        <ul>
+          <li><a href="student_data_class.html#server.lib.data_classes.student.PydanticStudentUpdate.parent_two_first_name">(server.lib.data_classes.student.PydanticStudentUpdate attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="student_data_class.html#server.lib.data_classes.student.PydanticStudentRegistration.parent_two_last_name">parent_two_last_name (server.lib.data_classes.student.PydanticStudentRegistration attribute)</a>
+
+        <ul>
+          <li><a href="student_data_class.html#server.lib.data_classes.student.PydanticStudentUpdate.parent_two_last_name">(server.lib.data_classes.student.PydanticStudentUpdate attribute)</a>
+</li>
+        </ul></li>
+        <li><a href="employee_data_class.html#server.lib.data_classes.employee.Employee.PasswordHash">PasswordHash (server.lib.data_classes.employee.Employee attribute)</a>
+</li>
         <li><a href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployeeRegistration.primary_email">primary_email (server.lib.data_classes.employee.PydanticEmployeeRegistration attribute)</a>
 
         <ul>
           <li><a href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployeeUpdate.primary_email">(server.lib.data_classes.employee.PydanticEmployeeUpdate attribute)</a>
+</li>
+          <li><a href="student_data_class.html#server.lib.data_classes.student.PydanticStudentRegistration.primary_email">(server.lib.data_classes.student.PydanticStudentRegistration attribute)</a>
+</li>
+          <li><a href="student_data_class.html#server.lib.data_classes.student.PydanticStudentUpdate.primary_email">(server.lib.data_classes.student.PydanticStudentUpdate attribute)</a>
 </li>
         </ul></li>
     </ul></td>
@@ -595,9 +656,17 @@
 </li>
         <li><a href="employee_data_class.html#server.lib.data_classes.employee.PydanticMultipleEmployeesUpdate">PydanticMultipleEmployeesUpdate (class in server.lib.data_classes.employee)</a>
 </li>
+        <li><a href="student_data_class.html#server.lib.data_classes.student.PydanticMultipleStudentsUpdate">PydanticMultipleStudentsUpdate (class in server.lib.data_classes.student)</a>
+</li>
         <li><a href="employee_data_class.html#server.lib.data_classes.employee.PydanticRetrieveMultipleEmployees">PydanticRetrieveMultipleEmployees (class in server.lib.data_classes.employee)</a>
 </li>
         <li><a href="student_data_class.html#server.lib.data_classes.student.PydanticStudentRegistration">PydanticStudentRegistration (class in server.lib.data_classes.student)</a>
+</li>
+        <li><a href="student_data_class.html#server.lib.data_classes.student.PydanticStudentsRemoval">PydanticStudentsRemoval (class in server.lib.data_classes.student)</a>
+</li>
+        <li><a href="student_data_class.html#server.lib.data_classes.student.PydanticStudentUpdate">PydanticStudentUpdate (class in server.lib.data_classes.student)</a>
+</li>
+        <li><a href="employee_data_class.html#server.lib.data_classes.employee.PydanticUpdatePassword">PydanticUpdatePassword (class in server.lib.data_classes.employee)</a>
 </li>
     </ul></td>
   </tr></table>
@@ -613,6 +682,8 @@
 </li>
         <li><a href="api_employees.html#server.web_api.routing.v1.employee_routing.EmployeesRouter.Read.read_employee_from_token">read_employee_from_token() (server.web_api.routing.v1.employee_routing.EmployeesRouter.Read static method)</a>
 </li>
+        <li><a href="api_timesheets.html#server.web_api.routing.v1.employee_hours_routing.EmployeeHoursRouter.Read.read_employee_time_sheet_hours">read_employee_time_sheet_hours() (server.web_api.routing.v1.employee_hours_routing.EmployeeHoursRouter.Read static method)</a>
+</li>
         <li><a href="api_timesheets.html#server.web_api.routing.v1.employee_hours_routing.EmployeeHoursRouter.Read.read_employee_time_sheets">read_employee_time_sheets() (server.web_api.routing.v1.employee_hours_routing.EmployeeHoursRouter.Read static method)</a>
 </li>
         <li><a href="api_employees.html#server.web_api.routing.v1.employee_routing.EmployeesRouter.Read.read_employees_count">read_employees_count() (server.web_api.routing.v1.employee_routing.EmployeesRouter.Read static method)</a>
@@ -621,10 +692,12 @@
 </li>
         <li><a href="api_employees.html#server.web_api.routing.v1.employee_routing.EmployeesRouter.Read.read_one_employee">read_one_employee() (server.web_api.routing.v1.employee_routing.EmployeesRouter.Read static method)</a>
 </li>
-        <li><a href="api_students.html#server.web_api.routing.v1.student_routing.StudentsRouter.Read.read_students_count">read_students_count() (server.web_api.routing.v1.student_routing.StudentsRouter.Read static method)</a>
+        <li><a href="api_students.html#server.web_api.routing.v1.student_routing.StudentsRouter.Read.read_one_student">read_one_student() (server.web_api.routing.v1.student_routing.StudentsRouter.Read static method)</a>
 </li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
+        <li><a href="api_students.html#server.web_api.routing.v1.student_routing.StudentsRouter.Read.read_students_count">read_students_count() (server.web_api.routing.v1.student_routing.StudentsRouter.Read static method)</a>
+</li>
         <li><a href="api_timesheets.html#server.web_api.routing.v1.employee_hours_routing.EmployeeHoursRouter.Create.register_employee_time_sheets">register_employee_time_sheets() (server.web_api.routing.v1.employee_hours_routing.EmployeeHoursRouter.Create static method)</a>
 </li>
         <li><a href="api_employees.html#server.web_api.routing.v1.employee_routing.EmployeesRouter.Create.register_new_employee">register_new_employee() (server.web_api.routing.v1.employee_routing.EmployeesRouter.Create static method)</a>
@@ -655,6 +728,10 @@
 
         <ul>
           <li><a href="employee_data_class.html#server.lib.data_classes.employee.PydanticEmployeeUpdate.secondary_email">(server.lib.data_classes.employee.PydanticEmployeeUpdate attribute)</a>
+</li>
+          <li><a href="student_data_class.html#server.lib.data_classes.student.PydanticStudentRegistration.secondary_email">(server.lib.data_classes.student.PydanticStudentRegistration attribute)</a>
+</li>
+          <li><a href="student_data_class.html#server.lib.data_classes.student.PydanticStudentUpdate.secondary_email">(server.lib.data_classes.student.PydanticStudentUpdate attribute)</a>
 </li>
         </ul></li>
         <li>
@@ -773,14 +850,6 @@
         </ul></li>
         <li><a href="database_manager.html#server.lib.database_manager.SessionContext">SessionContext (class in server.lib.database_manager)</a>
 </li>
-        <li><a href="logging_manager.html#server.lib.logging_manager.LoggingManager.Settings.set_log_directory">set_log_directory() (server.lib.logging_manager.LoggingManager.Settings class method)</a>
-</li>
-        <li><a href="logging_manager.html#server.lib.logging_manager.LoggingManager.Settings.set_log_level">set_log_level() (server.lib.logging_manager.LoggingManager.Settings class method)</a>
-</li>
-        <li><a href="logging_manager.html#server.lib.logging_manager.LoggingManager.Settings.set_max_log_size">set_max_log_size() (server.lib.logging_manager.LoggingManager.Settings class method)</a>
-</li>
-        <li><a href="logging_manager.html#server.lib.logging_manager.LoggingManager.Settings.set_max_logs">set_max_logs() (server.lib.logging_manager.LoggingManager.Settings class method)</a>
-</li>
         <li><a href="web_manager.html#server.lib.web_manager.WebSessionManager.start_web_server">start_web_server() (server.lib.web_manager.WebSessionManager method)</a>
 </li>
         <li><a href="api_status.html#server.web_api.routing.v1.core_routing.CoreRouter.status">status() (server.web_api.routing.v1.core_routing.CoreRouter method)</a>
@@ -791,9 +860,17 @@
 </li>
         <li><a href="student_data_class.html#server.lib.data_classes.student.Student">Student (class in server.lib.data_classes.student)</a>
 </li>
+        <li><a href="student_data_class.html#server.lib.data_classes.student.PydanticStudentsRemoval.student_ids">student_ids (server.lib.data_classes.student.PydanticStudentsRemoval attribute)</a>
+</li>
+        <li><a href="student_data_class.html#server.lib.data_classes.student.PydanticMultipleStudentsUpdate.student_updates">student_updates (server.lib.data_classes.student.PydanticMultipleStudentsUpdate attribute)</a>
+</li>
         <li><a href="student_data_class.html#server.lib.data_classes.student.Student.StudentCareHoursRelationship">StudentCareHoursRelationship (server.lib.data_classes.student.Student attribute)</a>
 </li>
+        <li><a href="student_data_class.html#server.lib.data_classes.student.Student.StudentContactInfo">StudentContactInfo (server.lib.data_classes.student.Student attribute)</a>
+</li>
         <li><a href="student_data_class.html#server.lib.data_classes.student.Student.StudentEnabled">StudentEnabled (server.lib.data_classes.student.Student attribute)</a>
+</li>
+        <li><a href="student_data_class.html#server.lib.data_classes.student.Student.StudentGrade">StudentGrade (server.lib.data_classes.student.Student attribute)</a>
 </li>
         <li><a href="student_data_class.html#server.lib.data_classes.student.Student.StudentID">StudentID (server.lib.data_classes.student.Student attribute)</a>
 </li>
@@ -817,13 +894,19 @@
     <td style="width: 33%; vertical-align: top;"><ul>
         <li><a href="api_response_model.html#server.web_api.models.ResponseModel.update_data">update_data() (server.web_api.models.ResponseModel method)</a>
 </li>
+        <li><a href="api_employees.html#server.web_api.routing.v1.employee_routing.EmployeesRouter.Update.update_employee_password">update_employee_password() (server.web_api.routing.v1.employee_routing.EmployeesRouter.Update static method)</a>
+</li>
         <li><a href="api_timesheets.html#server.web_api.routing.v1.employee_hours_routing.EmployeeHoursRouter.Update.update_employee_time_sheet">update_employee_time_sheet() (server.web_api.routing.v1.employee_hours_routing.EmployeeHoursRouter.Update static method)</a>
+</li>
+        <li><a href="api_employees.html#server.web_api.routing.v1.employee_routing.EmployeesRouter.Update.update_multiple_employees">update_multiple_employees() (server.web_api.routing.v1.employee_routing.EmployeesRouter.Update static method)</a>
 </li>
     </ul></td>
     <td style="width: 33%; vertical-align: top;"><ul>
-        <li><a href="api_employees.html#server.web_api.routing.v1.employee_routing.EmployeesRouter.Update.update_multiple_employees">update_multiple_employees() (server.web_api.routing.v1.employee_routing.EmployeesRouter.Update static method)</a>
+        <li><a href="api_students.html#server.web_api.routing.v1.student_routing.StudentsRouter.Update.update_multiple_students">update_multiple_students() (server.web_api.routing.v1.student_routing.StudentsRouter.Update static method)</a>
 </li>
         <li><a href="api_employees.html#server.web_api.routing.v1.employee_routing.EmployeesRouter.Update.update_one_employee">update_one_employee() (server.web_api.routing.v1.employee_routing.EmployeesRouter.Update static method)</a>
+</li>
+        <li><a href="api_students.html#server.web_api.routing.v1.student_routing.StudentsRouter.Update.update_one_student">update_one_student() (server.web_api.routing.v1.student_routing.StudentsRouter.Update static method)</a>
 </li>
         <li><a href="web_service.html#server.web_api.web_service.UvicornServer">UvicornServer (class in server.web_api.web_service)</a>
 </li>

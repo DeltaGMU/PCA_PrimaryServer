@@ -166,7 +166,7 @@ Usage
             "status": 200,
             "message": "success",
             "data": {
-                "employees": {
+                "employee": {
                     "employee_id": "jsmith317",
                     "first_name": "john",
                     "last_name": "smith",

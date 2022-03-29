@@ -1,17 +1,19 @@
 from fastapi.exceptions import RequestValidationError
+
+from server.lib.config_manager import ConfigManager
 from server.lib.data_classes.reset_token import PydanticResetToken
 from server.web_api.models import ResponseModel
 from server.web_api.routing.v1 import core_routing, employee_routing, employee_hours_routing, student_routing, \
     student_care_routing, reports_routing, email_routing, student_grade_routing
 from server.web_api.web_security import add_token_to_blacklist, create_access_token, get_user_from_token, oauth_scheme, token_is_valid
 from server.lib.database_access.employee_interface import get_employee
-from fastapi import FastAPI, Depends, status, Security, HTTPException, Request, Response
+from fastapi import FastAPI, Depends, status, HTTPException, Request
 from starlette.middleware.cors import CORSMiddleware
 from pydantic import ValidationError
 from fastapi.responses import FileResponse, JSONResponse, RedirectResponse
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm
 from fastapi.staticfiles import StaticFiles
-from config import ENV_SETTINGS
+from server.web_api.api_routes import API_ROUTES
 from server.lib.utils.employee_utils import verify_employee_password
 from server.lib.strings import META_VERSION, ROOT_DIR
 from starlette.exceptions import HTTPException as StarletteHTTPException
@@ -25,12 +27,12 @@ web_app = FastAPI(
 )
 web_app.add_middleware(
     CORSMiddleware,
-    allow_origins=[f"{'https' if ENV_SETTINGS.use_https else 'http'}://{cors_domain.strip()}" for cors_domain in ENV_SETTINGS.cors_domains.lower().strip().split(",")],
+    allow_origins=[f"{'https' if ConfigManager().config().getboolean('API Server', 'use_https') else 'http'}://{cors_domain.strip()}" for cors_domain in ConfigManager().config()['API Server']['cors_domains'].lower().strip().split(",")],
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE"],
     allow_headers=["Origin", "Accept", "Content-Type", "Authorization", "Access-Control-Allow-Origin"]
 )
-if ENV_SETTINGS.use_https:
+if ConfigManager().config().getboolean('API Server', 'use_https'):
     from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
     web_app.add_middleware(HTTPSRedirectMiddleware)
 web_app.mount("/wiki",
@@ -47,7 +49,7 @@ web_app.include_router(reports_routing.router)
 web_app.include_router(email_routing.router)
 
 
-@web_app.get(ENV_SETTINGS.API_ROUTES.index, status_code=status.HTTP_200_OK)
+@web_app.get(API_ROUTES.index, status_code=status.HTTP_200_OK)
 async def serve_index():
     """
     Serves the index page of the uvicorn API server with the original request sent to the server.
@@ -58,7 +60,7 @@ async def serve_index():
     return ResponseModel(status.HTTP_200_OK, "success", {"message": {}})
 
 
-@web_app.post(ENV_SETTINGS.API_ROUTES.login, status_code=status.HTTP_200_OK)
+@web_app.post(API_ROUTES.login, status_code=status.HTTP_200_OK)
 async def login(data: OAuth2PasswordRequestForm = Depends()):
     username = data.username
     password = data.password
@@ -76,7 +78,7 @@ async def login(data: OAuth2PasswordRequestForm = Depends()):
     return ResponseModel(status.HTTP_200_OK, "success", {**access_token_dict})
 
 
-@web_app.get(ENV_SETTINGS.API_ROUTES.me, status_code=status.HTTP_200_OK)
+@web_app.get(API_ROUTES.me, status_code=status.HTTP_200_OK)
 async def logged_in_welcome(token: str = Depends(oauth_scheme)):
     if not await token_is_valid(token, ["employee"]):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
@@ -86,7 +88,7 @@ async def logged_in_welcome(token: str = Depends(oauth_scheme)):
     return ResponseModel(status.HTTP_200_OK, "logged in successfully!", {"user": f"{user.FirstName} {user.LastName}".title()})
 
 
-@web_app.post(ENV_SETTINGS.API_ROUTES.logout, status_code=status.HTTP_200_OK)
+@web_app.post(API_ROUTES.logout, status_code=status.HTTP_200_OK)
 async def logout(token: str = Depends(oauth_scheme)):
     token_blacklist_check = await add_token_to_blacklist(token)
     if token_blacklist_check is None:
@@ -96,17 +98,17 @@ async def logout(token: str = Depends(oauth_scheme)):
     return ResponseModel(status.HTTP_200_OK, "logged out successfully!")
 
 
-@web_app.post(ENV_SETTINGS.API_ROUTES.reset, status_code=status.HTTP_200_OK)
+@web_app.post(API_ROUTES.reset, status_code=status.HTTP_200_OK)
 async def reset_password(pyd_info: PydanticResetToken):
     return ResponseModel(status.HTTP_200_OK, "")
 
 
-@web_app.post(ENV_SETTINGS.API_ROUTES.forgot_password, status_code=status.HTTP_200_OK)
+@web_app.post(API_ROUTES.forgot_password, status_code=status.HTTP_200_OK)
 async def forgot_password(employee_id: str):
     return ResponseModel(status.HTTP_200_OK, "")
 
 
-@web_app.get(ENV_SETTINGS.API_ROUTES.routes, status_code=status.HTTP_200_OK)
+@web_app.get(API_ROUTES.routes, status_code=status.HTTP_200_OK)
 async def get_api_routes(token: str = Depends(oauth_scheme)):
     if not await token_is_valid(token, ["administrator"]):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
@@ -151,7 +153,7 @@ async def general_http_exception(request: Request, exc: HTTPException):
     """
     detail_error_message = str(exc.detail)
     if exc.status_code == 404:
-        return RedirectResponse(ENV_SETTINGS.API_ROUTES.index)
+        return RedirectResponse(API_ROUTES.index)
     if exc.status_code == 405:
         detail_error_message = "The request to the endpoint is invalid. This endpoint does not exist or is not allowed!"
     resp = ResponseModel(exc.status_code, "Error: HTTP Exception Error",

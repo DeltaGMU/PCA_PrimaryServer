@@ -1,7 +1,7 @@
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
 from fastapi import status, Depends, HTTPException
-from config import ENV_SETTINGS
+from server.web_api.api_routes import API_ROUTES
 from server.lib.database_access.employee_interface import is_admin
 from server.lib.data_classes.employee_hours import PydanticEmployeeMultipleTimesheetSubmission, PydanticEmployeeTimesheetUpdate, PydanticEmployeeTimesheetRemoval
 from server.lib.database_access.employee_hours_interface import create_employee_multiple_hours, update_employee_hours, delete_employee_time_sheets, get_employee_hours_total, delete_all_employee_time_sheets
@@ -17,7 +17,7 @@ router = InferringRouter()
 class EmployeeHoursRouter:
     class Create:
         @staticmethod
-        @router.post(ENV_SETTINGS.API_ROUTES.Timesheet.one_timesheet, status_code=status.HTTP_201_CREATED)
+        @router.post(API_ROUTES.Timesheet.one_timesheet, status_code=status.HTTP_201_CREATED)
         async def register_employee_time_sheets(employee_id: str, employee_time_sheets: PydanticEmployeeMultipleTimesheetSubmission, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint to submit (and/or update) multiple time sheets for an employee with the work hours, pto hours, overtime/extra hours on a provided date.
@@ -51,7 +51,7 @@ class EmployeeHoursRouter:
 
     class Read:
         @staticmethod
-        @router.get(ENV_SETTINGS.API_ROUTES.Timesheet.hours_only, status_code=status.HTTP_200_OK)
+        @router.get(API_ROUTES.Timesheet.hours_only, status_code=status.HTTP_200_OK)
         async def read_employee_time_sheet_hours(employee_id: str, date_start: str, date_end: str = None, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint to accumulate and return the total work hours, pto hours, overtime/extra hours for an employee within a provided date range without the full list of time sheets.
@@ -86,7 +86,7 @@ class EmployeeHoursRouter:
             return ResponseModel(status.HTTP_200_OK, "success", total_hours_and_list)
 
         @staticmethod
-        @router.get(ENV_SETTINGS.API_ROUTES.Timesheet.one_timesheet, status_code=status.HTTP_200_OK)
+        @router.get(API_ROUTES.Timesheet.one_timesheet, status_code=status.HTTP_200_OK)
         async def read_employee_time_sheets(employee_id: str, date_start: str, date_end: str = None, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint to accumulate and return the total work hours, pto hours, overtime/extra hours for an employee within a provided date range.
@@ -122,7 +122,7 @@ class EmployeeHoursRouter:
 
     class Update:
         @staticmethod
-        @router.put(ENV_SETTINGS.API_ROUTES.Timesheet.one_timesheet, status_code=status.HTTP_200_OK)
+        @router.put(API_ROUTES.Timesheet.one_timesheet, status_code=status.HTTP_200_OK)
         async def update_employee_time_sheet(employee_id: str, updated_employee_hours: PydanticEmployeeTimesheetUpdate, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint to update the total work hours, pto hours, overtime/extra hours for an employee on a provided date.
@@ -154,7 +154,7 @@ class EmployeeHoursRouter:
 
     class Delete:
         @staticmethod
-        @router.delete(ENV_SETTINGS.API_ROUTES.Timesheet.timesheet, status_code=status.HTTP_200_OK)
+        @router.delete(API_ROUTES.Timesheet.timesheet, status_code=status.HTTP_200_OK)
         async def remove_all_employee_time_sheets(employee_id: str, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint to delete all the time sheets for a specified employee.
@@ -180,7 +180,7 @@ class EmployeeHoursRouter:
             return ResponseModel(status.HTTP_200_OK, "success")
 
         @staticmethod
-        @router.delete(ENV_SETTINGS.API_ROUTES.Timesheet.one_timesheet, status_code=status.HTTP_200_OK)
+        @router.delete(API_ROUTES.Timesheet.one_timesheet, status_code=status.HTTP_200_OK)
         async def remove_employee_time_sheets(employee_id: str, delete_employee_hours: PydanticEmployeeTimesheetRemoval,
                                               token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """

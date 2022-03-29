@@ -2,10 +2,10 @@
 This module consists of FastAPI routing for Reports.
 This handles all the REST API logic for creating reports for students and employees.
 """
-from fastapi import Body, status, HTTPException, Depends
+from fastapi import status, HTTPException, Depends
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
-from config import ENV_SETTINGS
+from server.web_api.api_routes import API_ROUTES
 from server.lib.data_classes.student_grade import PydanticStudentGrade
 from server.lib.database_access.student_grades_interface import create_student_grade, remove_student_grade, retrieve_all_grades, retrieve_one_grade
 from server.lib.database_manager import get_db_session
@@ -24,7 +24,7 @@ class StudentGradesRouter:
     """
     class Create:
         @staticmethod
-        @router.post(ENV_SETTINGS.API_ROUTES.StudentGrade.grades, status_code=status.HTTP_201_CREATED)
+        @router.post(API_ROUTES.StudentGrade.grades, status_code=status.HTTP_201_CREATED)
         async def create_student_grade(student_grade: PydanticStudentGrade, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint that creates a student grade in the database system.
@@ -46,7 +46,7 @@ class StudentGradesRouter:
 
     class Read:
         @staticmethod
-        @router.get(ENV_SETTINGS.API_ROUTES.StudentGrade.grades, status_code=status.HTTP_200_OK)
+        @router.get(API_ROUTES.StudentGrade.grades, status_code=status.HTTP_200_OK)
         async def get_all_student_grades(token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint that retrieves all student grades in the database system.
@@ -65,7 +65,7 @@ class StudentGradesRouter:
             return ResponseModel(status.HTTP_200_OK, "success", {"grades": [student_grade.as_dict() for student_grade in student_grades]})
 
         @staticmethod
-        @router.get(ENV_SETTINGS.API_ROUTES.StudentGrade.one_grade, status_code=status.HTTP_200_OK)
+        @router.get(API_ROUTES.StudentGrade.one_grade, status_code=status.HTTP_200_OK)
         async def get_one_student_grade(grade_name: str, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint that retrieves one student grade in the database system.
@@ -87,7 +87,7 @@ class StudentGradesRouter:
 
     class Delete:
         @staticmethod
-        @router.delete(ENV_SETTINGS.API_ROUTES.StudentGrade.grades, status_code=status.HTTP_200_OK)
+        @router.delete(API_ROUTES.StudentGrade.grades, status_code=status.HTTP_200_OK)
         async def delete_student_grade(student_grade: PydanticStudentGrade, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint that deletes an employee time sheet report provided the starting reporting period as a year and month in the YYYY-MM format.

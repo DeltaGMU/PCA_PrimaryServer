@@ -6,7 +6,7 @@ from datetime import timedelta, datetime
 from fastapi import HTTPException, status
 from fastapi.security.oauth2 import OAuth2PasswordBearer
 from jwt.exceptions import PyJWTError
-from config import ENV_SETTINGS
+from server.lib.config_manager import ConfigManager
 from server.lib.logging_manager import LoggingManager
 from server.lib.strings import LOG_ORIGIN_AUTH, LOG_WARNING_AUTH
 from server.lib.data_classes.employee import Employee
@@ -31,13 +31,13 @@ async def create_access_token(employee_user: Employee):
         "exp": token_expiration,
         "scopes": token_scopes
     }
-    jwt_token = jwt.encode(token_data, ENV_SETTINGS.server_secret, algorithm="HS256")
+    jwt_token = jwt.encode(token_data, ConfigManager().config()['API Server']['server_secret'], algorithm="HS256")
     return {"employee_id": employee_user.EmployeeID, "first_name": employee_user.FirstName, "token": jwt_token, "token_type": 'Bearer', "iat": token_issue, "exp": token_expiration}
 
 
 async def get_user_from_token(token: str, session=None):
     try:
-        decoded_token = jwt.decode(token, ENV_SETTINGS.server_secret, algorithms=["HS256"])
+        decoded_token = jwt.decode(token, ConfigManager().config()['API Server']['server_secret'], algorithms=["HS256"])
     except PyJWTError:
         return None
     employee_user = await get_employee(decoded_token['sub'], session)
@@ -48,7 +48,7 @@ async def token_is_valid(token: str, scopes: List[str]) -> bool:
     if None in (token, scopes):
         return False
     try:
-        token_data = jwt.decode(token, ENV_SETTINGS.server_secret, algorithms=["HS256"])
+        token_data = jwt.decode(token, ConfigManager().config()['API Server']['server_secret'], algorithms=["HS256"])
         token_user = token_data.get("sub")
         if token_user is None:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Authorization token is missing user information!")
@@ -78,7 +78,7 @@ async def token_is_valid(token: str, scopes: List[str]) -> bool:
 
 async def add_token_to_blacklist(token: str) -> bool | None:
     try:
-        token_data = jwt.decode(token, ENV_SETTINGS.server_secret, algorithms=["HS256"])
+        token_data = jwt.decode(token, ConfigManager().config()['API Server']['server_secret'], algorithms=["HS256"])
         token_user = token_data.get("sub")
         if token_user is None:
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Authorization token is missing user information!")

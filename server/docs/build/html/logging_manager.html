@@ -155,7 +155,6 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Requirements and Installation</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="getting_started.html">Getting Started</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="project_overview.html">Project Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="launch_parameters.html">Launch Parameters</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current has-children"><a class="reference internal" href="core_api.html">Developer Documentation</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
@@ -298,124 +297,6 @@ Do not modify this unless you know what you’re doing!</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>(int, str) | None</p>
-</dd>
-</dl>
-</dd></dl>
-</dd></dl>
-<dl class="py class">
-<dt class="sig sig-object py" id="server.lib.logging_manager.LoggingManager.Settings">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Settings</span></span><a class="headerlink" href="#server.lib.logging_manager.LoggingManager.Settings" title="Permalink to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>This class serves as a global store of the application settings which is referenced
-by multiple other modules such as the logging manager to retrieve runtime parameters.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="server.lib.logging_manager.LoggingManager.Settings.get_log_directory">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_log_directory</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#server.lib.logging_manager.LoggingManager.Settings.get_log_directory" title="Permalink to this definition">#</a></dt>
-<dd><p>Retrieves the path of the active logging directory used to store log files.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The path to the directory containing application log files.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="server.lib.logging_manager.LoggingManager.Settings.get_log_level">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_log_level</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><a class="reference internal" href="#server.lib.logging_manager.LoggingManager.LogLevel" title="server.lib.logging_manager.LoggingManager.LogLevel"><span class="pre">server.lib.logging_manager.LoggingManager.LogLevel</span></a></span></span><a class="headerlink" href="#server.lib.logging_manager.LoggingManager.Settings.get_log_level" title="Permalink to this definition">#</a></dt>
-<dd><p>Retrieves the current log level set in the logging manager.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The active log level being used by the logger.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="#server.lib.logging_manager.LoggingManager.LogLevel" title="server.lib.logging_manager.LoggingManager.LogLevel">LoggingManager.LogLevel</a></p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="server.lib.logging_manager.LoggingManager.Settings.get_max_log_size">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_max_log_size</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#server.lib.logging_manager.LoggingManager.Settings.get_max_log_size" title="Permalink to this definition">#</a></dt>
-<dd><p>Retrieves the maximum size (in bytes) that any given log file can be in the application log directory.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The maximum size (in bytes) of a log file.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>int</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="server.lib.logging_manager.LoggingManager.Settings.get_max_logs">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_max_logs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">→</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#server.lib.logging_manager.LoggingManager.Settings.get_max_logs" title="Permalink to this definition">#</a></dt>
-<dd><p>Retrieves the maximum logs that can exist at a given time in the application log directory.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>The maximum number of logs that can exist in the application log directory</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>int</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="server.lib.logging_manager.LoggingManager.Settings.set_log_directory">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_log_directory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">log_directory</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.lib.logging_manager.LoggingManager.Settings.set_log_directory" title="Permalink to this definition">#</a></dt>
-<dd><p>Sets the directory that the active logging system should log files to.
-If the provided log directory is invalid, no action will be taken.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>log_directory</strong> (<em>str</em>) – The path of the new log directory.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>None</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="server.lib.logging_manager.LoggingManager.Settings.set_log_level">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_log_level</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">log_level</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#server.lib.logging_manager.LoggingManager.LogLevel" title="server.lib.logging_manager.LoggingManager.LogLevel"><span class="pre">server.lib.logging_manager.LoggingManager.LogLevel</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.lib.logging_manager.LoggingManager.Settings.set_log_level" title="Permalink to this definition">#</a></dt>
-<dd><p>Sets the log level of the active logging system.
-Please refer to the <code class="xref py py-class docutils literal notranslate"><span class="pre">logging_manager.LogLevel</span></code> enum class to view all the defined log levels.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>log_level</strong> (<a class="reference internal" href="#server.lib.logging_manager.LoggingManager.LogLevel" title="server.lib.logging_manager.LoggingManager.LogLevel"><em>LoggingManager.LogLevel</em></a><em> | </em><em>str</em><em> | </em><em>int</em>) – The log level which should be set in the logging manager. This log level can be passed through as a direct reference of the <code class="docutils literal notranslate"><span class="pre">LogLevel</span></code> enum or as an integer or string representation.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>None</p>
-</dd>
-<dt class="field-odd">Raises</dt>
-<dd class="field-odd"><p><strong>RuntimeError</strong> – If setting a new logging level was attempted, but the provided log level was invalid.</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="server.lib.logging_manager.LoggingManager.Settings.set_max_log_size">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_max_log_size</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.lib.logging_manager.LoggingManager.Settings.set_max_log_size" title="Permalink to this definition">#</a></dt>
-<dd><p>Sets the maximum size (in bytes) that any given log file can be in the application log directory.
-If a maximum log size of 0 or below is provided, the max size defaults to 65536 bytes.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>max_size</strong> (<em>int</em>) – The maximum size (in bytes) of a log file.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>None</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="server.lib.logging_manager.LoggingManager.Settings.set_max_logs">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">set_max_logs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_logs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#server.lib.logging_manager.LoggingManager.Settings.set_max_logs" title="Permalink to this definition">#</a></dt>
-<dd><p>Sets the maximum number of logs that can exist at a given time in the application log directory.
-If the maximum number of logs is exceeded, new logs will replace the oldest log in the directory.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>max_logs</strong> (<em>int</em>) – The maximum number of logs that can exist at a given time.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>None</p>
 </dd>
 </dl>
 </dd></dl>

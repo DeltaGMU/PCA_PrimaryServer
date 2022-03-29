@@ -4,7 +4,7 @@ from typing import Union, List
 from enum import Enum, unique
 from os import path, makedirs
 from logging.handlers import RotatingFileHandler
-from config import ENV_SETTINGS
+from server.lib.config_manager import ConfigManager
 from server.lib.utils.print_utils import debug_print
 from server.lib.strings import ROOT_DIR, META_NAME, META_VERSION, LOG_ORIGIN_GENERAL, LOG_ORIGIN_STARTUP
 from server.lib.error_codes import ERR_LOGGING_MNGR_INCORRECT_PARAMS
@@ -29,14 +29,14 @@ class LoggingManager:
             if enable_logging is None:
                 raise RuntimeError(f"Logging Manager Error [Error Code: {ERR_LOGGING_MNGR_INCORRECT_PARAMS}]\n"
                                    "One or more parameters provided to start the service was null!\n"
-                                   "Please check your .env file or include the missing parameters as startup arguments.\n "
+                                   "Please check your server config file or include the missing parameters as startup arguments.\n "
                                    "If you are a server administrator, please refer to the software manual!")
             cls._instance = super(LoggingManager, cls).__new__(cls)
             cls.__logger = None
             cls.__enable_logging = False
 
-            if not path.exists(f"{ROOT_DIR}/logs"):
-                makedirs(f"{ROOT_DIR}/logs")
+            if not path.exists(ConfigManager().config()['Logging']['log_directory']):
+                makedirs(ConfigManager().config()['Logging']['log_directory'])
             if enable_logging:
                 cls._instance.enable()
         return cls.instance()
@@ -67,20 +67,15 @@ class LoggingManager:
         if not cls._instance.is_enabled():
             return
 
-        cls._instance.Settings.set_log_level(ENV_SETTINGS.log_level)
-        cls._instance.Settings.set_max_logs(ENV_SETTINGS.max_logs)
-        cls._instance.Settings.set_max_log_size(ENV_SETTINGS.max_log_size)
-        cls._instance.Settings.set_log_directory(ENV_SETTINGS.log_directory)
-
         cls._instance.__logger = logging.getLogger("PCARuntimeLogging")
         cls._instance.__logger.setLevel(cls._instance.LogLevel.LOG_DEBUG.value[0])
         cls._instance.__logger.handlers = []
 
-        log_file_name = f"{ROOT_DIR}/logs/runtime.log"
+        log_file_name = f"{ConfigManager().config()['Logging']['log_directory']}/runtime.log"
         handler = RotatingFileHandler(
             log_file_name,
-            maxBytes=cls._instance.Settings.get_max_log_size(),
-            backupCount=cls._instance.Settings.get_max_logs()
+            maxBytes=int(ConfigManager().config()['Logging']['max_log_size']),
+            backupCount=int(ConfigManager().config()['Logging']['max_logs'])
         )
         handler.setFormatter(logging.Formatter('[%(asctime)s]-[%(levelname)s]-%(message)s'))
         cls._instance.__logger.addHandler(handler)
@@ -232,133 +227,7 @@ class LoggingManager:
                     return item
             return None
 
-    class Settings:
-        """
-        This class serves as a global store of the application settings which is referenced
-        by multiple other modules such as the logging manager to retrieve runtime parameters.
-        """
-        __log_level: LoggingManager.LogLevel = None
-        __max_logs: int = 10
-        __max_log_size: int = 10*1024*1024
-        __log_directory: str = f'{ROOT_DIR}/logs'
-
-        def __new__(cls):
-            if cls is LoggingManager.Settings:
-                raise TypeError(f'The {cls.__name__} class must not be instantiated!')
-
-        @classmethod
-        def set_log_directory(cls, log_directory: str):
-            """
-            Sets the directory that the active logging system should log files to.
-            If the provided log directory is invalid, no action will be taken.
-
-            :param log_directory: The path of the new log directory.
-            :type log_directory: str
-            :return: None
-            """
-            if log_directory is None:
-                return
-            cls.__log_directory = log_directory
-
-        @classmethod
-        def get_log_directory(cls) -> str:
-            """
-            Retrieves the path of the active logging directory used to store log files.
-
-            :return: The path to the directory containing application log files.
-            :rtype: str
-            """
-            return cls.__log_directory
-
-        @classmethod
-        def set_log_level(cls, log_level: LoggingManager.LogLevel | str | int):
-            """
-            Sets the log level of the active logging system.
-            Please refer to the :class:`logging_manager.LogLevel` enum class to view all the defined log levels.
-
-            :param log_level: The log level which should be set in the logging manager. This log level can be passed through as a direct reference of the ``LogLevel`` enum or as an integer or string representation.
-            :type log_level: LoggingManager.LogLevel | str | int
-            :return: None
-            :raises RuntimeError: If setting a new logging level was attempted, but the provided log level was invalid.
-            """
-            if isinstance(log_level, str):
-                log_level_item = LoggingManager.LogLevel.has_value_label(log_level)
-                if log_level_item:
-                    cls.__log_level = LoggingManager.LogLevel(log_level_item)
-                    return
-            elif isinstance(log_level, int):
-                log_level_item = LoggingManager.LogLevel.has_value_id(log_level)
-                if log_level_item:
-                    cls.__log_level = LoggingManager.LogLevel(log_level_item)
-                    return
-            elif isinstance(log_level, LoggingManager.LogLevel):
-                cls.__log_level = log_level
-                return
-            raise RuntimeError(f'Error: The logging level was attempted to be changed, however the provided log level was invalid: '
-                               f'{log_level}[{type(log_level)}]\nThe log level must be of type: LoggingManager.LogLevel | int | str')
-
-        @classmethod
-        def get_log_level(cls) -> LoggingManager.LogLevel:
-            """
-            Retrieves the current log level set in the logging manager.
-
-            :return: The active log level being used by the logger.
-            :rtype: LoggingManager.LogLevel
-            """
-            return cls.__log_level
-
-        @classmethod
-        def set_max_logs(cls, max_logs: int):
-            """
-            Sets the maximum number of logs that can exist at a given time in the application log directory.
-            If the maximum number of logs is exceeded, new logs will replace the oldest log in the directory.
-
-            :param max_logs: The maximum number of logs that can exist at a given time.
-            :type max_logs: int
-            :return: None
-            """
-            if max_logs is None:
-                return
-            max_logs = max(1, max_logs)
-            cls.__max_logs = max_logs
-
-        @classmethod
-        def get_max_logs(cls) -> int:
-            """
-            Retrieves the maximum logs that can exist at a given time in the application log directory.
-
-            :return: The maximum number of logs that can exist in the application log directory
-            :rtype: int
-            """
-            return cls.__max_logs
-
-        @classmethod
-        def set_max_log_size(cls, max_size: int):
-            """
-            Sets the maximum size (in bytes) that any given log file can be in the application log directory.
-            If a maximum log size of 0 or below is provided, the max size defaults to 65536 bytes.
-
-            :param max_size: The maximum size (in bytes) of a log file.
-            :type max_size: int
-            :return: None
-            """
-            if max_size is None:
-                return
-            if max_size <= 0:
-                max_size = max(65536, max_size)
-            cls.__max_log_size = max_size
-
-        @classmethod
-        def get_max_log_size(cls) -> int:
-            """
-            Retrieves the maximum size (in bytes) that any given log file can be in the application log directory.
-
-            :return: The maximum size (in bytes) of a log file.
-            :rtype: int
-            """
-            return cls.__max_log_size
-
 
 # Create and initialize the logging manager with the provided parameters.
-logging_manager = LoggingManager(ENV_SETTINGS.enable_logs)
+logging_manager = LoggingManager(ConfigManager().config()['Logging']['enable_logs'])
 logging_manager.initialize_logging()

@@ -155,7 +155,6 @@
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Requirements and Installation</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="getting_started.html">Getting Started</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="project_overview.html">Project Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="launch_parameters.html">Launch Parameters</a></li>
 </ul>
 </li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="core_api.html">Developer Documentation</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
@@ -248,10 +247,14 @@
 <li><p>furo==2022.2.23</p></li>
 <li><p>sphinx==4.4.0</p></li>
 </ul>
+<p>Other required packages:</p>
+<ul class="simple">
+<li><p>GTK-3 Runtime Environment for Windows Installations</p></li>
+</ul>
 </section>
 <section id="installation-and-setup">
 <h2>Installation and Setup<a class="headerlink" href="#installation-and-setup" title="Permalink to this headline">#</a></h2>
-<ol class="arabic">
+<ol class="arabic simple">
 <li><dl class="simple">
 <dt>Create an empty directory named ‘PCAServer’ where you want to install the server:</dt><dd><ul class="simple">
 <li><p>Ubuntu/Debian/Windows: <code class="docutils literal notranslate"><span class="pre">mkdir</span> <span class="pre">&lt;path_to_project&gt;/PCAServer/</span></code></p></li>
@@ -303,36 +306,21 @@
 </dd>
 </dl>
 </li>
-<li><dl>
-<dt>Setup an environment file in the root directory of the project:</dt><dd><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">MARIADB_USER</span> <span class="o">=</span> <span class="s2">"my_db_user"</span>
-<span class="n">MARIADB_PASS</span> <span class="o">=</span> <span class="s2">"my_db_password"</span>
-<span class="n">MARIADB_HOST</span> <span class="o">=</span> <span class="s2">"my_db_ip_address"</span>
-<span class="n">MARIADB_PORT</span> <span class="o">=</span> <span class="s2">"my_db_port"</span>
-<span class="n">MARIADB_DATABASE</span> <span class="o">=</span> <span class="s2">"my_db_name"</span>
-<span class="n">WEB_HOST</span> <span class="o">=</span> <span class="s2">"0.0.0.0"</span>
-<span class="n">WEB_PORT</span> <span class="o">=</span> <span class="s2">"56709"</span>
-<span class="n">DEBUG_MODE</span> <span class="o">=</span> <span class="s2">"False"</span>
-<span class="n">QUIET_MODE</span> <span class="o">=</span> <span class="s2">"False"</span>
-<span class="n">ENABLE_LOGS</span> <span class="o">=</span> <span class="s2">"True"</span>
-<span class="n">LOG_LEVEL</span> <span class="o">=</span> <span class="s2">"info"</span>
-<span class="n">MAX_LOGS</span> <span class="o">=</span> <span class="s2">"10"</span>
-<span class="n">MAX_LOG_SIZE</span> <span class="o">=</span> <span class="s2">"10485760"</span>
-</pre></div>
-</div>
+<li><dl class="simple">
+<dt>Setup the server configuration file in the server configs directory.</dt><dd><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;path_to_project&gt;/PCAServer/server/configs/server_config.ini</span></code></p></li>
+</ul>
 </dd>
 </dl>
 </li>
 <li><dl class="simple">
 <dt>Run the server:</dt><dd><ul class="simple">
-<li><p>Normal run: <code class="docutils literal notranslate"><span class="pre">python3</span> <span class="pre">PCAServer/</span></code></p></li>
-<li><p>Run with debug mode: <code class="docutils literal notranslate"><span class="pre">python3</span> <span class="pre">PCAServer/</span> <span class="pre">--debug-mode</span></code></p></li>
-<li><p>Run with quiet mode: <code class="docutils literal notranslate"><span class="pre">python3</span> <span class="pre">PCAServer/</span> <span class="pre">--quiet-mode</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">python3</span> <span class="pre">PCAServer/</span></code></p></li>
 </ul>
 </dd>
 </dl>
 </li>
 </ol>
-<p>For a full list of launch parameters, visit the documentation here: <a class="reference internal" href="launch_parameters.html#launch-parameters-page"><span class="std std-ref">Optional Arguments</span></a></p>
 </section>
 </section>
 
