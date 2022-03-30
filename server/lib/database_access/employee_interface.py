@@ -221,11 +221,13 @@ async def get_employee(username: str, session: Session = None) -> Employee:
         Employee.EmployeeID == username
     ).first()
     if matching_employee is None:
-        matching_employee = session.query(Employee).filter(
-            Employee.EmployeeContactInfo.PrimaryEmail == username
+        matching_employee = session.query(Employee, EmployeeContactInfo).filter(
+            Employee.EmployeeID == EmployeeContactInfo.EmployeeID,
+            EmployeeContactInfo.PrimaryEmail == username
         ).first()
         if matching_employee is None:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='The employee was not found by the employee ID or the employee email. Please check for errors in the provided data!')
+        matching_employee = matching_employee[0]
     return matching_employee
 
 
