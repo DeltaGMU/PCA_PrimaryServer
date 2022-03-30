@@ -16,6 +16,26 @@ class PydanticRetrieveCareStudentsByGrade(BaseModel):
     care_type: bool
 
 
+class PydanticRetrieveStudentCareRecord(BaseModel):
+    """
+    A Pydantic class used to represent the retrieval of multiple student entities that have been checked into student care over a period of time.
+    Do not try to initialize this class as an independent entity or extend it into a subclass.
+    """
+    student_id: str
+    start_date: str
+    end_date: str
+
+
+class PydanticDeleteStudentCareRecord(BaseModel):
+    """
+    A Pydantic class used to represent the deletion of a student care record on the given date for the given student ID.
+    Do not try to initialize this class as an independent entity or extend it into a subclass.
+    """
+    student_id: str
+    care_date: str
+    care_type: Optional[bool]
+
+
 class PydanticStudentCareHoursCheckIn(BaseModel):
     """
     A Pydantic class used to represent a student entity that is being checked into student care when creating a new student care hours record from a http request to the API.

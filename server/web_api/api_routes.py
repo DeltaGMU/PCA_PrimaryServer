@@ -62,6 +62,7 @@ class APIRoutes:
     class StudentCare:
         count = '/api/v1/care/count'
         care = '/api/v1/care'
+        records = '/api/v1/care/records'
         check_in = '/api/v1/care/checkin'
         check_out = '/api/v1/care/checkout'
 

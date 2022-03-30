@@ -7,10 +7,11 @@ from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
 from server.web_api.api_routes import API_ROUTES
 from server.lib.database_access.student_interface import get_student_by_id
-from server.lib.database_access.student_care_interface import check_in_student, check_out_student, get_one_student_care, get_care_students_by_grade
+from server.lib.database_access.student_care_interface import check_in_student, check_out_student, get_one_student_care, \
+    get_care_students_by_grade, get_student_care_records, delete_student_care_records
 from server.web_api.models import ResponseModel
 from server.lib.data_classes.student_care_hours import PydanticStudentCareHoursCheckIn, PydanticStudentCareHoursCheckOut, \
-    PydanticRetrieveCareStudentsByGrade
+    PydanticRetrieveCareStudentsByGrade, PydanticRetrieveStudentCareRecord
 from server.lib.database_manager import get_db_session
 from server.web_api.web_security import token_is_valid, oauth_scheme
 
@@ -69,7 +70,7 @@ class StudentCareRouter:
             return ResponseModel(status.HTTP_200_OK, "success", {"care": student_care})
 
         @staticmethod
-        @router.post(API_ROUTES.StudentCare.care, status_code=status.HTTP_201_CREATED)
+        @router.post(API_ROUTES.StudentCare.care, status_code=status.HTTP_200_OK)
         async def read_students_by_grade(pyd_care_students: PydanticRetrieveCareStudentsByGrade, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint that returns a list of the students that are participating in before/after-care for the provided date in the provided student grade.
@@ -89,7 +90,50 @@ class StudentCareRouter:
             if not await token_is_valid(token, ["administrator"]):
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
             list_of_student_care = await get_care_students_by_grade(pyd_care_students, session)
-            return ResponseModel(status.HTTP_201_CREATED, "success", {"students": list_of_student_care})
+            return ResponseModel(status.HTTP_200_OK, "success", {"students": list_of_student_care})
+
+        @staticmethod
+        @router.post(API_ROUTES.StudentCare.records, status_code=status.HTTP_200_OK)
+        async def read_student_care_records(pyd_care_students: PydanticRetrieveStudentCareRecord, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
+            """
+            An endpoint that returns a list of the student records from the provided date range.
+
+            :param pyd_care_students: The student ID, care start date, and care end date.
+            :type pyd_care_students: PydanticRetrieveStudentCareRecord, required
+            :param token: The JSON Web Token responsible for authenticating the user to this endpoint.
+            :type token: str, required
+            :param session: The database session to use to collect student care records from the database.
+            :type session: sqlalchemy.orm.session, optional
+            :return: A response model containing the student care records.
+            :rtype: server.web_api.models.ResponseModel
+            :raises HTTPException: If the data provided in the request body is invalid.
+            """
+            if not await token_is_valid(token, ["administrator"]):
+                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
+            list_of_records = await get_student_care_records(pyd_care_students, session)
+            return ResponseModel(status.HTTP_200_OK, "success", {"records": list_of_records})
+
+    class Delete:
+        @staticmethod
+        @router.delete(API_ROUTES.StudentCare.records, status_code=status.HTTP_200_OK)
+        async def delete_student_care_record(pyd_care_students: PydanticRetrieveStudentCareRecord, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
+            """
+            An endpoint that returns a list of the student records from the provided date range.
+
+            :param pyd_care_students: The student ID, care start date, and care end date.
+            :type pyd_care_students: PydanticRetrieveStudentCareRecord, required
+            :param token: The JSON Web Token responsible for authenticating the user to this endpoint.
+            :type token: str, required
+            :param session: The database session to use to collect student care records from the database.
+            :type session: sqlalchemy.orm.session, optional
+            :return: A response model containing the student care records.
+            :rtype: server.web_api.models.ResponseModel
+            :raises HTTPException: If the data provided in the request body is invalid.
+            """
+            if not await token_is_valid(token, ["administrator"]):
+                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
+            await delete_student_care_records(pyd_care_students, session)
+            return ResponseModel(status.HTTP_200_OK, "success")
 
     class Service:
         @staticmethod

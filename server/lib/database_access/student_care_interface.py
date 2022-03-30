@@ -2,13 +2,13 @@ import time
 from datetime import datetime
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
+from sqlalchemy import desc, asc
 from fastapi import HTTPException, status
-
 from server.lib.data_classes.student_grade import StudentGrade
 from server.lib.config_manager import ConfigManager
 from server.lib.data_classes.student import Student
 from server.lib.utils.date_utils import check_date_formats
-from server.lib.data_classes.student_care_hours import StudentCareHours, PydanticStudentCareHoursCheckOut, PydanticRetrieveCareStudentsByGrade
+from server.lib.data_classes.student_care_hours import StudentCareHours, PydanticStudentCareHoursCheckOut, PydanticRetrieveCareStudentsByGrade, PydanticRetrieveStudentCareRecord, PydanticDeleteStudentCareRecord
 from server.lib.data_classes.student_care_hours import PydanticStudentCareHoursCheckIn
 from server.lib.database_manager import get_db_session
 
@@ -31,6 +31,68 @@ async def get_one_student_care(student_id: str, care_date: str, session: Session
         return [care.as_dict() for care in student_care]
 
 
+async def delete_student_care_records(pyd_student_care_delete: PydanticDeleteStudentCareRecord, session: Session = None):
+    if session is None:
+        session = next(get_db_session())
+    if None in (pyd_student_care_delete.student_id, pyd_student_care_delete.care_date):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="A student ID and a care date must be provided!")
+    if not check_date_formats(pyd_student_care_delete.care_date):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The care date provided was in an incorrect format! Ensure the date is in YYYY-MM-DD format!")
+
+    student_exists = session.query(Student).filter(Student.StudentID == pyd_student_care_delete.student_id).first()
+    if student_exists is None:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The provided student ID does not exist!")
+
+    if pyd_student_care_delete.care_type is None:
+        care_records = session.query(StudentCareHours).filter(
+            StudentCareHours.StudentID == pyd_student_care_delete.student_id,
+            StudentCareHours.CareDate == pyd_student_care_delete.care_date
+        ).all()
+    else:
+        care_records = session.query(StudentCareHours).filter(
+            StudentCareHours.StudentID == pyd_student_care_delete.student_id,
+            StudentCareHours.CareDate == pyd_student_care_delete.care_date,
+            StudentCareHours.CareType == pyd_student_care_delete.care_type
+        ).all()
+    for care_record in care_records:
+        session.delete(care_record)
+
+
+async def get_student_care_records(pyd_student_care: PydanticRetrieveStudentCareRecord, session: Session = None):
+    if session is None:
+        session = next(get_db_session())
+    if None in (pyd_student_care.student_id, pyd_student_care.start_date, pyd_student_care.end_date):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="A student ID, a care start date, and a care end date must be provided!")
+    if not check_date_formats([pyd_student_care.start_date, pyd_student_care.end_date]):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Either the care start date or the care end date provided was in an incorrect format! Ensure the dates are in YYYY-MM-DD format!")
+
+    student_exists = session.query(Student).filter(Student.StudentID == pyd_student_care.student_id).first()
+    if student_exists is None:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The provided student ID does not exist!")
+
+    found_records = {}
+    pyd_student_care.student_id = pyd_student_care.student_id.lower().strip()
+    care_records = session.query(Student, StudentCareHours).filter(
+        Student.StudentID == pyd_student_care.student_id,
+        StudentCareHours.StudentID == pyd_student_care.student_id,
+        StudentCareHours.CareDate.between(pyd_student_care.start_date, pyd_student_care.end_date)
+    ).order_by(desc(StudentCareHours.CareDate)).all()
+    for record in care_records:
+        if found_records.get(record[1].CareDate, None) is None:
+            found_records[record[1].CareDate] = {
+                "student": record[0].as_limited_dict(),
+            }
+        if not record[1].CareType:
+            found_records[record[1].CareDate].update({
+                "before_care": record[1].as_dict(),
+            })
+        elif record[1].CareType:
+            found_records[record[1].CareDate].update({
+                "after_care": record[1].as_dict(),
+            })
+    return found_records
+
+
 async def get_care_students_by_grade(pyd_care_students: PydanticRetrieveCareStudentsByGrade, session: Session = None):
     if session is None:
         session = next(get_db_session())
@@ -45,7 +107,7 @@ async def get_care_students_by_grade(pyd_care_students: PydanticRetrieveCareStud
     all_students_in_grade = session.query(Student, StudentGrade).filter(
         Student.GradeID == StudentGrade.id,
         StudentGrade.Name == pyd_care_students.student_grade,
-    ).all()
+    ).order_by(asc(Student.StudentID)).all()
     for student in all_students_in_grade:
         student_checked_in = session.query(StudentCareHours).filter(
             StudentCareHours.StudentID == student[0].StudentID,
