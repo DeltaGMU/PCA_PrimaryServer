@@ -6,14 +6,14 @@ from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Date, Larg
 from server.lib.database_access.sqlalchemy_base_interface import MainEngineBase as Base
 
 
-class PydanticRetrieveStudentsByCareDate(BaseModel):
+class PydanticRetrieveCareStudentsByGrade(BaseModel):
     """
     A Pydantic class used to represent the retrieval of multiple student entities that have been checked into student care.
     Do not try to initialize this class as an independent entity or extend it into a subclass.
     """
-    student_ids: Optional[List[str]]
-    care_date: Optional[str]
-    care_type: Optional[bool]
+    student_grade: str
+    care_date: str
+    care_type: bool
 
 
 class PydanticStudentCareHoursCheckIn(BaseModel):

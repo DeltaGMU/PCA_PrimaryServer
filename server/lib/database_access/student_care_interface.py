@@ -3,10 +3,12 @@ from datetime import datetime
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
+
+from server.lib.data_classes.student_grade import StudentGrade
 from server.lib.config_manager import ConfigManager
 from server.lib.data_classes.student import Student
 from server.lib.utils.date_utils import check_date_formats
-from server.lib.data_classes.student_care_hours import StudentCareHours, PydanticStudentCareHoursCheckOut, PydanticRetrieveStudentsByCareDate
+from server.lib.data_classes.student_care_hours import StudentCareHours, PydanticStudentCareHoursCheckOut, PydanticRetrieveCareStudentsByGrade
 from server.lib.data_classes.student_care_hours import PydanticStudentCareHoursCheckIn
 from server.lib.database_manager import get_db_session
 
@@ -29,60 +31,36 @@ async def get_one_student_care(student_id: str, care_date: str, session: Session
         return [care.as_dict() for care in student_care]
 
 
-async def get_students_by_care_date(pyd_care_students: PydanticRetrieveStudentsByCareDate, session: Session = None):
+async def get_care_students_by_grade(pyd_care_students: PydanticRetrieveCareStudentsByGrade, session: Session = None):
     if session is None:
         session = next(get_db_session())
-    if pyd_care_students.student_ids is None and pyd_care_students.care_date is None:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Either a list of student IDs must be provided, or a care date must be provided!")
-    if pyd_care_students.care_date:
-        if not check_date_formats(pyd_care_students.care_date):
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The check-in date was provided in an incorrect format! Ensure the date is in YYYY-MM-DD format!")
+    if None in (pyd_care_students.student_grade, pyd_care_students.care_date, pyd_care_students.care_type):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="A student grade, a care type, and a care date must be provided!")
+    if not check_date_formats(pyd_care_students.care_date):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Either the care start date or the care end date provided was in an incorrect format! Ensure the dates are in YYYY-MM-DD format!")
 
-        if pyd_care_students.care_type is None:
-            students_matching_date = session.query(StudentCareHours).filter(
-                StudentCareHours.CareDate == pyd_care_students.care_date
-            ).all()
+    pyd_care_students.student_grade = pyd_care_students.student_grade.lower().strip()
+    pyd_care_students.care_date = pyd_care_students.care_date.strip()
+    student_list = []
+    all_students_in_grade = session.query(Student, StudentGrade).filter(
+        Student.GradeID == StudentGrade.id,
+        StudentGrade.Name == pyd_care_students.student_grade,
+    ).all()
+    for student in all_students_in_grade:
+        student_checked_in = session.query(StudentCareHours).filter(
+            StudentCareHours.StudentID == student[0].StudentID,
+            StudentCareHours.CareDate == pyd_care_students.care_date,
+            StudentCareHours.CareType == pyd_care_students.care_type
+        ).first()
+        student_dict = {
+            "student": student[0].as_dict(),
+        }
+        if student_checked_in:
+            student_dict["not_applicable"] = True
         else:
-            students_matching_date = session.query(StudentCareHours).filter(
-                StudentCareHours.CareDate == pyd_care_students.care_date,
-                StudentCareHours.CareType == pyd_care_students.care_type
-            ).all()
-        if students_matching_date is None:
-            return []
-        student_care_list = []
-        for student_care in students_matching_date:
-            matching_student = session.query(Student).filter(Student.StudentID == student_care.StudentID).first()
-            if matching_student:
-                student_care_list.append({
-                    "first_name": matching_student.FirstName,
-                    "last_name": matching_student.LastName,
-                    "student_care": student_care.as_dict()
-                })
-        return student_care_list
-    elif pyd_care_students.student_ids:
-        if pyd_care_students.care_type is None:
-            students_matching_date = session.query(StudentCareHours).filter(
-                StudentCareHours.StudentID.in_(pyd_care_students.student_ids)
-            ).all()
-        else:
-            students_matching_date = session.query(StudentCareHours).filter(
-                StudentCareHours.StudentID.in_(pyd_care_students.student_ids),
-                StudentCareHours.CareType == pyd_care_students.care_type
-            ).all()
-        if students_matching_date is None:
-            return []
-        student_care_list = []
-        for student_care in students_matching_date:
-            matching_student = session.query(Student).filter(Student.StudentID == student_care.StudentID).first()
-            if matching_student:
-                student_care_list.append({
-                    "first_name": matching_student.FirstName,
-                    "last_name": matching_student.LastName,
-                    "student_care": student_care.as_dict()
-                })
-        return student_care_list
-    else:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="A list of student IDs or a check-in date must be provided!")
+            student_dict["not_applicable"] = False
+        student_list.append(student_dict)
+    return student_list
 
 
 async def check_in_student(pyd_student_checkin: PydanticStudentCareHoursCheckIn, session: Session = None):

@@ -7,10 +7,10 @@ from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
 from server.web_api.api_routes import API_ROUTES
 from server.lib.database_access.student_interface import get_student_by_id
-from server.lib.database_access.student_care_interface import check_in_student, check_out_student, get_students_by_care_date, get_one_student_care
+from server.lib.database_access.student_care_interface import check_in_student, check_out_student, get_one_student_care, get_care_students_by_grade
 from server.web_api.models import ResponseModel
 from server.lib.data_classes.student_care_hours import PydanticStudentCareHoursCheckIn, PydanticStudentCareHoursCheckOut, \
-    PydanticRetrieveStudentsByCareDate
+    PydanticRetrieveCareStudentsByGrade
 from server.lib.database_manager import get_db_session
 from server.web_api.web_security import token_is_valid, oauth_scheme
 
@@ -70,12 +70,10 @@ class StudentCareRouter:
 
         @staticmethod
         @router.post(API_ROUTES.StudentCare.care, status_code=status.HTTP_201_CREATED)
-        async def read_students_by_care_date(pyd_care_students: PydanticRetrieveStudentsByCareDate, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
+        async def read_students_by_grade(pyd_care_students: PydanticRetrieveCareStudentsByGrade, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
-            An endpoint that returns a list of the students that are participating in before/after-care for the provided date.
-            Alternatively, a list of student IDs can be provided to retrieve those specific students.
-            If a care type is not provided, then the results will be from both before-care and after-care.
-            This list includes students that are checked-in or checked-out for the day.
+            An endpoint that returns a list of the students that are participating in before/after-care for the provided date in the provided student grade.
+            If a student has already participated in student care on the provided day, a flag is set on the student's information in the response.
 
             :param pyd_care_students: Either a list of student IDs or the care date to retrieve all students for that date, as well as the care type (false => before-care, true => after-care). Not providing a care date will show results
             from both before-care and after-care.
@@ -90,7 +88,7 @@ class StudentCareRouter:
             """
             if not await token_is_valid(token, ["administrator"]):
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
-            list_of_student_care = await get_students_by_care_date(pyd_care_students, session)
+            list_of_student_care = await get_care_students_by_grade(pyd_care_students, session)
             return ResponseModel(status.HTTP_201_CREATED, "success", {"students": list_of_student_care})
 
     class Service:
