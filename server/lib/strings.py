@@ -10,7 +10,7 @@ META_VERSION = '1.0.0'
 META_NAME = 'PCAProject'
 ROOT_DIR = Path(__file__).parent.parent
 
-# Logging Manager Metadata
+# Logging Manager Metadata Constants
 LOG_ORIGIN_GENERAL = 'General'
 LOG_ORIGIN_API = 'API'
 LOG_ORIGIN_AUTH = 'Authentication'
