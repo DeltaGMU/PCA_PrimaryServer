@@ -36,10 +36,13 @@ class APIRoutes:
 
     class Reports:
         reports = '/api/v1/reports'
-        employee_reports = '/api/v1/reports/employees'
-        student_reports = '/api/v1/reports/students'
+        employee_reports_pdf = '/api/v1/reports/employees/pdf'
+        employee_reports_csv = '/api/v1/reports/employees/csv'
+        student_reports_pdf = '/api/v1/reports/students/pdf'
+        student_reports_csv = '/api/v1/reports/students/csv'
         timesheet_reports = '/api/v1/reports/timesheet'
-        care_reports = '/api/v1/reports/care'
+        care_reports_pdf = '/api/v1/reports/care/pdf'
+        care_reports_csv = '/api/v1/reports/care/csv'
 
     class Employees:
         count = '/api/v1/employees/count'
