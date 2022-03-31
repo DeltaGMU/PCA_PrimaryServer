@@ -1,5 +1,7 @@
 from datetime import datetime, timedelta, date
 import pdfkit
+import csv
+from io import StringIO
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import or_
@@ -34,8 +36,7 @@ async def get_all_time_sheets_for_report(start_date: str, end_date: str, session
             Employee.EmployeeID != 'admin',
             EmployeeRole.id == Employee.EmployeeRoleID,
             EmployeeHours.EmployeeID == Employee.EmployeeID,
-            EmployeeHours.DateWorked.between(start_date, end_date),
-            or_(EmployeeHours.WorkHours > 0, EmployeeHours.PTOHours > 0, EmployeeHours.ExtraHours > 0)
+            EmployeeHours.DateWorked.between(start_date, end_date)
         ).order_by(Employee.FirstName).all()
         if employee_time_sheet_records is None:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Encountered an error retrieving employee time sheets!")
@@ -61,6 +62,35 @@ async def get_all_time_sheets_for_report(start_date: str, end_date: str, session
     except IntegrityError as err:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(err)) from err
     return all_employees_hours
+
+
+async def get_all_time_sheets_for_csv(start_date: str, end_date: str, session: Session = None):
+    if session is None:
+        session = next(get_db_session())
+    try:
+        employee_time_sheet_records = session.query(Employee, EmployeeHours, EmployeeRole).filter(
+            Employee.EmployeeEnabled == 1,
+            Employee.EmployeeID != 'admin',
+            EmployeeRole.id == Employee.EmployeeRoleID,
+            EmployeeHours.EmployeeID == Employee.EmployeeID,
+            EmployeeHours.DateWorked.between(start_date, end_date),
+            or_(EmployeeHours.WorkHours > 0, EmployeeHours.PTOHours > 0, EmployeeHours.ExtraHours > 0)
+        ).order_by(Employee.FirstName).all()
+        if employee_time_sheet_records is None:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Encountered an error retrieving employee time sheets!")
+        employee_hours_list = [['employee_id', 'full_name', 'work_hours', 'pto_hours', 'extra_hours', 'comments']]
+        for item in employee_time_sheet_records:
+            employee_hours_list.append([
+                item[0].EmployeeID,
+                f"{item[0].FirstName} {item[0].LastName}",
+                item[1].WorkHours,
+                item[1].PTOHours,
+                item[1].ExtraHours,
+                item[1].Comment
+            ])
+    except IntegrityError as err:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(err)) from err
+    return employee_hours_list
 
 
 async def get_employees_within_reporting_period(start_date: str, end_date: str, session: Session = None):
@@ -119,6 +149,18 @@ async def get_all_student_care_for_report(start_date: str, end_date: str, grade:
     return all_student_hours
 
 
+async def create_time_sheets_csv(start_date: str, end_date: str, session: Session = None):
+    if session is None:
+        session = next(get_db_session())
+    if not check_date_formats([start_date, end_date]):
+        raise RuntimeError("The start and end dates for the reporting period are invalid!")
+    employee_hours_list = await get_all_time_sheets_for_csv(start_date, end_date, session)
+    mem_file = StringIO()
+    csv.writer(mem_file).writerows(employee_hours_list)
+    print(mem_file.getvalue())
+    return mem_file.getvalue()
+
+
 async def create_time_sheets_report(start_date: str, end_date: str, session: Session = None):
     if session is None:
         session = next(get_db_session())
@@ -170,7 +212,7 @@ async def create_time_sheets_report(start_date: str, end_date: str, session: Ses
                            f"{ROOT_DIR}/lib/report_generation/styles.css"
                        ],
                        options=options)
-    return generated_pdf_path
+    return generated_pdf_path, f"{reformat_date}-EmployeeReport.pdf"
 
 
 async def create_student_care_report(start_date, end_date, grade, session):
@@ -226,3 +268,4 @@ async def create_student_care_report(start_date, end_date, grade, session):
                        ],
                        options=options)
     return generated_pdf_path
+
