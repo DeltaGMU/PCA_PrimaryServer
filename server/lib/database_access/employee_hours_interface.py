@@ -1,6 +1,8 @@
 from __future__ import annotations
 from typing import Dict, List
 from sqlalchemy.orm import Session
+
+from server.lib.data_classes.employee import Employee
 from server.lib.utils.date_utils import check_date_formats
 from server.lib.data_classes.employee_hours import EmployeeHours, PydanticEmployeeTimesheetSubmission, PydanticEmployeeTimesheetRemoval
 from server.lib.database_manager import get_db_session
@@ -16,8 +18,20 @@ async def create_employee_multiple_hours(employee_id: str, employee_updates: Lis
     try:
         if not check_date_formats([employee_update.date_worked for employee_update in employee_updates]):
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="One or more provided dates are not in the YYYY-MM-DD format!")
+
+        employee_id = employee_id.lower().strip()
+        check_employee = session.query(Employee).filter(
+            Employee.EmployeeID == employee_id
+        ).first()
+        if check_employee is None:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Could not find an employee with the provided employee ID!")
+
         submitted_time_sheets = []
         for timesheet in employee_updates:
+            if not check_employee.PTOHoursEnabled:
+                timesheet.pto_hours = 0
+            if not check_employee.ExtraHoursEnabled:
+                timesheet.extra_hours = 0
             timesheet_submission = EmployeeHours(
                 employee_id,
                 timesheet.work_hours,
