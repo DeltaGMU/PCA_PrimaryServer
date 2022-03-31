@@ -3,6 +3,8 @@ from typing import List, Union
 
 
 def check_date_formats(dates: Union[List[str], str]) -> bool:
+    if dates is None:
+        return False
     if isinstance(dates, str):
         dates = [dates]
     for date in dates:
