@@ -86,8 +86,8 @@ class ReportsRouter:
             """
             if not await token_is_valid(token, ["administrator"]):
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
-            created_report_path = await create_student_care_report(reporting_period.start_date, reporting_period.end_date, reporting_period.grade, session)
-            return FileResponse(created_report_path)
+            created_report_path, pdf_filename = await create_student_care_report(reporting_period.start_date, reporting_period.end_date, reporting_period.grade, session)
+            return FileResponse(created_report_path, media_type="application/pdf", filename=pdf_filename)
 
     class Delete:
         @staticmethod

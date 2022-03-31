@@ -267,5 +267,5 @@ async def create_student_care_report(start_date, end_date, grade, session):
                            f"{ROOT_DIR}/lib/report_generation/styles.css"
                        ],
                        options=options)
-    return generated_pdf_path
+    return generated_pdf_path, f"{reformat_date}-StudentReport.pdf"
 
