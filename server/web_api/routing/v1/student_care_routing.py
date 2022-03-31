@@ -11,7 +11,7 @@ from server.lib.database_access.student_care_interface import check_in_student, 
     get_care_students_by_grade, get_student_care_records, delete_student_care_records
 from server.web_api.models import ResponseModel
 from server.lib.data_classes.student_care_hours import PydanticStudentCareHoursCheckIn, PydanticStudentCareHoursCheckOut, \
-    PydanticRetrieveCareStudentsByGrade, PydanticRetrieveStudentCareRecord
+    PydanticRetrieveCareStudentsByGrade, PydanticRetrieveStudentCareRecord, PydanticDeleteStudentCareRecord
 from server.lib.database_manager import get_db_session
 from server.web_api.web_security import token_is_valid, oauth_scheme
 
@@ -115,18 +115,18 @@ class StudentCareRouter:
 
     class Delete:
         @staticmethod
-        @router.delete(API_ROUTES.StudentCare.records, status_code=status.HTTP_200_OK)
-        async def delete_student_care_record(pyd_care_students: PydanticRetrieveStudentCareRecord, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
+        @router.post(API_ROUTES.StudentCare.remove_records, status_code=status.HTTP_200_OK)
+        async def delete_student_care_record(pyd_care_students: PydanticDeleteStudentCareRecord, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
-            An endpoint that returns a list of the student records from the provided date range.
+            An endpoint that deletes a student care record for a specific student on the provided date.
 
-            :param pyd_care_students: The student ID, care start date, and care end date.
-            :type pyd_care_students: PydanticRetrieveStudentCareRecord, required
+            :param pyd_care_students: The student ID, care date, and optionally the care type.
+            :type pyd_care_students: PydanticDeleteStudentCareRecord, required
             :param token: The JSON Web Token responsible for authenticating the user to this endpoint.
             :type token: str, required
-            :param session: The database session to use to collect student care records from the database.
+            :param session: The database session to use to delete student care records from the database.
             :type session: sqlalchemy.orm.session, optional
-            :return: A response model containing the student care records.
+            :return: A response model containing the success message.
             :rtype: server.web_api.models.ResponseModel
             :raises HTTPException: If the data provided in the request body is invalid.
             """

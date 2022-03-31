@@ -56,6 +56,7 @@ async def delete_student_care_records(pyd_student_care_delete: PydanticDeleteStu
         ).all()
     for care_record in care_records:
         session.delete(care_record)
+    session.commit()
 
 
 async def get_student_care_records(pyd_student_care: PydanticRetrieveStudentCareRecord, session: Session = None):
@@ -90,6 +91,7 @@ async def get_student_care_records(pyd_student_care: PydanticRetrieveStudentCare
             found_records[record[1].CareDate].update({
                 "after_care": record[1].as_dict(),
             })
+    session.commit()
     return found_records
 
 
