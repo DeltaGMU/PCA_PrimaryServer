@@ -1,5 +1,6 @@
 from __future__ import annotations
 from sqlalchemy.orm import Session
+from sqlalchemy import sql
 from typing import List, Dict
 from random import choice, randint
 from server.lib.utils.email_utils import send_email
@@ -147,6 +148,7 @@ async def update_employee_password(employee_id: str, new_password: str, session:
     if password_hash is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The plain text password provided to be hashed is invalid!")
     employee.PasswordHash = password_hash
+    employee.LastUpdated = sql.func.now()
     session.commit()
     return employee
 
@@ -173,38 +175,38 @@ async def update_employee(employee_id, pyd_employee_update: PydanticEmployeeUpda
     # Check to see what data was provided and update as necessary.
     if pyd_employee_update.first_name:
         employee.FirstName = pyd_employee_update.first_name.lower().strip()
-        employee.LastUpdated = None
+        employee.LastUpdated = sql.func.now()
     if pyd_employee_update.last_name:
         employee.LastName = pyd_employee_update.last_name.lower().strip()
-        employee.LastUpdated = None
+        employee.LastUpdated = sql.func.now()
     if pyd_employee_update.primary_email:
         employee.EmployeeContactInfo.PrimaryEmail = pyd_employee_update.primary_email.lower().strip()
-        employee.EmployeeContactInfo.LastUpdated = None
+        employee.EmployeeContactInfo.LastUpdated = sql.func.now()
     if pyd_employee_update.secondary_email:
         employee.EmployeeContactInfo.SecondaryEmail = pyd_employee_update.secondary_email.lower().strip()
-        employee.EmployeeContactInfo.LastUpdated = None
+        employee.EmployeeContactInfo.LastUpdated = sql.func.now()
     if pyd_employee_update.enable_primary_email_notifications:
         employee.EmployeeContactInfo.EnablePrimaryEmailNotifications = pyd_employee_update.enable_primary_email_notifications
-        employee.EmployeeContactInfo.LastUpdated = None
+        employee.EmployeeContactInfo.LastUpdated = sql.func.now()
     if pyd_employee_update.enable_secondary_email_notifications:
         employee.EmployeeContactInfo.EnableSecondaryEmailNotifications = pyd_employee_update.enable_secondary_email_notifications
-        employee.EmployeeContactInfo.LastUpdated = None
+        employee.EmployeeContactInfo.LastUpdated = sql.func.now()
     if pyd_employee_update.role:
         role_query = session.query(EmployeeRole).filter(EmployeeRole.Name == pyd_employee_update.role).first()
         if not role_query:
             session.rollback()
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The provided employee role is invalid or does not exist!")
         employee.EmployeeRoleID = role_query.id
-        employee.LastUpdated = None
+        employee.LastUpdated = sql.func.now()
     if pyd_employee_update.pto_hours_enabled:
         employee.PTOHoursEnabled = pyd_employee_update.pto_hours_enabled
-        employee.LastUpdated = None
+        employee.LastUpdated = sql.func.now()
     if pyd_employee_update.extra_hours_enabled:
         employee.ExtraHoursEnabled = pyd_employee_update.extra_hours_enabled
-        employee.LastUpdated = None
+        employee.LastUpdated = sql.func.now()
     if pyd_employee_update.is_enabled:
         employee.EmployeeEnabled = pyd_employee_update.is_enabled
-        employee.LastUpdated = None
+        employee.LastUpdated = sql.func.now()
     session.commit()
     return employee
 

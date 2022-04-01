@@ -9,6 +9,7 @@ from server.lib.utils.student_utils import generate_student_id
 from server.lib.data_classes.student import PydanticStudentRegistration, Student, PydanticStudentUpdate, PydanticStudentsRemoval
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy import sql
 from fastapi import HTTPException, status
 
 
@@ -139,44 +140,44 @@ async def update_student(student_id: str, pyd_student_update: PydanticStudentUpd
     # Check to see what data was provided and update as necessary.
     if pyd_student_update.first_name:
         student.FirstName = pyd_student_update.first_name.lower().strip()
-        student.LastUpdated = None
+        student.LastUpdated = sql.func.now()
     if pyd_student_update.last_name:
         student.LastName = pyd_student_update.last_name.lower().strip()
-        student.LastUpdated = None
+        student.LastUpdated = sql.func.now()
     if pyd_student_update.parent_one_first_name:
         student_contact_info.ParentOneFirstName = pyd_student_update.parent_one_first_name.lower().strip()
-        student_contact_info.LastUpdated = None
+        student_contact_info.LastUpdated = sql.func.now()
     if pyd_student_update.parent_one_last_name:
         student_contact_info.ParentOneLastName = pyd_student_update.parent_one_last_name.lower().strip()
-        student_contact_info.LastUpdated = None
+        student_contact_info.LastUpdated = sql.func.now()
     if pyd_student_update.parent_two_first_name:
         student_contact_info.ParentTwoFirstName = pyd_student_update.parent_two_first_name.lower().strip()
-        student_contact_info.LastUpdated = None
+        student_contact_info.LastUpdated = sql.func.now()
     if pyd_student_update.parent_two_last_name:
         student_contact_info.ParentTwoLastName = pyd_student_update.parent_two_last_name.lower().strip()
-        student_contact_info.LastUpdated = None
+        student_contact_info.LastUpdated = sql.func.now()
     if pyd_student_update.parent_primary_email:
         student_contact_info.PrimaryEmail = pyd_student_update.primary_email.lower().strip()
-        student_contact_info.LastUpdated = None
+        student_contact_info.LastUpdated = sql.func.now()
     if pyd_student_update.parent_secondary_email:
         student_contact_info.SecondaryEmail = pyd_student_update.secondary_email.lower().strip()
-        student_contact_info.LastUpdated = None
+        student_contact_info.LastUpdated = sql.func.now()
     if pyd_student_update.enable_primary_email_notifications:
         student_contact_info.EnablePrimaryEmailNotifications = pyd_student_update.enable_primary_email_notifications
-        student_contact_info.LastUpdated = None
+        student_contact_info.LastUpdated = sql.func.now()
     if pyd_student_update.enable_secondary_email_notifications:
         student_contact_info.EnableSecondaryEmailNotifications = pyd_student_update.enable_secondary_email_notifications
-        student_contact_info.LastUpdated = None
+        student_contact_info.LastUpdated = sql.func.now()
     if pyd_student_update.is_enabled:
         student_contact_info.EmployeeEnabled = pyd_student_update.is_enabled
-        student.LastUpdated = None
+        student.LastUpdated = sql.func.now()
     if pyd_student_update.grade:
         grade_query = session.query(StudentGrade).filter(StudentGrade.Name == pyd_student_update.grade.lower().strip()).first()
         if not grade_query:
             session.rollback()
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The provided student grade is invalid or does not exist!")
         student.GradeID = grade_query.id
-        student.LastUpdated = None
+        student.LastUpdated = sql.func.now()
     session.commit()
     return student
 
