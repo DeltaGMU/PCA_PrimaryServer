@@ -149,12 +149,82 @@ async def get_all_student_care_for_report(start_date: str, end_date: str, grade:
     return all_student_hours
 
 
+async def get_all_student_care_for_csv(start_date: str, end_date: str, grade: str, session: Session = None):
+    if session is None:
+        session = next(get_db_session())
+    try:
+        grade = grade.lower().strip()
+        student_grade = session.query(StudentGrade).filter(
+            StudentGrade.Name == grade
+        ).first()
+        if student_grade is None:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The provided student grade is invalid or could not be found!")
+
+        student_care_records = session.query(Student, StudentCareHours).filter(
+            Student.StudentEnabled == 1,
+            StudentCareHours.StudentID == Student.StudentID,
+            Student.GradeID == student_grade.id,
+            StudentCareHours.CareDate.between(start_date, end_date)
+        ).order_by(Student.FirstName).all()
+        if student_care_records is None:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Encountered an error retrieving student care records!")
+
+        student_hours_list = [['student_id', 'first_name', 'last_name', 'total_before_care_hours', 'total_after_care_hours']]
+        all_student_hours = {}
+        for record in student_care_records:
+            all_student_hours[record[0].StudentID] = {
+                "full_name": f"{record[0].FirstName.capitalize()} {record[0].LastName.capitalize()}",
+                "before_care_hours": 0,
+                "after_care_hours": 0
+            }
+        for record in student_care_records:
+            time_taken_in_seconds = (datetime.combine(date.min, record[1].CheckOutTime) - datetime.combine(date.min, record[1].CheckInTime)).total_seconds()
+            if not record[1].CareType:
+                all_student_hours[record[0].StudentID]["before_care_hours"] += time_taken_in_seconds
+            else:
+                all_student_hours[record[0].StudentID]["after_care_hours"] += time_taken_in_seconds
+        for item in all_student_hours.keys():
+            time_taken_before_care_formatted = str(timedelta(seconds=int(all_student_hours[item]['before_care_hours'])))
+            time_taken_after_care_formatted = str(timedelta(seconds=int(all_student_hours[item]['after_care_hours'])))
+            all_student_hours[item]['before_care_hours'] = time_taken_before_care_formatted
+            all_student_hours[item]['after_care_hours'] = time_taken_after_care_formatted
+
+        for record in all_student_hours.keys():
+            student = all_student_hours[record]
+            print(student)
+            student_hours_list.append([
+                record,
+                student["full_name"].split(' ')[0].strip(),
+                student["full_name"].split(' ')[1].strip(),
+                student["before_care_hours"],
+                student["after_care_hours"],
+            ])
+        session.commit()
+    except IntegrityError as err:
+        raise RuntimeError from err
+    return student_hours_list
+
+
 async def create_time_sheets_csv(start_date: str, end_date: str, session: Session = None):
     if session is None:
         session = next(get_db_session())
     if not check_date_formats([start_date, end_date]):
         raise RuntimeError("The start and end dates for the reporting period are invalid!")
     employee_hours_list = await get_all_time_sheets_for_csv(start_date, end_date, session)
+    mem_file = StringIO()
+    csv.writer(mem_file).writerows(employee_hours_list)
+    print(mem_file.getvalue())
+    return mem_file.getvalue()
+
+
+async def create_student_care_csv(start_date: str, end_date: str, grade: str, session: Session = None):
+    if session is None:
+        session = next(get_db_session())
+    if not check_date_formats([start_date, end_date]):
+        raise RuntimeError("The start and end dates for the reporting period are invalid!")
+    if grade is None:
+        raise RuntimeError("Creating a student care csv report requires a grade to be provided!")
+    employee_hours_list = await get_all_student_care_for_csv(start_date.strip(), end_date.strip(), grade.strip(), session)
     mem_file = StringIO()
     csv.writer(mem_file).writerows(employee_hours_list)
     print(mem_file.getvalue())
