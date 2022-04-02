@@ -8,7 +8,6 @@ import signal
 import traceback
 
 from server.lib.config_manager import ConfigManager
-from server.lib.utils.reports_utils import create_reports_directory
 from server.lib.web_manager import WebSessionManager
 from server.lib.logging_manager import LoggingManager
 from server.lib.strings import LOG_ORIGIN_SHUTDOWN, LOG_ORIGIN_GENERAL, LOG_ERROR_GENERAL, LOG_WARNING_GENERAL, LOG_ERROR_UNKNOWN, LOG_ORIGIN_STARTUP
@@ -32,8 +31,6 @@ def init():
 
         LoggingManager().log(LoggingManager.LogLevel.LOG_INFO, 'Initializing PCA Project Server...', origin=LOG_ORIGIN_STARTUP, no_print=False)
         LoggingManager().log(LoggingManager.LogLevel.LOG_INFO, 'System logging manager initialized.', origin=LOG_ORIGIN_STARTUP, no_print=False)
-        # Initialize directories for reports.
-        create_reports_directory()
         # Initialize any missing tables from the database server.
         initialize_tables()
         # Clear the access/reset Token tables in case the last server shutdown was improper.

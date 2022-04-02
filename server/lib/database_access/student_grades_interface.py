@@ -1,7 +1,6 @@
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
-from server.lib.utils.reports_utils import delete_time_sheet_report, delete_care_report
 from server.lib.data_classes.student_grade import StudentGrade, PydanticStudentGrade
 from server.lib.database_manager import get_db_session
 
@@ -64,17 +63,3 @@ async def remove_student_grade(student_grade: PydanticStudentGrade, session: Ses
     except SQLAlchemyError as err:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(err)) from err
     return matching_grade
-
-
-async def delete_time_sheet_report_by_file_name(file_name: str):
-    if delete_time_sheet_report(file_name):
-        return file_name
-    else:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='The provided file name was invalid! Please ensure it is in the "YYYY-MM_YYYY-MM_EmployeeReport" format!')
-
-
-async def delete_care_report_by_file_name(file_name: str):
-    if delete_care_report(file_name):
-        return file_name
-    else:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail='The provided file name was invalid! Please ensure it is in the "YYYY-MM_YYYY-MM_StudentReport" format!')
