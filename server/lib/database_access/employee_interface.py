@@ -4,7 +4,7 @@ from sqlalchemy import sql
 from typing import List, Dict
 from random import choice, randint
 from server.lib.utils.email_utils import send_email
-from server.lib.utils.employee_utils import generate_employee_id, create_employee_password_hashes
+from server.lib.utils.employee_utils import generate_employee_id, create_employee_password_hashes, verify_employee_password
 from server.lib.data_classes.employee import Employee, PydanticEmployeeRegistration, PydanticEmployeesRemoval, PydanticEmployeeUpdate
 from server.lib.data_classes.employee_role import EmployeeRole
 from server.lib.data_classes.employee_contact_info import EmployeeContactInfo
@@ -133,17 +133,22 @@ async def update_employees(employee_updates: Dict[str, PydanticEmployeeUpdate], 
     return all_updated_employees
 
 
-async def update_employee_password(employee_id: str, new_password: str, session: Session = None):
+async def update_employee_password(employee_id: str, current_password: str, new_password: str, session: Session = None):
     if employee_id is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The employee ID must be provided to update an employee!")
     if session is None:
         session = next(get_db_session())
 
     employee_id = employee_id.lower().strip()
+    current_password = current_password.strip()
+    new_password = new_password.strip()
     # Get employee information from the database.
     employee = session.query(Employee).filter(Employee.EmployeeID == employee_id).first()
     if employee is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The employee id is incorrect or the employee does not exist!")
+    if not await verify_employee_password(current_password.strip(), employee.PasswordHash):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The provided password does not match the account's password!")
+
     password_hash = await create_employee_password_hashes(new_password)
     if password_hash is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The plain text password provided to be hashed is invalid!")
@@ -184,6 +189,9 @@ async def update_employee(employee_id, pyd_employee_update: PydanticEmployeeUpda
         employee.EmployeeContactInfo.LastUpdated = sql.func.now()
     if pyd_employee_update.secondary_email:
         employee.EmployeeContactInfo.SecondaryEmail = pyd_employee_update.secondary_email.lower().strip()
+        employee.EmployeeContactInfo.LastUpdated = sql.func.now()
+    else:
+        employee.EmployeeContactInfo.SecondaryEmail = None
         employee.EmployeeContactInfo.LastUpdated = sql.func.now()
     if pyd_employee_update.enable_primary_email_notifications:
         employee.EmployeeContactInfo.EnablePrimaryEmailNotifications = pyd_employee_update.enable_primary_email_notifications

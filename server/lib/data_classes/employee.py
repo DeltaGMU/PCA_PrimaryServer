@@ -65,6 +65,7 @@ class PydanticRetrieveMultipleEmployees(BaseModel):
 
 class PydanticUpdatePassword(BaseModel):
     employee_id: str
+    current_password: str
     new_password: str
 
 

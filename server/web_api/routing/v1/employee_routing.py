@@ -230,7 +230,10 @@ class EmployeesRouter:
             """
             if not await token_is_valid(token, ["administrator"]):
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
-            updated_employee = await update_employee_password(new_password.employee_id.strip(), new_password.new_password.strip(), session)
+            updated_employee = await update_employee_password(new_password.employee_id.strip(),
+                                                              new_password.current_password.strip(),
+                                                              new_password.new_password.strip(),
+                                                              session)
             if updated_employee is None:
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="One or more provided parameters were invalid!")
             return ResponseModel(status.HTTP_200_OK, "success")
