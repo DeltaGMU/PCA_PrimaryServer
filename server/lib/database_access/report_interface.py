@@ -18,7 +18,6 @@ from server.lib.config_manager import ConfigManager
 from server.lib.database_manager import get_db_session
 from server.lib.strings import ROOT_DIR
 
-
 env = Environment(loader=FileSystemLoader(
     [
         f'{ROOT_DIR}/lib/report_generation'
@@ -78,11 +77,12 @@ async def get_all_time_sheets_for_csv(start_date: str, end_date: str, session: S
         ).order_by(Employee.FirstName).all()
         if employee_time_sheet_records is None:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Encountered an error retrieving employee time sheets!")
-        employee_hours_list = [['employee_id', 'full_name', 'work_hours', 'pto_hours', 'extra_hours', 'comments']]
+        employee_hours_list = [['employee_id', 'first_name', 'last_name', 'work_hours', 'pto_hours', 'extra_hours', 'comments']]
         for item in employee_time_sheet_records:
             employee_hours_list.append([
                 item[0].EmployeeID,
-                f"{item[0].FirstName} {item[0].LastName}",
+                item[0].FirstName,
+                item[0].LastName,
                 item[1].WorkHours,
                 item[1].PTOHours,
                 item[1].ExtraHours,
@@ -173,7 +173,8 @@ async def get_all_student_care_for_csv(start_date: str, end_date: str, grade: st
         all_student_hours = {}
         for record in student_care_records:
             all_student_hours[record[0].StudentID] = {
-                "full_name": f"{record[0].FirstName.capitalize()} {record[0].LastName.capitalize()}",
+                "first_name": record[0].FirstName,
+                "last_name": record[0].LastName,
                 "before_care_hours": 0,
                 "after_care_hours": 0
             }
@@ -194,8 +195,8 @@ async def get_all_student_care_for_csv(start_date: str, end_date: str, grade: st
             print(student)
             student_hours_list.append([
                 record,
-                student["full_name"].split(' ')[0].strip(),
-                student["full_name"].split(' ')[1].strip(),
+                student["first_name"],
+                student["last_name"],
                 student["before_care_hours"],
                 student["after_care_hours"],
             ])
@@ -263,8 +264,6 @@ async def create_time_sheets_report(start_date: str, end_date: str, session: Ses
             ]
         )
     template_vars["time_sheet_list"] = time_sheet_list
-    reformat_date = f"{start_date[0:4]}_{start_date[5:7]}"
-    generated_pdf_path = f"{ConfigManager().config()['System Settings']['reports_directory']}/employees/{reformat_date}-EmployeeReport.pdf"
     html_out = template.render(template_vars)
     options = {
         'page-size': 'Letter',
@@ -276,13 +275,12 @@ async def create_time_sheets_report(start_date: str, end_date: str, session: Ses
         'encoding': 'UTF-8',
         'no-outline': None
     }
-    pdfkit.from_string(html_out,
-                       generated_pdf_path,
-                       css=[
-                           f"{ROOT_DIR}/lib/report_generation/styles.css"
-                       ],
-                       options=options)
-    return generated_pdf_path, f"{reformat_date}-EmployeeReport.pdf"
+    pdf_bytes = pdfkit.from_string(html_out,
+                                   css=[
+                                       f"{ROOT_DIR}/lib/report_generation/styles.css"
+                                   ],
+                                   options=options)
+    return pdf_bytes
 
 
 async def create_student_care_report(start_date, end_date, grade, session):
@@ -329,9 +327,8 @@ async def create_student_care_report(start_date, end_date, grade, session):
         'no-outline': None
     }
     pdf_bytes = pdfkit.from_string(html_out,
-                       css=[
-                           f"{ROOT_DIR}/lib/report_generation/styles.css"
-                       ],
-                       options=options)
+                                   css=[
+                                       f"{ROOT_DIR}/lib/report_generation/styles.css"
+                                   ],
+                                   options=options)
     return pdf_bytes
-
