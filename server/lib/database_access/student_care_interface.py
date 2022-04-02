@@ -74,35 +74,36 @@ async def get_total_student_care_for_period(start_date: str, end_date: str, grad
         if student_grade is None:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The provided student grade is invalid or could not be found!")
 
-        student_care_records = session.query(Student, StudentCareHours).filter(
+        all_students = session.query(Student).filter(
             Student.StudentEnabled == 1,
-            StudentCareHours.StudentID == Student.StudentID,
-            Student.GradeID == student_grade.id,
-            StudentCareHours.CareDate.between(start_date, end_date)
+            Student.GradeID == student_grade.id
         ).order_by(Student.FirstName).all()
-        if student_care_records is None:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Encountered an error retrieving student care records!")
-
         all_student_hours = {}
-        for record in student_care_records:
-            all_student_hours[record[0].StudentID] = {
-                "student_id": record[0].StudentID,
-                "first_name": record[0].FirstName.capitalize(),
-                "last_name": record[0].LastName.capitalize(),
+        for student in all_students:
+            student_care_records = session.query(StudentCareHours).filter(
+                StudentCareHours.StudentID == student.StudentID,
+                StudentCareHours.CareDate.between(start_date, end_date)
+            ).all()
+            all_student_hours[student.StudentID] = {
+                "student_id": student.StudentID,
+                "first_name": student.FirstName.capitalize(),
+                "last_name": student.LastName.capitalize(),
                 "before_care_hours": 0,
                 "after_care_hours": 0
             }
-        for record in student_care_records:
-            time_taken_in_seconds = (datetime.combine(date.min, record[1].CheckOutTime) - datetime.combine(date.min, record[1].CheckInTime)).total_seconds()
-            if not record[1].CareType:
-                all_student_hours[record[0].StudentID]["before_care_hours"] += time_taken_in_seconds
-            else:
-                all_student_hours[record[0].StudentID]["after_care_hours"] += time_taken_in_seconds
-        for item in all_student_hours.keys():
-            time_taken_before_care_formatted = str(timedelta(seconds=int(all_student_hours[item]['before_care_hours'])))
-            time_taken_after_care_formatted = str(timedelta(seconds=int(all_student_hours[item]['after_care_hours'])))
-            all_student_hours[item]['before_care_hours'] = time_taken_before_care_formatted
-            all_student_hours[item]['after_care_hours'] = time_taken_after_care_formatted
+            if student_care_records:
+                for record in student_care_records:
+                    time_taken_in_seconds = (datetime.combine(date.min, record.CheckOutTime) - datetime.combine(date.min, record.CheckInTime)).total_seconds()
+                    if not record.CareType:
+                        all_student_hours[student.StudentID]["before_care_hours"] += time_taken_in_seconds
+                    else:
+                        all_student_hours[student.StudentID]["after_care_hours"] += time_taken_in_seconds
+
+        for student_id in all_student_hours.keys():
+            time_taken_before_care_formatted = str(timedelta(seconds=int(all_student_hours[student_id]['before_care_hours'])))
+            time_taken_after_care_formatted = str(timedelta(seconds=int(all_student_hours[student_id]['after_care_hours'])))
+            all_student_hours[student_id]['before_care_hours'] = time_taken_before_care_formatted
+            all_student_hours[student_id]['after_care_hours'] = time_taken_after_care_formatted
         session.commit()
     except IntegrityError as err:
         raise RuntimeError from err
