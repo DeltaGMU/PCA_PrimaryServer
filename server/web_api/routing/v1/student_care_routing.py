@@ -92,7 +92,7 @@ class StudentCareRouter:
             return ResponseModel(status.HTTP_200_OK, "success", {"students": list_of_student_care})
 
         @staticmethod
-        @router.get(API_ROUTES.StudentCare.care, status_code=status.HTTP_200_OK)
+        @router.post(API_ROUTES.StudentCare.total_hours_records, status_code=status.HTTP_200_OK)
         async def read_students_total_care(pyd_care_students: PydanticRetrieveTotalHoursByGrade, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint that returns a list of the students with their accumulated before-care and after-care hours for the provided reporting period in the provided student grade.

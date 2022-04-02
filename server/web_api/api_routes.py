@@ -66,6 +66,7 @@ class APIRoutes:
         count = '/api/v1/care/count'
         care = '/api/v1/care'
         records = '/api/v1/care/records'
+        total_hours_records = '/api/v1/care/records/total'
         remove_records = '/api/v1/care/records/remove'
         check_in = '/api/v1/care/checkin'
         check_out = '/api/v1/care/checkout'
