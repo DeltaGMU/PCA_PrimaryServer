@@ -18,10 +18,20 @@ class PydanticRetrieveCareStudentsByGrade(BaseModel):
 
 class PydanticRetrieveStudentCareRecord(BaseModel):
     """
-    A Pydantic class used to represent the retrieval of multiple student entities that have been checked into student care over a period of time.
+    A Pydantic class used to represent the retrieval of a student care records for a specific student.
     Do not try to initialize this class as an independent entity or extend it into a subclass.
     """
     student_id: str
+    start_date: str
+    end_date: str
+
+
+class PydanticRetrieveTotalHoursByGrade(BaseModel):
+    """
+    A Pydantic class used to represent the retrieval of the total student care hours accumulated by all students in a grade.
+    Do not try to initialize this class as an independent entity or extend it into a subclass.
+    """
+    grade: str
     start_date: str
     end_date: str
 

@@ -1,5 +1,5 @@
 import time
-from datetime import datetime
+from datetime import datetime, timedelta, date
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 from sqlalchemy import desc, asc
@@ -57,6 +57,56 @@ async def delete_student_care_records(pyd_student_care_delete: PydanticDeleteStu
     for care_record in care_records:
         session.delete(care_record)
     session.commit()
+
+
+async def get_total_student_care_for_period(start_date: str, end_date: str, grade: str, session: Session = None):
+    if session is None:
+        session = next(get_db_session())
+    if not check_date_formats([start_date, end_date]):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="One or more provided dates are invalid! Please ensure the dates are provided in YYYY-MM-DD format.")
+    if grade is None:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="A student grade must be provided!")
+    try:
+        grade = grade.lower().strip()
+        student_grade = session.query(StudentGrade).filter(
+            StudentGrade.Name == grade
+        ).first()
+        if student_grade is None:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The provided student grade is invalid or could not be found!")
+
+        student_care_records = session.query(Student, StudentCareHours).filter(
+            Student.StudentEnabled == 1,
+            StudentCareHours.StudentID == Student.StudentID,
+            Student.GradeID == student_grade.id,
+            StudentCareHours.CareDate.between(start_date, end_date)
+        ).order_by(Student.FirstName).all()
+        if student_care_records is None:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Encountered an error retrieving student care records!")
+
+        all_student_hours = {}
+        for record in student_care_records:
+            all_student_hours[record[0].StudentID] = {
+                "student_id": record[0].StudentID,
+                "first_name": record[0].FirstName.capitalize(),
+                "last_name": record[0].LastName.capitalize(),
+                "before_care_hours": 0,
+                "after_care_hours": 0
+            }
+        for record in student_care_records:
+            time_taken_in_seconds = (datetime.combine(date.min, record[1].CheckOutTime) - datetime.combine(date.min, record[1].CheckInTime)).total_seconds()
+            if not record[1].CareType:
+                all_student_hours[record[0].StudentID]["before_care_hours"] += time_taken_in_seconds
+            else:
+                all_student_hours[record[0].StudentID]["after_care_hours"] += time_taken_in_seconds
+        for item in all_student_hours.keys():
+            time_taken_before_care_formatted = str(timedelta(seconds=int(all_student_hours[item]['before_care_hours'])))
+            time_taken_after_care_formatted = str(timedelta(seconds=int(all_student_hours[item]['after_care_hours'])))
+            all_student_hours[item]['before_care_hours'] = time_taken_before_care_formatted
+            all_student_hours[item]['after_care_hours'] = time_taken_after_care_formatted
+        session.commit()
+    except IntegrityError as err:
+        raise RuntimeError from err
+    return all_student_hours
 
 
 async def get_student_care_records(pyd_student_care: PydanticRetrieveStudentCareRecord, session: Session = None):

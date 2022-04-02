@@ -8,10 +8,10 @@ from fastapi_utils.inferring_router import InferringRouter
 from server.web_api.api_routes import API_ROUTES
 from server.lib.database_access.student_interface import get_student_by_id
 from server.lib.database_access.student_care_interface import check_in_student, check_out_student, get_one_student_care, \
-    get_care_students_by_grade, get_student_care_records, delete_student_care_records
+    get_care_students_by_grade, get_student_care_records, delete_student_care_records, get_total_student_care_for_period
 from server.web_api.models import ResponseModel
 from server.lib.data_classes.student_care_hours import PydanticStudentCareHoursCheckIn, PydanticStudentCareHoursCheckOut, \
-    PydanticRetrieveCareStudentsByGrade, PydanticRetrieveStudentCareRecord, PydanticDeleteStudentCareRecord
+    PydanticRetrieveCareStudentsByGrade, PydanticRetrieveStudentCareRecord, PydanticDeleteStudentCareRecord, PydanticRetrieveTotalHoursByGrade
 from server.lib.database_manager import get_db_session
 from server.web_api.web_security import token_is_valid, oauth_scheme
 
@@ -76,8 +76,7 @@ class StudentCareRouter:
             An endpoint that returns a list of the students that are participating in before/after-care for the provided date in the provided student grade.
             If a student has already participated in student care on the provided day, a flag is set on the student's information in the response.
 
-            :param pyd_care_students: Either a list of student IDs or the care date to retrieve all students for that date, as well as the care type (false => before-care, true => after-care). Not providing a care date will show results
-            from both before-care and after-care.
+            :param pyd_care_students: The student grade, care type, and care date.
             :type pyd_care_students: PydanticRetrieveStudentsByCareDate, required
             :param token: The JSON Web Token responsible for authenticating the user to this endpoint.
             :type token: str, required
@@ -90,6 +89,27 @@ class StudentCareRouter:
             if not await token_is_valid(token, ["administrator"]):
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
             list_of_student_care = await get_care_students_by_grade(pyd_care_students, session)
+            return ResponseModel(status.HTTP_200_OK, "success", {"students": list_of_student_care})
+
+        @staticmethod
+        @router.get(API_ROUTES.StudentCare.care, status_code=status.HTTP_200_OK)
+        async def read_students_total_care(pyd_care_students: PydanticRetrieveTotalHoursByGrade, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
+            """
+            An endpoint that returns a list of the students with their accumulated before-care and after-care hours for the provided reporting period in the provided student grade.
+
+            :param pyd_care_students: The student grade, start date and end date.
+            :type pyd_care_students: PydanticRetrieveStudentsByCareDate, required
+            :param token: The JSON Web Token responsible for authenticating the user to this endpoint.
+            :type token: str, required
+            :param session: The database session to use to identify students that used the care service.
+            :type session: sqlalchemy.orm.session, optional
+            :return: A response model containing the list of students that used the care service.
+            :rtype: server.web_api.models.ResponseModel
+            :raises HTTPException: If the data provided in the request body is invalid, or the student is already checked in to the care service for the provided date.
+            """
+            if not await token_is_valid(token, ["administrator"]):
+                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
+            list_of_student_care = await get_total_student_care_for_period(pyd_care_students.start_date, pyd_care_students.end_date, pyd_care_students.grade, session)
             return ResponseModel(status.HTTP_200_OK, "success", {"students": list_of_student_care})
 
         @staticmethod
