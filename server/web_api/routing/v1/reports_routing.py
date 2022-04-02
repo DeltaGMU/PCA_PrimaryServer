@@ -44,8 +44,8 @@ class ReportsRouter:
             """
             if not await token_is_valid(token, ["administrator"]):
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
-            created_report_path, pdf_filename = await create_time_sheets_report(reporting_period.start_date, reporting_period.end_date, session)
-            return FileResponse(created_report_path, media_type="application/pdf", filename=pdf_filename)
+            pdf_data = await create_time_sheets_report(reporting_period.start_date, reporting_period.end_date, session)
+            return Response(content=pdf_data, media_type="application/pdf")
 
         @staticmethod
         @router.post(API_ROUTES.Reports.employee_reports_csv, status_code=status.HTTP_201_CREATED)
@@ -86,8 +86,8 @@ class ReportsRouter:
             """
             if not await token_is_valid(token, ["administrator"]):
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
-            created_report_path, pdf_filename = await create_student_care_report(reporting_period.start_date, reporting_period.end_date, reporting_period.grade, session)
-            return FileResponse(created_report_path, media_type="application/pdf", filename=pdf_filename)
+            pdf_data = await create_student_care_report(reporting_period.start_date, reporting_period.end_date, reporting_period.grade, session)
+            return Response(content=pdf_data, media_type="application/pdf")
 
         @staticmethod
         @router.post(API_ROUTES.Reports.care_reports_csv, status_code=status.HTTP_201_CREATED)

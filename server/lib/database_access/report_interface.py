@@ -317,9 +317,6 @@ async def create_student_care_report(start_date, end_date, grade, session):
             ]
         )
     template_vars["care_service_list"] = time_sheet_list
-
-    reformat_date = f"{start_date[0:4]}_{start_date[5:7]}"
-    generated_pdf_path = f"{ConfigManager().config()['System Settings']['reports_directory']}/students/{reformat_date}-StudentReport.pdf"
     html_out = template.render(template_vars)
     options = {
         'page-size': 'Letter',
@@ -331,11 +328,10 @@ async def create_student_care_report(start_date, end_date, grade, session):
         'encoding': 'UTF-8',
         'no-outline': None
     }
-    pdfkit.from_string(html_out,
-                       generated_pdf_path,
+    pdf_bytes = pdfkit.from_string(html_out,
                        css=[
                            f"{ROOT_DIR}/lib/report_generation/styles.css"
                        ],
                        options=options)
-    return generated_pdf_path, f"{reformat_date}-StudentReport.pdf"
+    return pdf_bytes
 
