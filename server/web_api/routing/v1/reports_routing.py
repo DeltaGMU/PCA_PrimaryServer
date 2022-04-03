@@ -6,10 +6,12 @@ from fastapi import status, HTTPException, Depends, Response
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
 from server.web_api.api_routes import API_ROUTES
-from server.lib.database_access.report_interface import create_time_sheets_report, create_student_care_report, create_time_sheets_csv, create_student_care_csv
-from server.lib.data_classes.report import PydanticStudentRetrieveReport, PydanticEmployeeRetrieveReport
+from server.lib.database_access.report_interface import create_time_sheets_report, create_student_care_report, \
+    create_time_sheets_csv, create_student_care_csv, create_leave_request_email
+from server.lib.data_classes.report import PydanticStudentRetrieveReport, PydanticEmployeeRetrieveReport, PydanticLeaveRequest
 from server.lib.database_manager import get_db_session
 from server.web_api.web_security import token_is_valid, oauth_scheme
+from server.web_api.models import ResponseModel
 
 router = InferringRouter()
 
@@ -106,3 +108,22 @@ class ReportsRouter:
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
             csv_data = await create_student_care_csv(reporting_period.start_date, reporting_period.end_date, reporting_period.grade, session)
             return Response(content=csv_data, media_type="text/csv")
+
+        @staticmethod
+        @router.post(API_ROUTES.Reports.leave_request, status_code=status.HTTP_201_CREATED)
+        async def create_leave_request(leave_request: PydanticLeaveRequest, token: str = Depends(oauth_scheme)):
+            """
+            An endpoint that creates a leave request and emails it to the designated mailing address for leave request approval.
+
+            :param leave_request: The fields required to submit a leave request to administration.
+            :type leave_request: PydanticLeaveRequest, required
+            :param token: The JSON Web Token responsible for authenticating the user to this endpoint.
+            :type token: str, required
+            :return: A response model containing the leave request that was completed and a success message.
+            :rtype: server.web_api.models.ResponseModel
+            :raises HTTPException: If the request body contains any invalid parameters, or the data provided is formatted incorrectly.
+            """
+            if not await token_is_valid(token, ["administrator"]):
+                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
+            await create_leave_request_email(leave_request)
+            return ResponseModel(status.HTTP_200_OK, "success")

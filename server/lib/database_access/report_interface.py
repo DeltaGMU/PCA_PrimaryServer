@@ -7,6 +7,10 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy import or_
 from fastapi import HTTPException, status
 from jinja2 import Environment, FileSystemLoader
+
+from server.lib.config_manager import ConfigManager
+from server.lib.utils.email_utils import send_email
+from server.lib.data_classes.report import PydanticLeaveRequest
 from server.lib.utils.date_utils import check_date_formats
 from server.lib.data_classes.student import Student
 from server.lib.data_classes.student_care_hours import StudentCareHours
@@ -332,3 +336,37 @@ async def create_student_care_report(start_date, end_date, grade, session):
                                    ],
                                    options=options)
     return pdf_bytes
+
+
+async def create_leave_request_email(leave_request: PydanticLeaveRequest):
+    if not check_date_formats([leave_request.date_of_absence_start, leave_request.date_of_absence_end]):
+        raise RuntimeError("The start and end dates for the reporting period are invalid!")
+    mailing_address = ConfigManager().config()['System Settings']['leave_request_mailing_address'].strip()
+    formatted_start_date = datetime.strptime(leave_request.date_of_absence_start, "%Y-%m-%d").strftime("%m/%d/%Y")
+    formatted_end_date = datetime.strptime(leave_request.date_of_absence_end, "%Y-%m-%d").strftime("%m/%d/%Y")
+    print(mailing_address)
+    sent_email = send_email(
+                    to_user=f"Leave Request for {leave_request.employee_name}:",
+                    to_email=mailing_address,
+                    subj=f"New Leave Request - {leave_request.employee_name}",
+                    messages=[
+                        "<hr>",
+                        f"<b>Employee ID:</b> {leave_request.employee_id}",
+                        f"<b>Employee Name:</b> {leave_request.employee_name}",
+                        "<hr>",
+                        f"<b>Current Date</b>: {leave_request.current_date}",
+                        f"<b>Absence From</b>: {formatted_start_date} to {formatted_end_date}",
+                        f"<b># of full days</b>: {leave_request.num_full_days}",
+                        f"<b># of half days</b>: {leave_request.num_half_days}",
+                        f"<b># of hours</b>: {leave_request.num_hours}",
+                        "<hr>",
+                        f"<b>Absence Reason</b>: {', '.join(leave_request.absence_reason_list)}",
+                        f"<b>Who will cover</b>: {leave_request.absence_cover_text}",
+                        f"<b>Comments:</b> {leave_request.absence_comments}"
+                    ],
+                    template="leave_request_email_template.html"
+                )
+    if sent_email:
+        return True
+    else:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The email could not be sent!")

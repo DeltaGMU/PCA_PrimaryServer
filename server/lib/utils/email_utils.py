@@ -36,11 +36,13 @@ def send_test_email():
     return email_request.json()
 
 
-def send_email(to_user: str, to_email: List[str], subj: str, messages: List[str]):
+def send_email(to_user: str, to_email: List[str], subj: str, messages: List[str], template=None):
     email_api = f"{'https://' if ConfigManager().config().getboolean('Email Settings', 'pca_email_use_https') else 'http://'}{ConfigManager().config()['Email Settings']['pca_email_api']}"
     # Validate provided information and email address.
     if None in (to_user, to_email, subj, messages):
         raise RuntimeError("Cannot send an email with the 'to', 'subject', or 'message' fields being blank!")
+    if to_email and isinstance(to_email, str):
+        to_email = [to_email]
     if to_email and len(to_email) == 0:
         raise RuntimeError("Cannot send email to empty address(es)! Please make sure that the email address(es) is valid!")
     to = [email.lower().strip() for email in to_email]
@@ -55,12 +57,20 @@ def send_email(to_user: str, to_email: List[str], subj: str, messages: List[str]
         raise RuntimeError("Cannot send an email with a blank message!")
 
     # Prepare the HTML email if enabled...
-    template = env.get_template(f'generic_email_template.html')
-    template_vars = {
-        "title": f"Automated Email",
-        "username": to_user.lower().strip().title(),
-        "messages": messages
-    }
+    if template is None:
+        template = env.get_template(f'generic_email_template.html')
+        template_vars = {
+            "title": f"Automated Email",
+            "username": to_user.lower().strip().title(),
+            "messages": messages
+        }
+    else:
+        template = env.get_template(template)
+        template_vars = {
+            "title": f"Automated Email",
+            "message_title": to_user.lower().strip().title(),
+            "messages": messages
+        }
     html_out = template.render(template_vars)
 
     # Authenticate self first...
@@ -83,5 +93,9 @@ def send_email(to_user: str, to_email: List[str], subj: str, messages: List[str]
             "messagePlainText": "\n".join(messages)
         }
         # Send the email...
-        requests.post(f"{email_api}{THIRD_PARTY_ROUTES.Email.send_email}",
-                      data=email_opts, headers=headers)
+        try:
+            requests.post(f"{email_api}{THIRD_PARTY_ROUTES.Email.send_email}",
+                          data=email_opts, headers=headers)
+        except requests.exceptions.HTTPError:
+            return False
+    return True
