@@ -14,7 +14,6 @@ from server.lib.data_classes.student_grade import StudentGrade
 from server.lib.data_classes.employee_role import EmployeeRole
 from server.lib.data_classes.employee import Employee
 from server.lib.data_classes.employee_hours import EmployeeHours
-from server.lib.config_manager import ConfigManager
 from server.lib.database_manager import get_db_session
 from server.lib.strings import ROOT_DIR
 
