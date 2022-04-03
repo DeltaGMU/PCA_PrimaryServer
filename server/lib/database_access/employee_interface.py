@@ -156,6 +156,22 @@ async def update_employee_password(employee_id: str, current_password: str, new_
     employee.PasswordHash = password_hash
     employee.LastUpdated = sql.func.now()
     session.commit()
+    # Send notification to enabled emails that the account has had its password updated.
+    send_emails_to = []
+    if employee.EmployeeContactInfo.EnablePrimaryEmailNotifications:
+        send_emails_to.append(employee.EmployeeContactInfo.PrimaryEmail)
+    if employee.EmployeeContactInfo.EnableSecondaryEmailNotifications:
+        send_emails_to.append(employee.EmployeeContactInfo.SecondaryEmail)
+    if len(send_emails_to) > 0:
+        send_email(
+            to_user=f'{employee.FirstName} {employee.LastName}',
+            to_email=send_emails_to,
+            subj="Your Password Has Been Changed!",
+            messages=[
+                "Your employee account has had its password changed!",
+                "If you don't remember changing your password or you're not aware of an administrator that has reset your password, please contact an administrator as soon as possible!"
+            ],
+        )
     return employee
 
 
