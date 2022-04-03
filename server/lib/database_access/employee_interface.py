@@ -81,15 +81,16 @@ async def create_employee(pyd_employee: PydanticEmployeeRegistration, session: S
         send_emails_to.append(new_employee.EmployeeContactInfo.PrimaryEmail)
     if new_employee.EmployeeContactInfo.EnableSecondaryEmailNotifications:
         send_emails_to.append(new_employee.EmployeeContactInfo.SecondaryEmail)
-    send_email(
-        to_user=f'{new_employee.FirstName} {new_employee.LastName}',
-        to_email=send_emails_to,
-        subj="New Employee Account Registration Confirmed",
-        messages=["Your employee account has been created!",
-                  "Your login credentials are provided below, please be sure to change your temporary password as soon as possible.",
-                  f"<b>Employee ID:</b> {new_employee.EmployeeID}",
-                  f"<b>Temporary Password:</b> {temp_password}"],
-    )
+    if len(send_emails_to) > 0:
+        send_email(
+            to_user=f'{new_employee.FirstName} {new_employee.LastName}',
+            to_email=send_emails_to,
+            subj="New Employee Account Registration Confirmed",
+            messages=["Your employee account has been created!",
+                      "Your login credentials are provided below, please be sure to change your temporary password as soon as possible.",
+                      f"<b>Employee ID:</b> {new_employee.EmployeeID}",
+                      f"<b>Temporary Password:</b> {temp_password}"],
+        )
     return new_employee.as_dict()
 
 
