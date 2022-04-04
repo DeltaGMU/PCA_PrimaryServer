@@ -4,6 +4,8 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 from sqlalchemy import desc, asc
 from fastapi import HTTPException, status
+
+from server.lib.utils.email_utils import send_email
 from server.lib.data_classes.student_grade import StudentGrade
 from server.lib.config_manager import ConfigManager
 from server.lib.data_classes.student import Student
@@ -28,7 +30,20 @@ async def get_one_student_care(student_id: str, care_date: str, session: Session
     if student_care is None:
         return None
     else:
-        return [care.as_dict() for care in student_care]
+        care_dict = {
+            "metadata": {
+                "before_care_check_in_time": ConfigManager().config()['Student Care Settings']['before_care_check_in_time'],
+                "before_care_check_out_time": ConfigManager().config()['Student Care Settings']['before_care_check_out_time'],
+                "after_care_check_in_time": ConfigManager().config()['Student Care Settings']['after_care_check_in_time'],
+                "after_care_check_out_time": ConfigManager().config()['Student Care Settings']['after_care_check_out_time']
+            }
+        }
+        for care in student_care:
+            if not care.CareType:
+                care_dict['before_care'] = care.as_dict()
+            else:
+                care_dict['after_care'] = care.as_dict()
+        return care_dict
 
 
 async def delete_student_care_records(pyd_student_care_delete: PydanticDeleteStudentCareRecord, session: Session = None):
@@ -224,6 +239,30 @@ async def check_in_student(pyd_student_checkin: PydanticStudentCareHoursCheckIn,
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                                 detail=f"This student has already checked-in for {'after' if student_care.CareType else 'before'}-care at {student_care.CheckInTime} "
                                        f"for the provided date: {pyd_student_checkin.check_in_date}")
+    # Send notification to enabled emails that the student has been checked-in.
+    student_record = session.query(Student).filter(Student.StudentID == pyd_student_checkin.student_id).first()
+    care_type_text = "Before-Care Services" if not pyd_student_checkin.care_type else "After-Care Services"
+    if student_record:
+        if student_record.StudentContactInfo.EnablePrimaryEmailNotifications:
+            send_email(
+                to_user=f'{student_record.StudentContactInfo.ParentOneFirstName} {student_record.StudentContactInfo.ParentOneLastName}',
+                to_email=[student_record.StudentContactInfo.PrimaryEmail],
+                subj=f"Student Checked In To {care_type_text}",
+                messages=[
+                    f"<b>{student_record.FirstName.capitalize()} {student_record.LastName.capitalize()}</b> has been checked in to {care_type_text} by {pyd_student_checkin.check_in_signature}.",
+                    f"If you're not aware of your student being checked in to {care_type_text} today, then please contact administration."
+                ],
+            )
+        if student_record.StudentContactInfo.EnableSecondaryEmailNotifications:
+            send_email(
+                to_user=f'{student_record.StudentContactInfo.ParentTwoFirstName} {student_record.StudentContactInfo.ParentTwoLastName}',
+                to_email=[student_record.StudentContactInfo.SecondaryEmail],
+                subj=f"Student Checked In To {care_type_text}",
+                messages=[
+                    f"<b>{student_record.FirstName.capitalize()} {student_record.LastName.capitalize()}</b> has been checked in to {care_type_text} by {pyd_student_checkin.check_in_signature}.",
+                    f"If you're not aware of your student being checked in to {care_type_text} today, then please contact administration."
+                ],
+            )
     return new_student_care_hours
 
 
@@ -265,4 +304,28 @@ async def check_out_student(pyd_student_checkout: PydanticStudentCareHoursCheckO
     except IntegrityError as err:
         session.rollback()
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(err)) from err
+    # Send notification to enabled emails that the student has been checked-in.
+    student_record = session.query(Student).filter(Student.StudentID == pyd_student_checkout.student_id).first()
+    care_type_text = "Before-Care Services" if not pyd_student_checkout.care_type else "After-Care Services"
+    if student_record:
+        if student_record.StudentContactInfo.EnablePrimaryEmailNotifications:
+            send_email(
+                to_user=f'{student_record.StudentContactInfo.ParentOneFirstName} {student_record.StudentContactInfo.ParentOneLastName}',
+                to_email=[student_record.StudentContactInfo.PrimaryEmail],
+                subj=f"Student Checked Out Of {care_type_text}",
+                messages=[
+                    f"<b>{student_record.FirstName.capitalize()} {student_record.LastName.capitalize()}</b> has been checked out of {care_type_text} by {student_care.CheckOutSignature}.",
+                    f"If you're not aware of your student being checked out of {care_type_text} today, then please contact administration."
+                ],
+            )
+        if student_record.StudentContactInfo.EnableSecondaryEmailNotifications:
+            send_email(
+                to_user=f'{student_record.StudentContactInfo.ParentTwoFirstName} {student_record.StudentContactInfo.ParentTwoLastName}',
+                to_email=[student_record.StudentContactInfo.SecondaryEmail],
+                subj=f"Student Checked Out Of {care_type_text}",
+                messages=[
+                    f"<b>{student_record.FirstName.capitalize()} {student_record.LastName.capitalize()}</b> has been checked out of {care_type_text} by {student_care.CheckOutSignature}.",
+                    f"If you're not aware of your student being checked out of {care_type_text} today, then please contact administration."
+                ],
+            )
     return student_care
