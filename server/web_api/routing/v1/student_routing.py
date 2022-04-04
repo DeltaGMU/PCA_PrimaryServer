@@ -164,7 +164,7 @@ class StudentsRouter:
 
     class Delete:
         @staticmethod
-        @router.delete(API_ROUTES.Students.students, status_code=status.HTTP_200_OK)
+        @router.post(API_ROUTES.Students.remove_students, status_code=status.HTTP_200_OK)
         async def delete_students(student_ids: PydanticStudentsRemoval, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint to remove multiple student records from the student's table in the database.
@@ -188,7 +188,7 @@ class StudentsRouter:
             return ResponseModel(status.HTTP_200_OK, "success", {"students": [student.as_dict() for student in removed_students]})
 
         @staticmethod
-        @router.delete(API_ROUTES.Students.one_student, status_code=status.HTTP_200_OK)
+        @router.post(API_ROUTES.Students.remove_one_student, status_code=status.HTTP_200_OK)
         async def delete_student(student_id: str, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint to remove a student record from the student's table in the database.
