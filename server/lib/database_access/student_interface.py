@@ -144,6 +144,9 @@ async def update_student(student_id: str, pyd_student_update: PydanticStudentUpd
     if pyd_student_update.last_name:
         student.LastName = pyd_student_update.last_name.lower().strip()
         student.LastUpdated = sql.func.now()
+    if pyd_student_update.car_pool_number >= 0:
+        student.CarpoolNumber = pyd_student_update.car_pool_number
+        student.LastUpdated = sql.func.now()
     if pyd_student_update.parent_one_first_name:
         student_contact_info.ParentOneFirstName = pyd_student_update.parent_one_first_name.lower().strip()
         student_contact_info.LastUpdated = sql.func.now()
