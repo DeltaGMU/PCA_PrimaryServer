@@ -240,7 +240,7 @@ class EmployeesRouter:
 
     class Delete:
         @staticmethod
-        @router.delete(API_ROUTES.Employees.all_employees, status_code=status.HTTP_200_OK)
+        @router.post(API_ROUTES.Employees.remove_all_employees, status_code=status.HTTP_200_OK)
         async def delete_all_employees(are_you_sure: str, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint to remove ALL employee records from the employee's table in the database.
@@ -269,7 +269,7 @@ class EmployeesRouter:
             return ResponseModel(status.HTTP_200_OK, "success")
 
         @staticmethod
-        @router.delete(API_ROUTES.Employees.employees, status_code=status.HTTP_200_OK)
+        @router.post(API_ROUTES.Employees.remove_employees, status_code=status.HTTP_200_OK)
         async def delete_employees(employee_ids: PydanticEmployeesRemoval, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint to remove multiple employee records from the employee's table in the database.
@@ -293,7 +293,7 @@ class EmployeesRouter:
             return ResponseModel(status.HTTP_200_OK, "success", {"employees": [employee.as_dict() for employee in removed_employees]})
 
         @staticmethod
-        @router.delete(API_ROUTES.Employees.one_employee, status_code=status.HTTP_200_OK)
+        @router.post(API_ROUTES.Employees.remove_one_employee, status_code=status.HTTP_200_OK)
         async def delete_employee(employee_id: str, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint to remove an employee record from the employee's table in the database.
