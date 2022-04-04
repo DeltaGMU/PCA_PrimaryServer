@@ -179,6 +179,27 @@ async def update_student(student_id: str, pyd_student_update: PydanticStudentUpd
         student.GradeID = grade_query.id
         student.LastUpdated = sql.func.now()
     session.commit()
+    # Send notification to enabled emails that the account has been created.
+    if student.StudentContactInfo.EnablePrimaryEmailNotifications:
+        send_email(
+            to_user=f'{student.StudentContactInfo.ParentOneFirstName} {student.StudentContactInfo.ParentOneLastName}',
+            to_email=[student.StudentContactInfo.PrimaryEmail],
+            subj="Student Account Information Has Been Updated!",
+            messages=[
+                "Your student's account information has been updated!",
+                "If you're not aware of updates to your student's account, please contact an administrator for more information."
+            ],
+        )
+    if student.StudentContactInfo.EnableSecondaryEmailNotifications:
+        send_email(
+            to_user=f'{student.StudentContactInfo.ParentTwoFirstName} {student.StudentContactInfo.ParentTwoLastName}',
+            to_email=[student.StudentContactInfo.SecondaryEmail],
+            subj="Student Account Information Has Been Updated!",
+            messages=[
+                "Your student's account information has been updated!",
+                "If you're not aware of updates to your student's account, please contact an administrator for more information."
+            ],
+        )
     return student
 
 
