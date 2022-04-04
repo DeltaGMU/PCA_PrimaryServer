@@ -156,10 +156,10 @@ async def update_student(student_id: str, pyd_student_update: PydanticStudentUpd
     if pyd_student_update.parent_two_last_name:
         student_contact_info.ParentTwoLastName = pyd_student_update.parent_two_last_name.lower().strip()
         student_contact_info.LastUpdated = sql.func.now()
-    if pyd_student_update.parent_primary_email:
+    if pyd_student_update.primary_email:
         student_contact_info.PrimaryEmail = pyd_student_update.primary_email.lower().strip()
         student_contact_info.LastUpdated = sql.func.now()
-    if pyd_student_update.parent_secondary_email:
+    if pyd_student_update.secondary_email:
         student_contact_info.SecondaryEmail = pyd_student_update.secondary_email.lower().strip()
         student_contact_info.LastUpdated = sql.func.now()
     if pyd_student_update.enable_primary_email_notifications:
