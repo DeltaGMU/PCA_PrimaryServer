@@ -78,12 +78,13 @@ async def get_all_time_sheets_for_csv(start_date: str, end_date: str, session: S
             EmployeeHours.EmployeeID == Employee.EmployeeID,
             EmployeeHours.DateWorked.between(start_date, end_date),
             or_(EmployeeHours.WorkHours > 0, EmployeeHours.PTOHours > 0, EmployeeHours.ExtraHours > 0)
-        ).order_by(Employee.FirstName).all()
+        ).order_by(EmployeeHours.DateWorked).all()
         if employee_time_sheet_records is None:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Encountered an error retrieving employee time sheets!")
-        employee_hours_list = [['employee_id', 'first_name', 'last_name', 'work_hours', 'pto_hours', 'extra_hours', 'comments']]
+        employee_hours_list = [['date', 'employee_id', 'first_name', 'last_name', 'work_hours', 'pto_hours', 'extra_hours', 'comments']]
         for item in employee_time_sheet_records:
             employee_hours_list.append([
+                item[1].DateWorked,
                 item[0].EmployeeID,
                 item[0].FirstName,
                 item[0].LastName,
@@ -173,36 +174,47 @@ async def get_all_student_care_for_csv(start_date: str, end_date: str, grade: st
         if student_care_records is None:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Encountered an error retrieving student care records!")
 
-        student_hours_list = [['student_id', 'first_name', 'last_name', 'total_before_care_hours', 'total_after_care_hours']]
+        student_hours_list = [['date', 'student_id', 'first_name', 'last_name', 'before_care_hours',
+                               'before_care_check_in_signature', 'before_care_check_out_signature',
+                               'after_care_hours', 'after_care_check_in_signature', 'after_care_check_out_signature']]
         all_student_hours = {}
         for record in student_care_records:
             all_student_hours[record[0].StudentID] = {
+                "care_date": record[1].CareDate,
                 "first_name": record[0].FirstName,
                 "last_name": record[0].LastName,
                 "before_care_hours": 0,
-                "after_care_hours": 0
+                "before_care_check_in_signature": "",
+                "before_care_check_out_signature": "",
+                "after_care_hours": 0,
+                "after_care_check_in_signature": "",
+                "after_care_check_out_signature": "",
             }
         for record in student_care_records:
             time_taken_in_seconds = (datetime.combine(date.min, record[1].CheckOutTime) - datetime.combine(date.min, record[1].CheckInTime)).total_seconds()
             if not record[1].CareType:
-                all_student_hours[record[0].StudentID]["before_care_hours"] += time_taken_in_seconds
+                all_student_hours[record[0].StudentID]["before_care_hours"] = str(timedelta(seconds=int(time_taken_in_seconds)))
+                all_student_hours[record[0].StudentID]["before_care_check_in_signature"] = record[1].CheckInSignature
+                all_student_hours[record[0].StudentID]["before_care_check_out_signature"] = "Automated Check-Out" if record[1].CheckOutSignature is None else record[1].CheckOutSignature
             else:
-                all_student_hours[record[0].StudentID]["after_care_hours"] += time_taken_in_seconds
-        for item in all_student_hours.keys():
-            time_taken_before_care_formatted = str(timedelta(seconds=int(all_student_hours[item]['before_care_hours'])))
-            time_taken_after_care_formatted = str(timedelta(seconds=int(all_student_hours[item]['after_care_hours'])))
-            all_student_hours[item]['before_care_hours'] = time_taken_before_care_formatted
-            all_student_hours[item]['after_care_hours'] = time_taken_after_care_formatted
+                all_student_hours[record[0].StudentID]["after_care_hours"] = str(timedelta(seconds=int(time_taken_in_seconds)))
+                all_student_hours[record[0].StudentID]["after_care_check_in_signature"] = record[1].CheckInSignature
+                all_student_hours[record[0].StudentID]["after_care_check_out_signature"] = "Automated Check-Out" if record[1].CheckOutSignature is None else record[1].CheckOutSignature
 
         for record in all_student_hours.keys():
             student = all_student_hours[record]
             print(student)
             student_hours_list.append([
+                student["care_date"],
                 record,
                 student["first_name"],
                 student["last_name"],
                 student["before_care_hours"],
+                student["before_care_check_in_signature"],
+                student["before_care_check_out_signature"],
                 student["after_care_hours"],
+                student["after_care_check_in_signature"],
+                student["after_care_check_out_signature"]
             ])
         session.commit()
     except IntegrityError as err:
