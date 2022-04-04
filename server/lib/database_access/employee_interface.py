@@ -243,7 +243,7 @@ async def update_employee(employee_id, pyd_employee_update: PydanticEmployeeUpda
         send_email(
             to_user=f'{employee.FirstName} {employee.LastName}',
             to_email=send_emails_to,
-            subj="Your Account Information Has Been Updated!",
+            subj="Your Employee Account Information Has Been Updated!",
             messages=[
                 "Your employee account information has been updated!",
                 "If you're not aware of updates to your account, please contact an administrator as soon as possible!"
