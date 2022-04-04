@@ -233,6 +233,22 @@ async def update_employee(employee_id, pyd_employee_update: PydanticEmployeeUpda
         employee.EmployeeEnabled = pyd_employee_update.is_enabled
         employee.LastUpdated = sql.func.now()
     session.commit()
+    # Send notification to enabled emails that the account has had its password updated.
+    send_emails_to = []
+    if employee.EmployeeContactInfo.EnablePrimaryEmailNotifications:
+        send_emails_to.append(employee.EmployeeContactInfo.PrimaryEmail)
+    if employee.EmployeeContactInfo.EnableSecondaryEmailNotifications:
+        send_emails_to.append(employee.EmployeeContactInfo.SecondaryEmail)
+    if len(send_emails_to) > 0:
+        send_email(
+            to_user=f'{employee.FirstName} {employee.LastName}',
+            to_email=send_emails_to,
+            subj="Your Account Information Has Been Updated!",
+            messages=[
+                "Your employee account information has been updated!",
+                "If you're not aware of updates to your account, please contact an administrator as soon as possible!"
+            ],
+        )
     return employee
 
 
