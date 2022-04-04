@@ -13,7 +13,7 @@ from server.lib.database_manager import get_db_session
 from server.lib.strings import LOG_ERROR_DATABASE, LOG_ERROR_GENERAL, LOG_ORIGIN_GENERAL
 
 
-async def generate_student_id(first_name: str, last_name: str, carpool_number: int, session: Session = None) -> str:
+async def generate_student_id(first_name: str, last_name: str, car_pool_number: int, session: Session = None) -> str:
     """
     This utility method is used to generate a student ID from the given first name and last name.
     The ID format for students is: ``<first_name_initial><full_last_name><unique_record_id>``
@@ -22,8 +22,8 @@ async def generate_student_id(first_name: str, last_name: str, carpool_number: i
     :type first_name: str, required
     :param last_name: The last name of the student.
     :type last_name: str, required
-    :param carpool_number: The carpool number that corresponds to the student.
-    :type carpool_number: int, required
+    :param car_pool_number: The carpool number that corresponds to the student.
+    :type car_pool_number: int, required
     :param session: The database session to use to create a unique student ID.
     :type session: sqlalchemy.orm.session, optional
     :return: The newly created student ID if successful, otherwise None.
@@ -32,16 +32,16 @@ async def generate_student_id(first_name: str, last_name: str, carpool_number: i
     """
     if session is None:
         session = next(get_db_session())
-    if None in (first_name, last_name, carpool_number):
+    if None in (first_name, last_name, car_pool_number):
         LoggingManager().log(LoggingManager.LogLevel.LOG_CRITICAL, f"One or more provided parameters to generate the student ID was invalid!",
                              error_type=LOG_ORIGIN_GENERAL, origin=LOG_ORIGIN_GENERAL, no_print=False)
         raise RuntimeError(f'One or more provided parameters to generate the student ID was invalid!')
-    new_student_id = f"{first_name[0].lower()}{last_name.lower()}{carpool_number}"
+    new_student_id = f"{first_name[0].lower()}{last_name.lower()}{car_pool_number}"
     student_id_duplicate_counter = 1
     try:
         student_id_exists = session.query(Student).filter(Student.StudentID == new_student_id).first()
         while student_id_exists:
-            new_student_id = f"{first_name[0].lower()}{last_name.lower()}{carpool_number}{student_id_duplicate_counter}"
+            new_student_id = f"{first_name[0].lower()}{last_name.lower()}{car_pool_number}{student_id_duplicate_counter}"
             student_id_duplicate_counter += 1
             student_id_exists = session.query(Student).filter(Student.StudentID == new_student_id).first()
     except SQLAlchemyError as err:
