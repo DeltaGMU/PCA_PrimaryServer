@@ -210,4 +210,4 @@ class StudentsRouter:
             if student_id is None or not isinstance(student_id, str):
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="The employee ID must be a valid string!")
             removed_students = await remove_students(student_id.strip(), session)
-            return ResponseModel(status.HTTP_200_OK, "success", {"employee": [student.as_dict() for student in removed_students]})
+            return ResponseModel(status.HTTP_200_OK, "success", {"student": [student.as_dict() for student in removed_students]})
