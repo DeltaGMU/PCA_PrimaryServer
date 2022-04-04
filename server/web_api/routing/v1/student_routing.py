@@ -113,7 +113,7 @@ class StudentsRouter:
 
     class Update:
         @staticmethod
-        @router.put(API_ROUTES.Students.students, status_code=status.HTTP_201_CREATED)
+        @router.put(API_ROUTES.Students.students, status_code=status.HTTP_200_OK)
         async def update_multiple_students(multi_student_update: PydanticMultipleStudentsUpdate, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint that updates multiple students from the database from the provided employee information and employee ID.
@@ -136,7 +136,7 @@ class StudentsRouter:
             return ResponseModel(status.HTTP_200_OK, "success", {"students": [student.as_dict() for student in updated_students]})
 
         @staticmethod
-        @router.put(API_ROUTES.Students.one_student, status_code=status.HTTP_201_CREATED)
+        @router.put(API_ROUTES.Students.one_student, status_code=status.HTTP_200_OK)
         async def update_one_student(student_id: str, student_update: PydanticStudentUpdate, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint that updates a single student from the database from the provided student information and student ID.
