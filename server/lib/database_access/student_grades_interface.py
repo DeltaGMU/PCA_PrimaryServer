@@ -1,6 +1,8 @@
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
+
+from server.lib.data_classes.student import Student
 from server.lib.data_classes.student_grade import StudentGrade, PydanticStudentGrade
 from server.lib.database_manager import get_db_session
 
@@ -56,6 +58,12 @@ async def remove_student_grade(student_grade: PydanticStudentGrade, session: Ses
         matching_grade = session.query(StudentGrade).filter(StudentGrade.Name == student_grade).first()
         if matching_grade is None:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The provided student grade does not exist!")
+        check_students = session.query(Student, StudentGrade).filter(
+            Student.StudentID == StudentGrade.id,
+            StudentGrade.Name == student_grade
+        ).all()
+        if len(check_students) > 0:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Cannot remove a student grade that is currently in use!")
         session.delete(matching_grade)
         session.commit()
     except IntegrityError:

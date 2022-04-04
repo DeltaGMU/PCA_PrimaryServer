@@ -87,7 +87,7 @@ class StudentGradesRouter:
 
     class Delete:
         @staticmethod
-        @router.delete(API_ROUTES.StudentGrade.grades, status_code=status.HTTP_200_OK)
+        @router.post(API_ROUTES.StudentGrade.remove_grade, status_code=status.HTTP_200_OK)
         async def delete_student_grade(student_grade: PydanticStudentGrade, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint that deletes an employee time sheet report provided the starting reporting period as a year and month in the YYYY-MM format.
