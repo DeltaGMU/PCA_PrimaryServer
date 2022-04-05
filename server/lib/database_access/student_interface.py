@@ -138,15 +138,16 @@ async def update_student(student_id: str, pyd_student_update: PydanticStudentUpd
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The student does not have a student grade registered, please do that first!")
 
     # Check to see what data was provided and update as necessary.
-    if pyd_student_update.first_name:
+    if pyd_student_update.first_name is not None:
         student.FirstName = pyd_student_update.first_name.lower().strip()
         student.LastUpdated = sql.func.now()
-    if pyd_student_update.last_name:
+    if pyd_student_update.last_name is not None:
         student.LastName = pyd_student_update.last_name.lower().strip()
         student.LastUpdated = sql.func.now()
-    if pyd_student_update.car_pool_number >= 0:
-        student.CarpoolNumber = pyd_student_update.car_pool_number
-        student.LastUpdated = sql.func.now()
+    if pyd_student_update.car_pool_number is not None:
+        if pyd_student_update.car_pool_number >= 0:
+            student.CarpoolNumber = pyd_student_update.car_pool_number
+            student.LastUpdated = sql.func.now()
     if pyd_student_update.parent_one_first_name is not None:
         student_contact_info.ParentOneFirstName = pyd_student_update.parent_one_first_name.lower().strip()
         student_contact_info.LastUpdated = sql.func.now()
@@ -159,20 +160,20 @@ async def update_student(student_id: str, pyd_student_update: PydanticStudentUpd
     if pyd_student_update.parent_two_last_name is not None:
         student_contact_info.ParentTwoLastName = pyd_student_update.parent_two_last_name.lower().strip()
         student_contact_info.LastUpdated = sql.func.now()
-    if pyd_student_update.primary_email:
+    if pyd_student_update.primary_email is not None:
         student_contact_info.PrimaryEmail = pyd_student_update.primary_email.lower().strip()
         student_contact_info.LastUpdated = sql.func.now()
     if pyd_student_update.secondary_email is not None:
         student_contact_info.SecondaryEmail = pyd_student_update.secondary_email.lower().strip()
         student_contact_info.LastUpdated = sql.func.now()
-    if pyd_student_update.enable_primary_email_notifications:
+    if pyd_student_update.enable_primary_email_notifications is not None:
         student_contact_info.EnablePrimaryEmailNotifications = pyd_student_update.enable_primary_email_notifications
         student_contact_info.LastUpdated = sql.func.now()
     if pyd_student_update.enable_secondary_email_notifications is not None:
         student_contact_info.EnableSecondaryEmailNotifications = pyd_student_update.enable_secondary_email_notifications
         student_contact_info.LastUpdated = sql.func.now()
     if pyd_student_update.is_enabled is not None:
-        student_contact_info.EmployeeEnabled = pyd_student_update.is_enabled
+        student.StudentEnabled = pyd_student_update.is_enabled
         student.LastUpdated = sql.func.now()
     if pyd_student_update.grade:
         grade_query = session.query(StudentGrade).filter(StudentGrade.Name == pyd_student_update.grade.lower().strip()).first()
