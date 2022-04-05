@@ -59,7 +59,7 @@ class StudentGradesRouter:
             :rtype: server.web_api.models.ResponseModel
             :raises HTTPException: If the request body contains any invalid parameters, or the data provided is formatted incorrectly.
             """
-            if not await token_is_valid(token, ["administrator"]):
+            if not await token_is_valid(token, ["employee"]):
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
             student_grades = await retrieve_all_grades(session)
             return ResponseModel(status.HTTP_200_OK, "success", {"grades": [student_grade.as_dict() for student_grade in student_grades]})

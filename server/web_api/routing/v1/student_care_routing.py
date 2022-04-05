@@ -86,7 +86,7 @@ class StudentCareRouter:
             :rtype: server.web_api.models.ResponseModel
             :raises HTTPException: If the data provided in the request body is invalid, or the student is already checked in to the care service for the provided date.
             """
-            if not await token_is_valid(token, ["administrator"]):
+            if not await token_is_valid(token, ["employee"]):
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
             list_of_student_care = await get_care_students_by_grade(pyd_care_students, session)
             return ResponseModel(status.HTTP_200_OK, "success", {"students": list_of_student_care})
