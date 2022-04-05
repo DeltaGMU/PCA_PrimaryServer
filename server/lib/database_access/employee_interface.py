@@ -202,7 +202,7 @@ async def update_employee(employee_id, pyd_employee_update: PydanticEmployeeUpda
     if pyd_employee_update.primary_email:
         employee.EmployeeContactInfo.PrimaryEmail = pyd_employee_update.primary_email.lower().strip()
         employee.EmployeeContactInfo.LastUpdated = sql.func.now()
-    if pyd_employee_update.secondary_email:
+    if pyd_employee_update.secondary_email is not None:
         employee.EmployeeContactInfo.SecondaryEmail = pyd_employee_update.secondary_email.lower().strip()
         employee.EmployeeContactInfo.LastUpdated = sql.func.now()
     else:
@@ -211,7 +211,7 @@ async def update_employee(employee_id, pyd_employee_update: PydanticEmployeeUpda
     if pyd_employee_update.enable_primary_email_notifications:
         employee.EmployeeContactInfo.EnablePrimaryEmailNotifications = pyd_employee_update.enable_primary_email_notifications
         employee.EmployeeContactInfo.LastUpdated = sql.func.now()
-    if pyd_employee_update.enable_secondary_email_notifications:
+    if pyd_employee_update.enable_secondary_email_notifications is not None:
         employee.EmployeeContactInfo.EnableSecondaryEmailNotifications = pyd_employee_update.enable_secondary_email_notifications
         employee.EmployeeContactInfo.LastUpdated = sql.func.now()
     if pyd_employee_update.role:

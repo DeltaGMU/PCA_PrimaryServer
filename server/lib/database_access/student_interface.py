@@ -147,28 +147,28 @@ async def update_student(student_id: str, pyd_student_update: PydanticStudentUpd
     if pyd_student_update.car_pool_number >= 0:
         student.CarpoolNumber = pyd_student_update.car_pool_number
         student.LastUpdated = sql.func.now()
-    if pyd_student_update.parent_one_first_name:
+    if pyd_student_update.parent_one_first_name is not None:
         student_contact_info.ParentOneFirstName = pyd_student_update.parent_one_first_name.lower().strip()
         student_contact_info.LastUpdated = sql.func.now()
-    if pyd_student_update.parent_one_last_name:
+    if pyd_student_update.parent_one_last_name is not None:
         student_contact_info.ParentOneLastName = pyd_student_update.parent_one_last_name.lower().strip()
         student_contact_info.LastUpdated = sql.func.now()
-    if pyd_student_update.parent_two_first_name:
+    if pyd_student_update.parent_two_first_name is not None:
         student_contact_info.ParentTwoFirstName = pyd_student_update.parent_two_first_name.lower().strip()
         student_contact_info.LastUpdated = sql.func.now()
-    if pyd_student_update.parent_two_last_name:
+    if pyd_student_update.parent_two_last_name is not None:
         student_contact_info.ParentTwoLastName = pyd_student_update.parent_two_last_name.lower().strip()
         student_contact_info.LastUpdated = sql.func.now()
     if pyd_student_update.primary_email:
         student_contact_info.PrimaryEmail = pyd_student_update.primary_email.lower().strip()
         student_contact_info.LastUpdated = sql.func.now()
-    if pyd_student_update.secondary_email:
+    if pyd_student_update.secondary_email is not None:
         student_contact_info.SecondaryEmail = pyd_student_update.secondary_email.lower().strip()
         student_contact_info.LastUpdated = sql.func.now()
     if pyd_student_update.enable_primary_email_notifications:
         student_contact_info.EnablePrimaryEmailNotifications = pyd_student_update.enable_primary_email_notifications
         student_contact_info.LastUpdated = sql.func.now()
-    if pyd_student_update.enable_secondary_email_notifications:
+    if pyd_student_update.enable_secondary_email_notifications is not None:
         student_contact_info.EnableSecondaryEmailNotifications = pyd_student_update.enable_secondary_email_notifications
         student_contact_info.LastUpdated = sql.func.now()
     if pyd_student_update.is_enabled:
