@@ -76,9 +76,7 @@ async def create_employee(pyd_employee: PydanticEmployeeRegistration, session: S
         session.rollback()
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(err)) from err
     # Send notification to enabled emails that the account has been created.
-    send_emails_to = []
-    if new_employee.EmployeeContactInfo.EnablePrimaryEmailNotifications:
-        send_emails_to.append(new_employee.EmployeeContactInfo.PrimaryEmail)
+    send_emails_to = [new_employee.EmployeeContactInfo.PrimaryEmail]
     if new_employee.EmployeeContactInfo.EnableSecondaryEmailNotifications:
         send_emails_to.append(new_employee.EmployeeContactInfo.SecondaryEmail)
     if len(send_emails_to) > 0:
