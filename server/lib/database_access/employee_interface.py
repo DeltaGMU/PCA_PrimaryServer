@@ -193,13 +193,13 @@ async def update_employee(employee_id, pyd_employee_update: PydanticEmployeeUpda
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The employee does not have contact information registered, please do that first!")
 
     # Check to see what data was provided and update as necessary.
-    if pyd_employee_update.first_name:
+    if pyd_employee_update.first_name is not None:
         employee.FirstName = pyd_employee_update.first_name.lower().strip()
         employee.LastUpdated = sql.func.now()
-    if pyd_employee_update.last_name:
+    if pyd_employee_update.last_name is not None:
         employee.LastName = pyd_employee_update.last_name.lower().strip()
         employee.LastUpdated = sql.func.now()
-    if pyd_employee_update.primary_email:
+    if pyd_employee_update.primary_email is not None:
         employee.EmployeeContactInfo.PrimaryEmail = pyd_employee_update.primary_email.lower().strip()
         employee.EmployeeContactInfo.LastUpdated = sql.func.now()
     if pyd_employee_update.secondary_email is not None:
@@ -208,13 +208,13 @@ async def update_employee(employee_id, pyd_employee_update: PydanticEmployeeUpda
     else:
         employee.EmployeeContactInfo.SecondaryEmail = None
         employee.EmployeeContactInfo.LastUpdated = sql.func.now()
-    if pyd_employee_update.enable_primary_email_notifications:
+    if pyd_employee_update.enable_primary_email_notifications is not None:
         employee.EmployeeContactInfo.EnablePrimaryEmailNotifications = pyd_employee_update.enable_primary_email_notifications
         employee.EmployeeContactInfo.LastUpdated = sql.func.now()
     if pyd_employee_update.enable_secondary_email_notifications is not None:
         employee.EmployeeContactInfo.EnableSecondaryEmailNotifications = pyd_employee_update.enable_secondary_email_notifications
         employee.EmployeeContactInfo.LastUpdated = sql.func.now()
-    if pyd_employee_update.role:
+    if pyd_employee_update.role is not None:
         role_query = session.query(EmployeeRole).filter(EmployeeRole.Name == pyd_employee_update.role).first()
         if not role_query:
             session.rollback()
