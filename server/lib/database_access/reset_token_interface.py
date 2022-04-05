@@ -29,6 +29,8 @@ async def generate_reset_code(forgot_password: PydanticForgotPassword, session: 
     ).first()
     if employee is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Cannot find an employee with a matching employee ID!")
+    if employee.EmployeeID == "admin":
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Cannot send a password reset request for the default administrator account.")
     reset_code = await generate_code()
     if reset_code is None:
         raise RuntimeError(f"Unable to generate a reset code for the following employee: {employee_id}")
