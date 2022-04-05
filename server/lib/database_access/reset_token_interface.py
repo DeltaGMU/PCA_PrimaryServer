@@ -112,8 +112,8 @@ async def reset_account_password(reset_password: PydanticResetPassword, session:
         send_email(
             to_user=f'{employee.FirstName} {employee.LastName}',
             to_email=employee.EmployeeContactInfo.PrimaryEmail,
-            subj="Account Password Reset Confirmed",
-            messages=["<b>Your employee account's password has been reset!</b>",
+            subj="Account Password Has Been Changed",
+            messages=["<b>Your employee account's password has been changed!</b>",
                       f"If you don't remember resetting your employee account's password, please contact administration as soon as possible!"]
         )
     return employee
