@@ -69,6 +69,15 @@ class PydanticUpdatePassword(BaseModel):
     new_password: str
 
 
+class PydanticForgotPassword(BaseModel):
+    employee_id: str
+
+
+class PydanticResetPassword(BaseModel):
+    new_password: str
+    reset_code: str
+
+
 class Employee(Base):
     """
     A MariaDB data class that represents the table structure of the employee table in the database server.
@@ -88,7 +97,7 @@ class Employee(Base):
     EmployeeRole = relationship("EmployeeRole", lazy='subquery')
     EmployeeContactInfo = relationship("EmployeeContactInfo", back_populates="EmployeeParentRelationship", uselist=False, cascade='all, delete')
     EmployeeHoursRelationship = relationship('EmployeeHours', cascade='all, delete')
-    EmployeeResetTokenRelationship = relationship('ResetToken', cascade='all, delete')
+    EmployeeResetToken = relationship('ResetToken', back_populates="EmployeeParentRelationship", uselist=False, cascade='all, delete')
     LastUpdated = Column(DateTime, nullable=False, default=sql.func.now())
     EntryCreated = Column(DateTime, nullable=False, default=sql.func.now())
 

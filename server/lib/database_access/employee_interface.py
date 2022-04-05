@@ -2,7 +2,7 @@ from __future__ import annotations
 from sqlalchemy.orm import Session
 from sqlalchemy import sql
 from typing import List, Dict
-from random import choice, randint
+from random import randint
 from server.lib.utils.email_utils import send_email
 from server.lib.utils.employee_utils import generate_employee_id, create_employee_password_hashes, verify_employee_password
 from server.lib.data_classes.employee import Employee, PydanticEmployeeRegistration, PydanticEmployeesRemoval, PydanticEmployeeUpdate

@@ -6,10 +6,12 @@ This handles all the REST API logic for creating, reading, updating, and destroy
 from fastapi import status, HTTPException, Depends
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
+
+from server.lib.database_access.reset_token_interface import generate_reset_code, reset_account_password
 from server.web_api.api_routes import API_ROUTES
 from server.web_api.models import ResponseModel
 from server.lib.data_classes.employee import Employee, PydanticEmployeeRegistration, PydanticEmployeesRemoval, PydanticEmployeeUpdate, \
-    PydanticRetrieveMultipleEmployees, PydanticMultipleEmployeesUpdate, PydanticUpdatePassword
+    PydanticRetrieveMultipleEmployees, PydanticMultipleEmployeesUpdate, PydanticUpdatePassword, PydanticForgotPassword, PydanticResetPassword
 from server.lib.database_manager import get_db_session
 from server.lib.database_access.employee_interface import get_all_employees, get_employee, \
     create_employee, remove_employees, update_employee, get_multiple_employees, update_employees, is_admin, update_employee_password
@@ -211,6 +213,44 @@ class EmployeesRouter:
             if updated_employee is None:
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="One or more provided parameters were invalid!")
             return ResponseModel(status.HTTP_200_OK, "success", {"employee": updated_employee.as_dict()})
+
+        @staticmethod
+        @router.post(API_ROUTES.Employees.forgot_password)
+        async def forgot_password(forgot_password: PydanticForgotPassword, session=Depends(get_db_session)):
+            """
+            An endpoint that accepts an employee ID and generates a unique 8-digit reset code to reset the employee password.
+
+            :param forgot_password: The employee ID corresponding to the employee account that needs a password reset.
+            :type forgot_password: str, required
+            :param session: The database session to use to update the employee data.
+            :type session: sqlalchemy.orm.session, optional
+            :return: A response model containing the employee updated in the database.
+            :rtype: server.web_api.models.ResponseModel
+            :raises HTTPException: If the employee ID is invalid.
+            """
+            reset_code = await generate_reset_code(forgot_password, session)
+            if reset_code is None:
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Unable to generate reset code. One or more provided parameters were invalid!")
+            return ResponseModel(status.HTTP_200_OK, "success", {"token": reset_code.as_dict()})
+
+        @staticmethod
+        @router.post(API_ROUTES.Employees.reset_password)
+        async def reset_password(reset_password: PydanticResetPassword, session=Depends(get_db_session)):
+            """
+            An endpoint that accepts a reset code and password to apply to the corresponding employee account.
+
+            :param reset_password: The reset code and new password to apply to the employee account.
+            :type reset_password: str, required
+            :param session: The database session to use to update the employee data.
+            :type session: sqlalchemy.orm.session, optional
+            :return: A response model containing a success message if the password was updated.
+            :rtype: server.web_api.models.ResponseModel
+            :raises HTTPException: If the reset code or new password is invalid.
+            """
+            password_reset = await reset_account_password(reset_password, session)
+            if password_reset is None:
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Unable to reset employee password. One or more provided parameters were invalid!")
+            return ResponseModel(status.HTTP_200_OK, "success")
 
         @staticmethod
         @router.put(API_ROUTES.Employees.password, status_code=status.HTTP_200_OK)

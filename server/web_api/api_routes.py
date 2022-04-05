@@ -55,6 +55,8 @@ class APIRoutes:
         employees = '/api/v1/employees'
         password = '/api/v1/employees/password/new'
         employee_token = '/api/v1/employees/token'
+        forgot_password = '/api/v1/employees/password/forgot'
+        reset_password = '/api/v1/employees/password/reset'
 
     class Students:
         count = '/api/v1/students/count'

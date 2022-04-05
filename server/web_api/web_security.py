@@ -13,7 +13,6 @@ from server.lib.data_classes.employee import Employee
 from server.lib.data_classes.access_token import TokenBlacklist
 from server.lib.database_access.employee_interface import get_employee, get_employee_security_scopes
 from server.lib.database_manager import get_db_session
-from server.web_api.security_config import TOKEN_EXPIRY_MINUTES
 from sqlalchemy.exc import IntegrityError
 
 oauth_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
@@ -23,7 +22,7 @@ async def create_access_token(employee_user: Employee):
     if employee_user is None:
         raise RuntimeError('An access token cannot be created for a null user!')
     token_issue = int((datetime.utcnow()).timestamp())
-    token_expiration = int((datetime.utcnow() + timedelta(minutes=TOKEN_EXPIRY_MINUTES)).timestamp())
+    token_expiration = int((datetime.utcnow() + timedelta(minutes=int(ConfigManager().config()['Security Settings']['access_token_expiry_minutes']))).timestamp())
     token_scopes = await get_employee_security_scopes(employee_user)
     token_data = {
         "sub": employee_user.EmployeeID,
