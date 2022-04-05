@@ -63,8 +63,8 @@ async def serve_index():
 
 @web_app.post(API_ROUTES.login, status_code=status.HTTP_200_OK)
 async def login(data: OAuth2PasswordRequestForm = Depends()):
-    username = data.username
-    password = data.password
+    username = data.username.strip()
+    password = data.password.strip()
 
     employee_user = await get_employee(username)
     if employee_user is None:
