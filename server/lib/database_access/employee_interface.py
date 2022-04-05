@@ -221,13 +221,13 @@ async def update_employee(employee_id, pyd_employee_update: PydanticEmployeeUpda
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The provided employee role is invalid or does not exist!")
         employee.EmployeeRoleID = role_query.id
         employee.LastUpdated = sql.func.now()
-    if pyd_employee_update.pto_hours_enabled:
+    if pyd_employee_update.pto_hours_enabled is not None:
         employee.PTOHoursEnabled = pyd_employee_update.pto_hours_enabled
         employee.LastUpdated = sql.func.now()
-    if pyd_employee_update.extra_hours_enabled:
+    if pyd_employee_update.extra_hours_enabled is not None:
         employee.ExtraHoursEnabled = pyd_employee_update.extra_hours_enabled
         employee.LastUpdated = sql.func.now()
-    if pyd_employee_update.is_enabled:
+    if pyd_employee_update.is_enabled is not None:
         employee.EmployeeEnabled = pyd_employee_update.is_enabled
         employee.LastUpdated = sql.func.now()
     session.commit()

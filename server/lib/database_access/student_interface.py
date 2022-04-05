@@ -171,7 +171,7 @@ async def update_student(student_id: str, pyd_student_update: PydanticStudentUpd
     if pyd_student_update.enable_secondary_email_notifications is not None:
         student_contact_info.EnableSecondaryEmailNotifications = pyd_student_update.enable_secondary_email_notifications
         student_contact_info.LastUpdated = sql.func.now()
-    if pyd_student_update.is_enabled:
+    if pyd_student_update.is_enabled is not None:
         student_contact_info.EmployeeEnabled = pyd_student_update.is_enabled
         student.LastUpdated = sql.func.now()
     if pyd_student_update.grade:
