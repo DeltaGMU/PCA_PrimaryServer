@@ -36,11 +36,13 @@ def send_test_email():
     return email_request.json()
 
 
-def send_email(to_user: str, to_email: List[str], subj: str, messages: List[str], template=None):
+def send_email(to_user: str, to_email: List[str], subj: str, messages: List[str], template: str = None, to_cc: str = None):
     email_api = f"{'https://' if ConfigManager().config().getboolean('Email Settings', 'pca_email_use_https') else 'http://'}{ConfigManager().config()['Email Settings']['pca_email_api']}"
     # Validate provided information and email address.
     if None in (to_user, to_email, subj, messages):
         raise RuntimeError("Cannot send an email with the 'to', 'subject', or 'message' fields being blank!")
+    if to_cc and isinstance(to_cc, str):
+        to_cc = [to_cc]
     if to_email and isinstance(to_email, str):
         to_email = [to_email]
     if to_email and len(to_email) == 0:
@@ -92,6 +94,8 @@ def send_email(to_user: str, to_email: List[str], subj: str, messages: List[str]
             "messageHTML": html_out,
             "messagePlainText": "\n".join(messages)
         }
+        if to_cc:
+            email_opts["cc"] = [", ".join(to_cc)]
         # Send the email...
         try:
             requests.post(f"{email_api}{THIRD_PARTY_ROUTES.Email.send_email}",

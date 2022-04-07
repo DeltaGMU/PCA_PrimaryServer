@@ -350,13 +350,20 @@ async def create_student_care_report(start_date, end_date, grade, session):
     return pdf_bytes
 
 
-async def create_leave_request_email(leave_request: PydanticLeaveRequest):
+async def create_leave_request_email(leave_request: PydanticLeaveRequest, session: Session = None):
+    if session is None:
+        session = next(get_db_session())
     if not check_date_formats([leave_request.date_of_absence_start, leave_request.date_of_absence_end]):
         raise RuntimeError("The start and end dates for the reporting period are invalid!")
     mailing_address = ConfigManager().config()['System Settings']['leave_request_mailing_address'].strip()
     formatted_start_date = datetime.strptime(leave_request.date_of_absence_start, "%Y-%m-%d").strftime("%m/%d/%Y")
     formatted_end_date = datetime.strptime(leave_request.date_of_absence_end, "%Y-%m-%d").strftime("%m/%d/%Y")
-    print(mailing_address)
+
+    matching_employee = session.query(Employee).filter(
+        Employee.EmployeeID == leave_request.employee_id,
+    ).first()
+    if matching_employee is None:
+        raise RuntimeError("The leave request could not be sent because the provided employee ID does not match any employee records!")
     sent_email = send_email(
                     to_user=f"Leave Request for {leave_request.employee_name}:",
                     to_email=mailing_address,
@@ -376,7 +383,8 @@ async def create_leave_request_email(leave_request: PydanticLeaveRequest):
                         f"<b>Who will cover</b>: {leave_request.absence_cover_text}",
                         f"<b>Comments:</b> {leave_request.absence_comments}"
                     ],
-                    template="leave_request_email_template.html"
+                    template="leave_request_email_template.html",
+                    to_cc=matching_employee.EmployeeContactInfo.PrimaryEmail
                 )
     if sent_email:
         return True
