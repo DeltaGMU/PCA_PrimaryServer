@@ -3,6 +3,8 @@ from sqlalchemy.orm import Session
 from sqlalchemy import sql
 from typing import List, Dict
 from random import randint
+
+from server.lib.data_classes.employee_hours import EmployeeHours
 from server.lib.utils.email_utils import send_email
 from server.lib.utils.employee_utils import generate_employee_id, create_employee_password_hashes, verify_employee_password
 from server.lib.data_classes.employee import Employee, PydanticEmployeeRegistration, PydanticEmployeesRemoval, PydanticEmployeeUpdate
@@ -10,6 +12,7 @@ from server.lib.data_classes.employee_role import EmployeeRole
 from server.lib.data_classes.employee_contact_info import EmployeeContactInfo
 from server.lib.database_manager import get_db_session
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy import or_
 from fastapi import HTTPException, status
 
 
@@ -104,8 +107,11 @@ async def remove_employees(employee_ids: PydanticEmployeesRemoval | str, session
         employees = session.query(Employee).filter(Employee.EmployeeID.in_(employee_ids)).all()
         if employees:
             for employee in employees:
-                session.delete(employee)
-                removed_employees.append(employee)
+                if not check_employee_has_records(employee.EmployeeID):
+                    session.delete(employee)
+                    removed_employees.append(employee)
+                else:
+                    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Cannot remove employees that have timesheet records!")
             session.commit()
         else:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Cannot remove employees that do not exist in the database!")
@@ -248,6 +254,23 @@ async def update_employee(employee_id, pyd_employee_update: PydanticEmployeeUpda
             ],
         )
     return employee
+
+
+async def check_employee_has_records(employee_id: str, session: Session = None):
+    if session is None:
+        session = next(get_db_session())
+    if employee_id is None or not isinstance(employee_id, str):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The provided employee ID is invalid!")
+    matching_employee = session.query(Employee).filter(
+        Employee.EmployeeID == employee_id.strip()
+    ).first()
+    employee_has_time_sheets = session.query(EmployeeHours).filter(
+        matching_employee.EmployeeID == EmployeeHours.EmployeeID,
+        or_(EmployeeHours.WorkHours > 0, EmployeeHours.PTOHours > 0, EmployeeHours.ExtraHours > 0)
+    ).all()
+    if len(employee_has_time_sheets) > 0:
+        return True
+    return False
 
 
 async def get_employee(username: str, session: Session = None) -> Employee:

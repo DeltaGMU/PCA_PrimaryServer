@@ -1,6 +1,7 @@
 from __future__ import annotations
 from typing import Dict, List
 
+from server.lib.data_classes.student_care_hours import StudentCareHours
 from server.lib.utils.email_utils import send_email
 from server.lib.data_classes.student_grade import StudentGrade
 from server.lib.database_manager import get_db_session
@@ -207,6 +208,22 @@ async def update_student(student_id: str, pyd_student_update: PydanticStudentUpd
     return student
 
 
+async def check_student_has_records(student_id: str, session: Session = None):
+    if session is None:
+        session = next(get_db_session())
+    if student_id is None or not isinstance(student_id, str):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The provided student ID is invalid!")
+    matching_student = session.query(Student).filter(
+        Student.StudentID == student_id.strip()
+    ).first()
+    student_has_records = session.query(StudentCareHours).filter(
+        matching_student.StudentID == StudentCareHours.StudentID,
+    ).all()
+    if len(student_has_records) > 0:
+        return True
+    return False
+
+
 async def get_student_by_id(student_id: str, session: Session = None):
     if session is None:
         session = next(get_db_session())
@@ -261,8 +278,11 @@ async def remove_students(student_ids: PydanticStudentsRemoval | str, session: S
         students = session.query(Student).filter(Student.StudentID.in_(student_ids)).all()
         if students:
             for student in students:
-                session.delete(student)
-                removed_students.append(student)
+                if not check_student_has_records(student.StudentID):
+                    session.delete(student)
+                    removed_students.append(student)
+                else:
+                    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Cannot remove a student with student care records!")
             session.commit()
         else:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Cannot remove students that do not exist in the database!")

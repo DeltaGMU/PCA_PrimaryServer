@@ -14,7 +14,8 @@ from server.lib.data_classes.employee import Employee, PydanticEmployeeRegistrat
     PydanticRetrieveMultipleEmployees, PydanticMultipleEmployeesUpdate, PydanticUpdatePassword, PydanticForgotPassword, PydanticResetPassword
 from server.lib.database_manager import get_db_session
 from server.lib.database_access.employee_interface import get_all_employees, get_employee, \
-    create_employee, remove_employees, update_employee, get_multiple_employees, update_employees, is_admin, update_employee_password
+    create_employee, remove_employees, update_employee, get_multiple_employees, update_employees, \
+    is_admin, update_employee_password, check_employee_has_records
 from server.web_api.web_security import token_is_valid, oauth_scheme, get_user_from_token
 
 router = InferringRouter()
@@ -158,6 +159,11 @@ class EmployeesRouter:
             if employee is None:
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The employee could not be retrieved.")
             full_employee_information = employee.as_dict()
+            employee_has_records = await check_employee_has_records(employee.EmployeeID)
+            if not employee_has_records:
+                full_employee_information["can_delete"] = True
+            else:
+                full_employee_information["can_delete"] = False
             return ResponseModel(status.HTTP_200_OK, "success", {"employee": full_employee_information})
 
     class Update:
