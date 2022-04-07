@@ -56,6 +56,9 @@ async def create_employee_multiple_hours(employee_id: str, employee_updates: Lis
                     EmployeeHours.Comment: timesheet.comment
                 })
             else:
+                # Skip timesheet entry if the work hours, pto hours, and the extra hours are all 0.
+                if timesheet.work_hours == 0 and timesheet.pto_hours == 0 and timesheet.extra_hours == 0:
+                    continue
                 session.add(timesheet_submission)
             submitted_time_sheets.append(timesheet_submission)
         session.commit()
