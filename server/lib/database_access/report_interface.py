@@ -40,7 +40,7 @@ async def get_all_time_sheets_for_report(start_date: str, end_date: str, session
             EmployeeHours.EmployeeID == Employee.EmployeeID,
             EmployeeHours.DateWorked.between(start_date, end_date),
             or_(EmployeeHours.WorkHours > 0, EmployeeHours.PTOHours > 0, EmployeeHours.ExtraHours > 0)
-        ).order_by(Employee.FirstName).all()
+        ).order_by(Employee.LastName).all()
         if employee_time_sheet_records is None:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Encountered an error retrieving employee time sheets!")
 
@@ -126,7 +126,7 @@ async def get_all_student_care_for_report(start_date: str, end_date: str, grade:
             StudentCareHours.StudentID == Student.StudentID,
             Student.GradeID == student_grade.id,
             StudentCareHours.CareDate.between(start_date, end_date)
-        ).order_by(Student.FirstName).all()
+        ).order_by(Student.LastName).all()
         if student_care_records is None:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Encountered an error retrieving student care records!")
 
@@ -170,7 +170,7 @@ async def get_all_student_care_for_csv(start_date: str, end_date: str, grade: st
             StudentCareHours.StudentID == Student.StudentID,
             Student.GradeID == student_grade.id,
             StudentCareHours.CareDate.between(start_date, end_date)
-        ).order_by(Student.FirstName).all()
+        ).order_by(Student.LastName).all()
         if student_care_records is None:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Encountered an error retrieving student care records!")
 
