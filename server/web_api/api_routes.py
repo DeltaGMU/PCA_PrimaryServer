@@ -44,6 +44,7 @@ class APIRoutes:
         care_reports_pdf = '/api/v1/reports/care/pdf'
         care_reports_csv = '/api/v1/reports/care/csv'
         leave_request = '/api/v1/reports/leave-request'
+        leave_request_reasons = '/api/v1/reports/leave-request/reasons'
 
     class Employees:
         count = '/api/v1/employees/count'

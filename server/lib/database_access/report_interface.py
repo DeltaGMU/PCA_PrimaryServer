@@ -382,3 +382,9 @@ async def create_leave_request_email(leave_request: PydanticLeaveRequest):
         return True
     else:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The email could not be sent!")
+
+
+async def get_leave_request_reasons():
+    leave_request_strings = ConfigManager().config()['System Settings']['leave_request_reasons']
+    leave_request_list = [reason.strip() for reason in leave_request_strings.split(",")]
+    return leave_request_list

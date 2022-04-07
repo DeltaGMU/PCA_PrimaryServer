@@ -7,7 +7,7 @@ from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
 from server.web_api.api_routes import API_ROUTES
 from server.lib.database_access.report_interface import create_time_sheets_report, create_student_care_report, \
-    create_time_sheets_csv, create_student_care_csv, create_leave_request_email
+    create_time_sheets_csv, create_student_care_csv, create_leave_request_email, get_leave_request_reasons
 from server.lib.data_classes.report import PydanticStudentRetrieveReport, PydanticEmployeeRetrieveReport, PydanticLeaveRequest
 from server.lib.database_manager import get_db_session
 from server.web_api.web_security import token_is_valid, oauth_scheme
@@ -127,3 +127,21 @@ class ReportsRouter:
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
             await create_leave_request_email(leave_request)
             return ResponseModel(status.HTTP_200_OK, "success")
+
+    class Read:
+        @staticmethod
+        @router.get(API_ROUTES.Reports.leave_request_reasons, status_code=status.HTTP_200_OK)
+        async def read_leave_request_reasons(token: str = Depends(oauth_scheme)):
+            """
+            An endpoint that retrieves a list of all the leave request reasons that are configurable from the server configuration file.
+
+            :param token: The JSON Web Token responsible for authenticating the user to this endpoint.
+            :type token: str, required
+            :return: A response model containing the list of leave request reasons.
+            :rtype: server.web_api.models.ResponseModel
+            :raises HTTPException: If the authentication is invalid or there is an error retrieving the leave request reasons.
+            """
+            if not await token_is_valid(token, ["employee"]):
+                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
+            reasons_list = await get_leave_request_reasons()
+            return ResponseModel(status.HTTP_200_OK, "success", {"reasons": reasons_list})
