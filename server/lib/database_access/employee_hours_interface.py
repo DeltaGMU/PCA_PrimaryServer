@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import Dict, List
 from sqlalchemy.orm import Session
-from sqlalchemy import sql
+from server.lib.utils.email_utils import send_email
 from server.lib.data_classes.employee import Employee
 from server.lib.utils.date_utils import check_date_formats
 from server.lib.data_classes.employee_hours import EmployeeHours, PydanticEmployeeTimesheetSubmission, PydanticEmployeeTimesheetRemoval
@@ -55,13 +55,27 @@ async def create_employee_multiple_hours(employee_id: str, employee_updates: Lis
                     EmployeeHours.ExtraHours: timesheet.extra_hours,
                     EmployeeHours.Comment: timesheet.comment
                 })
+                submitted_time_sheets.append(timesheet_exists)
             else:
                 # Skip timesheet entry if the work hours, pto hours, and the extra hours are all 0.
                 if timesheet.work_hours == 0 and timesheet.pto_hours == 0 and timesheet.extra_hours == 0:
                     continue
                 session.add(timesheet_submission)
-            submitted_time_sheets.append(timesheet_submission)
+                submitted_time_sheets.append(timesheet_submission)
         session.commit()
+        if len(submitted_time_sheets) > 0:
+            # Send notification to enabled emails that the timesheet has been updated.
+            send_emails_to = [check_employee.EmployeeContactInfo.PrimaryEmail]
+            if check_employee.EmployeeContactInfo.EnableSecondaryEmailNotifications:
+                send_emails_to.append(check_employee.EmployeeContactInfo.SecondaryEmail)
+            if len(send_emails_to) > 0:
+                send_email(
+                    to_user=f'{check_employee.FirstName} {check_employee.LastName}',
+                    to_email=send_emails_to,
+                    subj="Employee Timesheet Saved",
+                    messages=["Your employee timesheet was updated and saved!",
+                              "If you are not aware of updates to your employee timesheet, please contact administration staff!"]
+                )
     except IntegrityError as err:
         session.rollback()
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(err)) from err
@@ -128,6 +142,7 @@ async def update_employee_hours(employee_id: str, date_worked: str, work_hours: 
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                                 detail="The employee timesheet information could not be updated for the provided date. "
                                        "Please check the provided information for errors!")
+
     except IntegrityError as err:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(err)) from err
     return updated_hours
