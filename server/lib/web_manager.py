@@ -34,7 +34,10 @@ class WebSessionManager:
 
         :return: None
         """
-        self.web_service: WebService = WebService(self.web_ip, self.web_port, use_https=ConfigManager().config().getboolean('API Server', 'use_https'), ssl_cert=f"{ROOT_DIR}/web_api/cert.pem", ssl_key=f"{ROOT_DIR}/web_api/key.pem",
+        self.web_service: WebService = WebService(self.web_ip, self.web_port,
+                                                  use_https=ConfigManager().config().getboolean('API Server', 'use_https'),
+                                                  ssl_cert=ConfigManager().config()['API Server']['cert_path'],
+                                                  ssl_key=ConfigManager().config()['API Server']['key_path'],
                                                   debug_mode=ConfigManager().config().getboolean('Debug Mode', 'api_debug'))
         LoggingManager().log(LoggingManager.LogLevel.LOG_INFO, "Web session manager initialized.", origin=LOG_ORIGIN_STARTUP, no_print=False)
 
