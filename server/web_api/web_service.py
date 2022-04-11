@@ -2,6 +2,8 @@ import contextlib
 import threading
 import time
 import uvicorn
+
+from server.lib.config_manager import ConfigManager
 from server.web_api.web_app import web_app
 from server.lib.logging_manager import LoggingManager
 from server.lib.strings import LOG_ORIGIN_API
@@ -93,7 +95,9 @@ class WebService:
         self.web_server = UvicornServer(config=config)
         with self.web_server.run_in_thread():
             LoggingManager().log(LoggingManager.LogLevel.LOG_INFO, f"Initializing API Server on: {self.host}:{self.port}/api/v1/", origin=LOG_ORIGIN_API, no_print=False)
-            LoggingManager().log(LoggingManager.LogLevel.LOG_INFO, f"Initializing Server API Documentation on: {self.host}:{self.port}/docs/", origin=LOG_ORIGIN_API, no_print=False)
+            if ConfigManager().config().getboolean('API Server', 'enable_docs'):
+                LoggingManager().log(LoggingManager.LogLevel.LOG_INFO, f"Initializing Server API Documentation on: {self.host}:{self.port}/docs/", origin=LOG_ORIGIN_API,
+                                     no_print=False)
             while not self.stop_flag:
                 try:
                     time.sleep(0.01)
