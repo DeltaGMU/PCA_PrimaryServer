@@ -2,8 +2,8 @@ from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
-from server.lib.data_classes.student import Student
-from server.lib.data_classes.student_grade import StudentGrade, PydanticStudentGrade
+from server.lib.data_models.student import Student
+from server.lib.data_models.student_grade import StudentGrade, PydanticStudentGrade
 from server.lib.database_manager import get_db_session
 
 

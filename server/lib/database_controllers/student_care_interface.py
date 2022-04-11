@@ -6,12 +6,12 @@ from sqlalchemy import desc, asc
 from fastapi import HTTPException, status
 
 from server.lib.utils.email_utils import send_email
-from server.lib.data_classes.student_grade import StudentGrade
+from server.lib.data_models.student_grade import StudentGrade
 from server.lib.config_manager import ConfigManager
-from server.lib.data_classes.student import Student
+from server.lib.data_models.student import Student
 from server.lib.utils.date_utils import check_date_formats
-from server.lib.data_classes.student_care_hours import StudentCareHours, PydanticStudentCareHoursCheckOut, PydanticRetrieveCareStudentsByGrade, PydanticRetrieveStudentCareRecord, PydanticDeleteStudentCareRecord
-from server.lib.data_classes.student_care_hours import PydanticStudentCareHoursCheckIn
+from server.lib.data_models.student_care_hours import StudentCareHours, PydanticStudentCareHoursCheckOut, PydanticRetrieveCareStudentsByGrade, PydanticRetrieveStudentCareRecord, PydanticDeleteStudentCareRecord
+from server.lib.data_models.student_care_hours import PydanticStudentCareHoursCheckIn
 from server.lib.database_manager import get_db_session
 
 

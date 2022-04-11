@@ -6,10 +6,10 @@ from fastapi import status, HTTPException, Depends
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
 from server.web_api.api_routes import API_ROUTES
-from server.lib.database_access.student_interface import create_student, get_student_by_id, update_students, \
+from server.lib.database_controllers.student_interface import create_student, get_student_by_id, update_students, \
     update_student, remove_students, check_student_has_records
 from server.web_api.models import ResponseModel
-from server.lib.data_classes.student import Student, PydanticStudentRegistration, PydanticMultipleStudentsUpdate, \
+from server.lib.data_models.student import Student, PydanticStudentRegistration, PydanticMultipleStudentsUpdate, \
     PydanticStudentUpdate, PydanticStudentsRemoval
 from server.lib.database_manager import get_db_session
 from server.web_api.web_security import token_is_valid, oauth_scheme

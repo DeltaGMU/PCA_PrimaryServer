@@ -2,13 +2,13 @@ import uuid
 from datetime import datetime, timedelta
 from fastapi import HTTPException, status
 
-from server.lib.data_classes.employee_contact_info import EmployeeContactInfo
+from server.lib.data_models.employee_contact_info import EmployeeContactInfo
 from server.lib.utils.email_utils import send_email
 from server.lib.utils.employee_utils import create_employee_password_hashes
 from server.lib.config_manager import ConfigManager
-from server.lib.data_classes.reset_token import ResetToken
+from server.lib.data_models.reset_token import ResetToken
 from server.lib.database_manager import get_db_session
-from server.lib.data_classes.employee import Employee, PydanticForgotPassword, PydanticResetPassword
+from server.lib.data_models.employee import Employee, PydanticForgotPassword, PydanticResetPassword
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import sql

@@ -7,13 +7,13 @@ from fastapi import status, HTTPException, Depends
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
 
-from server.lib.database_access.reset_token_interface import generate_reset_code, reset_account_password
+from server.lib.database_controllers.reset_token_interface import generate_reset_code, reset_account_password
 from server.web_api.api_routes import API_ROUTES
 from server.web_api.models import ResponseModel
-from server.lib.data_classes.employee import Employee, PydanticEmployeeRegistration, PydanticEmployeesRemoval, PydanticEmployeeUpdate, \
+from server.lib.data_models.employee import Employee, PydanticEmployeeRegistration, PydanticEmployeesRemoval, PydanticEmployeeUpdate, \
     PydanticRetrieveMultipleEmployees, PydanticMultipleEmployeesUpdate, PydanticUpdatePassword, PydanticForgotPassword, PydanticResetPassword
 from server.lib.database_manager import get_db_session
-from server.lib.database_access.employee_interface import get_all_employees, get_employee, \
+from server.lib.database_controllers.employee_interface import get_all_employees, get_employee, \
     create_employee, remove_employees, update_employee, get_multiple_employees, update_employees, \
     is_admin, update_employee_password, check_employee_has_records
 from server.web_api.web_security import token_is_valid, oauth_scheme, get_user_from_token

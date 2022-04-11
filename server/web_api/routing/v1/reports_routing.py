@@ -6,9 +6,9 @@ from fastapi import status, HTTPException, Depends, Response
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
 from server.web_api.api_routes import API_ROUTES
-from server.lib.database_access.report_interface import create_time_sheets_report, create_student_care_report, \
+from server.lib.database_controllers.report_interface import create_time_sheets_report, create_student_care_report, \
     create_time_sheets_csv, create_student_care_csv, create_leave_request_email, get_leave_request_reasons
-from server.lib.data_classes.report import PydanticStudentRetrieveReport, PydanticEmployeeRetrieveReport, PydanticLeaveRequest
+from server.lib.data_models.report import PydanticStudentRetrieveReport, PydanticEmployeeRetrieveReport, PydanticLeaveRequest
 from server.lib.database_manager import get_db_session
 from server.web_api.web_security import token_is_valid, oauth_scheme
 from server.web_api.models import ResponseModel

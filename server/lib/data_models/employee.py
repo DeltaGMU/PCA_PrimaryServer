@@ -10,7 +10,7 @@ from typing import Optional, Union, List, Dict
 from pydantic import BaseModel
 from sqlalchemy import Column, ForeignKey, Integer, DateTime, Date, VARCHAR, Boolean, sql
 from sqlalchemy.orm import relationship, backref
-from server.lib.database_access.sqlalchemy_base_interface import MainEngineBase as Base
+from server.lib.database_controllers.sqlalchemy_base_interface import MainEngineBase as Base
 
 
 class PydanticEmployeeRegistration(BaseModel):

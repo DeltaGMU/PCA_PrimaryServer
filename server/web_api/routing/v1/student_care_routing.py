@@ -6,11 +6,11 @@ from fastapi import status, HTTPException, Depends
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
 from server.web_api.api_routes import API_ROUTES
-from server.lib.database_access.student_interface import get_student_by_id
-from server.lib.database_access.student_care_interface import check_in_student, check_out_student, get_one_student_care, \
+from server.lib.database_controllers.student_interface import get_student_by_id
+from server.lib.database_controllers.student_care_interface import check_in_student, check_out_student, get_one_student_care, \
     get_care_students_by_grade, get_student_care_records, delete_student_care_records, get_total_student_care_for_period
 from server.web_api.models import ResponseModel
-from server.lib.data_classes.student_care_hours import PydanticStudentCareHoursCheckIn, PydanticStudentCareHoursCheckOut, \
+from server.lib.data_models.student_care_hours import PydanticStudentCareHoursCheckIn, PydanticStudentCareHoursCheckOut, \
     PydanticRetrieveCareStudentsByGrade, PydanticRetrieveStudentCareRecord, PydanticDeleteStudentCareRecord, PydanticRetrieveTotalHoursByGrade
 from server.lib.database_manager import get_db_session
 from server.web_api.web_security import token_is_valid, oauth_scheme

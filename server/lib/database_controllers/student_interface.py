@@ -1,13 +1,13 @@
 from __future__ import annotations
 from typing import Dict, List
 
-from server.lib.data_classes.student_care_hours import StudentCareHours
+from server.lib.data_models.student_care_hours import StudentCareHours
 from server.lib.utils.email_utils import send_email
-from server.lib.data_classes.student_grade import StudentGrade
+from server.lib.data_models.student_grade import StudentGrade
 from server.lib.database_manager import get_db_session
-from server.lib.data_classes.student_contact_info import StudentContactInfo
+from server.lib.data_models.student_contact_info import StudentContactInfo
 from server.lib.utils.student_utils import generate_student_id
-from server.lib.data_classes.student import PydanticStudentRegistration, Student, PydanticStudentUpdate, PydanticStudentsRemoval
+from server.lib.data_models.student import PydanticStudentRegistration, Student, PydanticStudentUpdate, PydanticStudentsRemoval
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import sql

@@ -9,9 +9,9 @@ from jwt.exceptions import PyJWTError
 from server.lib.config_manager import ConfigManager
 from server.lib.logging_manager import LoggingManager
 from server.lib.strings import LOG_ORIGIN_AUTH, LOG_WARNING_AUTH
-from server.lib.data_classes.employee import Employee
-from server.lib.data_classes.access_token import TokenBlacklist
-from server.lib.database_access.employee_interface import get_employee, get_employee_security_scopes
+from server.lib.data_models.employee import Employee
+from server.lib.data_models.access_token import TokenBlacklist
+from server.lib.database_controllers.employee_interface import get_employee, get_employee_security_scopes
 from server.lib.database_manager import get_db_session
 from sqlalchemy.exc import IntegrityError
 

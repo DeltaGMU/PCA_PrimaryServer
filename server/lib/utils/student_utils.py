@@ -7,7 +7,7 @@ a new student record is being added to the database.
 from __future__ import annotations
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
-from server.lib.data_classes.student import Student
+from server.lib.data_models.student import Student
 from server.lib.logging_manager import LoggingManager
 from server.lib.database_manager import get_db_session
 from server.lib.strings import LOG_ERROR_DATABASE, LOG_ERROR_GENERAL, LOG_ORIGIN_GENERAL

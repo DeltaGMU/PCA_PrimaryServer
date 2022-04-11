@@ -4,18 +4,24 @@ from sqlalchemy.orm.scoping import scoped_session
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy_utils import create_database, database_exists
 from server.lib.config_manager import ConfigManager
+from server.lib.strings import ROOT_DIR
 
 con_opts = {
-    "connector": "mariadb+mariadbconnector://",
+    "connector": "mariadb+pymysql://",
     "username": ConfigManager().config()['Database']['username'],
     "password": ConfigManager().config()['Database']['password'],
     "host": ConfigManager().config()['Database']['host'],
     "port": int(ConfigManager().config()['Database']['port']),
     "database": ConfigManager().config()['Database']['database_name'],
-    "debug": ConfigManager().config().getboolean('Debug Mode', 'db_debug')
+    "debug": ConfigManager().config().getboolean('Debug Mode', 'db_debug'),
+}
+ssl_opts = {
+    "ssl_ca": f"{ROOT_DIR}/configs/ca-cert.pem"
 }
 main_engine = create_engine(
-    f"{con_opts['connector']}{con_opts['username']}:{con_opts['password']}@{con_opts['host']}:{con_opts['port']}/{con_opts['database']}",
+    f"{con_opts['connector']}{con_opts['username']}:{con_opts['password']}@{con_opts['host']}:{con_opts['port']}/{con_opts['database']}"
+    f"?ssl_ca={ROOT_DIR}/configs/ca-cert.pem"
+    f"&ssl_check_hostname=false",
     echo=con_opts['debug'],
     pool_recycle=3600
 )

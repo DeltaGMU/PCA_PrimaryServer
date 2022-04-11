@@ -4,12 +4,12 @@ from sqlalchemy import sql
 from typing import List, Dict
 from random import randint
 
-from server.lib.data_classes.employee_hours import EmployeeHours
+from server.lib.data_models.employee_hours import EmployeeHours
 from server.lib.utils.email_utils import send_email
 from server.lib.utils.employee_utils import generate_employee_id, create_employee_password_hashes, verify_employee_password
-from server.lib.data_classes.employee import Employee, PydanticEmployeeRegistration, PydanticEmployeesRemoval, PydanticEmployeeUpdate
-from server.lib.data_classes.employee_role import EmployeeRole
-from server.lib.data_classes.employee_contact_info import EmployeeContactInfo
+from server.lib.data_models.employee import Employee, PydanticEmployeeRegistration, PydanticEmployeesRemoval, PydanticEmployeeUpdate
+from server.lib.data_models.employee_role import EmployeeRole
+from server.lib.data_models.employee_contact_info import EmployeeContactInfo
 from server.lib.database_manager import get_db_session
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import or_

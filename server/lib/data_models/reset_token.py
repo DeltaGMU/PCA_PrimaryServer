@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, VARCHAR, DateTime, sql
 from sqlalchemy.sql.schema import ForeignKey
 from sqlalchemy.orm import relationship
 from pydantic import BaseModel
-from server.lib.database_access.sqlalchemy_base_interface import MainEngineBase as Base
+from server.lib.database_controllers.sqlalchemy_base_interface import MainEngineBase as Base
 
 
 class PydanticResetToken(BaseModel):

@@ -2,9 +2,9 @@ from __future__ import annotations
 from typing import Dict, List
 from sqlalchemy.orm import Session
 from server.lib.utils.email_utils import send_email
-from server.lib.data_classes.employee import Employee
+from server.lib.data_models.employee import Employee
 from server.lib.utils.date_utils import check_date_formats
-from server.lib.data_classes.employee_hours import EmployeeHours, PydanticEmployeeTimesheetSubmission, PydanticEmployeeTimesheetRemoval
+from server.lib.data_models.employee_hours import EmployeeHours, PydanticEmployeeTimesheetSubmission, PydanticEmployeeTimesheetRemoval
 from server.lib.database_manager import get_db_session
 from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException, status

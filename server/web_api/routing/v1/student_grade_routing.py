@@ -6,8 +6,8 @@ from fastapi import status, HTTPException, Depends
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
 from server.web_api.api_routes import API_ROUTES
-from server.lib.data_classes.student_grade import PydanticStudentGrade
-from server.lib.database_access.student_grades_interface import create_student_grade, remove_student_grade, retrieve_all_grades, retrieve_one_grade
+from server.lib.data_models.student_grade import PydanticStudentGrade
+from server.lib.database_controllers.student_grades_interface import create_student_grade, remove_student_grade, retrieve_all_grades, retrieve_one_grade
 from server.lib.database_manager import get_db_session
 from server.web_api.web_security import token_is_valid, oauth_scheme
 from server.web_api.models import ResponseModel

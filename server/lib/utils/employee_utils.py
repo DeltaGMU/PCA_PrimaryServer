@@ -7,12 +7,12 @@ a new employee record is being added to the database.
 from __future__ import annotations
 from sqlalchemy import func
 from sqlalchemy.orm import Session
-from server.lib.data_classes.employee_contact_info import EmployeeContactInfo
+from server.lib.data_models.employee_contact_info import EmployeeContactInfo
 from server.lib.logging_manager import LoggingManager
 from server.lib.error_codes import ERR_DB_SERVICE_INACTIVE
 from sqlalchemy.exc import SQLAlchemyError
-from server.lib.data_classes.employee import Employee
-from server.lib.data_classes.employee_role import EmployeeRole
+from server.lib.data_models.employee import Employee
+from server.lib.data_models.employee_role import EmployeeRole
 from passlib.hash import bcrypt
 from server.lib.strings import LOG_ERROR_GENERAL
 from server.lib.database_manager import main_engine as db_engine, get_db_session

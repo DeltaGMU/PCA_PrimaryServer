@@ -11,7 +11,7 @@ from server.lib.config_manager import ConfigManager
 from server.lib.web_manager import WebSessionManager
 from server.lib.logging_manager import LoggingManager
 from server.lib.strings import LOG_ORIGIN_SHUTDOWN, LOG_ORIGIN_GENERAL, LOG_ERROR_GENERAL, LOG_WARNING_GENERAL, LOG_ERROR_UNKNOWN, LOG_ORIGIN_STARTUP
-from server.lib.database_access.tables_management_interface import clear_temporary_tables, initialize_tables, initialize_admin
+from server.lib.database_controllers.tables_management_interface import clear_temporary_tables, initialize_tables, initialize_admin
 
 
 def init():

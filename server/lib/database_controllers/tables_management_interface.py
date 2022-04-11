@@ -6,11 +6,11 @@ from server.lib.logging_manager import LoggingManager
 from server.lib.strings import LOG_ORIGIN_DATABASE, LOG_ERROR_DATABASE
 from server.lib.database_manager import get_db_session, MainEngineBase
 from server.lib.utils.employee_utils import create_employee_password_hashes_sync
-from server.lib.data_classes.access_token import TokenBlacklist
-from server.lib.data_classes.reset_token import ResetToken
-from server.lib.data_classes.employee import Employee
-from server.lib.data_classes.employee_role import EmployeeRole
-from server.lib.data_classes.employee_contact_info import EmployeeContactInfo
+from server.lib.data_models.access_token import TokenBlacklist
+from server.lib.data_models.reset_token import ResetToken
+from server.lib.data_models.employee import Employee
+from server.lib.data_models.employee_role import EmployeeRole
+from server.lib.data_models.employee_contact_info import EmployeeContactInfo
 
 
 def initialize_tables():
@@ -19,11 +19,11 @@ def initialize_tables():
 
     # These look like unused imports, but the table creation process needs the reference.
     # noinspection PyUnresolvedReferences
-    from server.lib.data_classes.student_grade import StudentGrade
+    from server.lib.data_models.student_grade import StudentGrade
     # noinspection PyUnresolvedReferences
-    from server.lib.data_classes.student import Student
+    from server.lib.data_models.student import Student
     # noinspection PyUnresolvedReferences
-    from server.lib.data_classes.employee_hours import EmployeeHours
+    from server.lib.data_models.employee_hours import EmployeeHours
     MainEngineBase.metadata.create_all()
     LoggingManager().log(LoggingManager.LogLevel.LOG_INFO, 'Initialized database tables.', origin=LOG_ORIGIN_DATABASE, no_print=False)
     if initialize_roles():

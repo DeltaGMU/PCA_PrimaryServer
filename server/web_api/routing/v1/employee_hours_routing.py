@@ -2,9 +2,9 @@ from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
 from fastapi import status, Depends, HTTPException
 from server.web_api.api_routes import API_ROUTES
-from server.lib.database_access.employee_interface import is_admin
-from server.lib.data_classes.employee_hours import PydanticEmployeeMultipleTimesheetSubmission, PydanticEmployeeTimesheetUpdate, PydanticEmployeeTimesheetRemoval
-from server.lib.database_access.employee_hours_interface import create_employee_multiple_hours, update_employee_hours, delete_employee_time_sheets, get_employee_hours_total, delete_all_employee_time_sheets
+from server.lib.database_controllers.employee_interface import is_admin
+from server.lib.data_models.employee_hours import PydanticEmployeeMultipleTimesheetSubmission, PydanticEmployeeTimesheetUpdate, PydanticEmployeeTimesheetRemoval
+from server.lib.database_controllers.employee_hours_interface import create_employee_multiple_hours, update_employee_hours, delete_employee_time_sheets, get_employee_hours_total, delete_all_employee_time_sheets
 from server.lib.database_manager import get_db_session
 from server.web_api.models import ResponseModel
 from server.web_api.web_security import oauth_scheme, token_is_valid, get_user_from_token
