@@ -216,3 +216,4 @@ cython_debug/
 server/configs/server_config.dev.ini
 server/reports/
 !server/docs/*!/.env
+server/certs/
