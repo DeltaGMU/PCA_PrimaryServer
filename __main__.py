@@ -31,6 +31,9 @@ def init():
 
         LoggingManager().log(LoggingManager.LogLevel.LOG_INFO, 'Initializing PCA Project Server...', origin=LOG_ORIGIN_STARTUP, no_print=False)
         LoggingManager().log(LoggingManager.LogLevel.LOG_INFO, 'System logging manager initialized.', origin=LOG_ORIGIN_STARTUP, no_print=False)
+        # Validate server config file for missing fields.
+        if ConfigManager().validate():
+            LoggingManager().log(LoggingManager.LogLevel.LOG_INFO, 'Server configuration file validated.', origin=LOG_ORIGIN_STARTUP, no_print=False)
         # Initialize any missing tables from the database server.
         initialize_tables()
         # Clear the access/reset Token tables in case the last server shutdown was improper.

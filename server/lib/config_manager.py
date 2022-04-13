@@ -68,6 +68,62 @@ class ConfigManager:
                 cls.__config.write(fh)
         raise RuntimeError('Config Manager class has not been instantiated, call the constructor instead!')
 
+    @classmethod
+    def validate(cls):
+        """
+        Validates the current configuration file to ensure all the required fields are present.
+
+        :raise RuntimeError: If the server config file is missing any critical options.
+        """
+        if cls._instance:
+            config = cls._instance.config()
+            try:
+                config.get('Database', 'username')
+                config.get('Database', 'password')
+                config.get('Database', 'host')
+                config.get('Database', 'port')
+                config.get('Database', 'database_name')
+                config.get('API Server', 'host')
+                config.get('API Server', 'port')
+                config.get('API Server', 'use_https')
+                config.get('API Server', 'ca_path')
+                config.get('API Server', 'key_path')
+                config.get('API Server', 'cors_domains')
+                config.get('API Server', 'server_secret')
+                config.get('API Server', 'enable_docs')
+                config.get('API Server', 'cert_path')
+                config.get('Debug Mode', 'sys_debug')
+                config.get('Debug Mode', 'api_debug')
+                config.get('Debug Mode', 'db_debug')
+                config.get('Debug Mode', 'quiet_mode')
+                config.get('Logging', 'enable_logs')
+                config.get('Logging', 'log_level')
+                config.get('Logging', 'max_logs')
+                config.get('Logging', 'max_log_size')
+                config.get('Logging', 'log_directory')
+                config.get('Student Care Settings', 'before_care_check_in_time')
+                config.get('Student Care Settings', 'before_care_check_out_time')
+                config.get('Student Care Settings', 'after_care_check_in_time')
+                config.get('Student Care Settings', 'after_care_check_out_time')
+                config.get('System Settings', 'account_roles')
+                config.get('System Settings', 'leave_request_reasons')
+                config.get('System Settings', 'leave_request_mailing_address')
+                config.get('Security Settings', 'access_token_expiry_minutes')
+                config.get('Security Settings', 'reset_code_expiry_minutes')
+                config.get('Email Settings', 'pca_email_api')
+                config.get('Email Settings', 'pca_email_use_https')
+                config.get('Email Settings', 'pca_email_username')
+                config.get('Email Settings', 'pca_email_password')
+                return True
+            except configparser.NoSectionError as err:
+                raise RuntimeError(f"Error encountered validating server configuration file. "
+                                   f"Please ensure that there are no missing sections! "
+                                   f"{str(err)}")
+            except configparser.NoOptionError as err:
+                raise RuntimeError(f"Error encountered validating server configuration file. "
+                                   f"Please ensure that there are no missing fields! "
+                                   f"{str(err)}")
+
 
 # Create and initialize the config manager with the server_config.ini path.
 config_manager = ConfigManager(f"{ROOT_DIR}/configs/server_config.ini")
