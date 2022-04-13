@@ -126,4 +126,7 @@ class ConfigManager:
 
 
 # Create and initialize the config manager with the server_config.ini path.
-config_manager = ConfigManager(f"{ROOT_DIR}/configs/server_config.ini")
+try:
+    config_manager = ConfigManager(f"{ROOT_DIR}/configs/server_config.dev.ini")
+except FileNotFoundError:
+    config_manager = ConfigManager(f"{ROOT_DIR}/configs/server_config.ini")
