@@ -213,5 +213,6 @@ cython_debug/
 .idea*
 .pdf
 .pem
+server/configs/server_config.dev.ini
 server/reports/
 !server/docs/*!/.env
