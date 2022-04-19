@@ -23,7 +23,8 @@ main_engine = create_engine(
     f"?ssl_ca={ConfigManager().config()['API Server']['ca_path']}"
     f"&ssl_check_hostname=false",
     echo=con_opts['debug'],
-    pool_recycle=3600
+    pool_recycle=3600,
+    pool_pre_ping=True
 )
 if not database_exists(main_engine.url):
     create_database(main_engine.url)
