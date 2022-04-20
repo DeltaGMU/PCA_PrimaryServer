@@ -20,7 +20,7 @@ ssl_opts = {
 }
 main_engine = create_engine(
     f"{con_opts['connector']}{con_opts['username']}:{con_opts['password']}@{con_opts['host']}:{con_opts['port']}/{con_opts['database']}"
-    f"?ssl_ca={ConfigManager().config()['API Server']['ca_path']}"
+    f"?ssl_ca={ConfigManager().config()['Database']['ca_path']}"
     f"&ssl_check_hostname=false",
     echo=con_opts['debug'],
     pool_recycle=3600,
