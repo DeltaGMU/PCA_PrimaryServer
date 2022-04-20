@@ -6,11 +6,12 @@ Please do not change any values within this module unless you know what you're d
 from pathlib import Path
 
 # Project Metadata
-META_VERSION = '1.0.1'
+META_VERSION = '1.0.2'
 META_NAME = 'PCAProject'
 ROOT_DIR = Path(__file__).parent.parent
 
 # Logging Manager Metadata Constants
+# These string constants are used in the logging API to specify the type of log origin event.
 LOG_ORIGIN_GENERAL = 'General'
 LOG_ORIGIN_API = 'API'
 LOG_ORIGIN_AUTH = 'Authentication'
