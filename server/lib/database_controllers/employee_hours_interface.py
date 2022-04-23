@@ -1,13 +1,14 @@
 from __future__ import annotations
 from typing import Dict, List
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
+from fastapi import HTTPException, status
+from server.lib.utils.timesheet_utils import round_hours_to_custom_increment
 from server.lib.utils.email_utils import send_email
 from server.lib.data_models.employee import Employee
 from server.lib.utils.date_utils import check_date_formats
 from server.lib.data_models.employee_hours import EmployeeHours, PydanticEmployeeTimesheetSubmission, PydanticEmployeeTimesheetRemoval
 from server.lib.database_manager import get_db_session
-from sqlalchemy.exc import IntegrityError
-from fastapi import HTTPException, status
 
 
 async def create_employee_multiple_hours(employee_id: str, employee_updates: List[PydanticEmployeeTimesheetSubmission], session: Session = None) -> List[EmployeeHours]:
@@ -32,6 +33,10 @@ async def create_employee_multiple_hours(employee_id: str, employee_updates: Lis
                 timesheet.pto_hours = 0
             if not check_employee.ExtraHoursEnabled:
                 timesheet.extra_hours = 0
+            # Round all the timesheet hours to the nearest 0.5 hr increment.
+            timesheet.work_hours = round_hours_to_custom_increment(timesheet.work_hours)
+            timesheet.extra_hours = round_hours_to_custom_increment(timesheet.extra_hours)
+            timesheet.pto_hours = round_hours_to_custom_increment(timesheet.pto_hours)
             timesheet_submission = EmployeeHours(
                 employee_id,
                 timesheet.work_hours,
@@ -82,7 +87,7 @@ async def create_employee_multiple_hours(employee_id: str, employee_updates: Lis
     return submitted_time_sheets
 
 
-async def create_employee_hours(employee_id: str, date_worked: str, work_hours: int, pto_hours: int = 0, extra_hours: int = 0, comment: str = "", session: Session = None) -> EmployeeHours:
+async def create_employee_hours(employee_id: str, date_worked: str, work_hours: float, pto_hours: float = 0, extra_hours: float = 0, comment: str = "", session: Session = None) -> EmployeeHours:
     if session is None:
         session = next(get_db_session())
     if None in (employee_id, date_worked, work_hours, pto_hours, extra_hours):
@@ -90,6 +95,10 @@ async def create_employee_hours(employee_id: str, date_worked: str, work_hours: 
     try:
         if not check_date_formats(date_worked):
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="One or more provided dates are not in the YYYY-MM-DD format!")
+        # Round all the timesheet hours to the nearest 0.5 hr increment.
+        work_hours = round_hours_to_custom_increment(work_hours)
+        extra_hours = round_hours_to_custom_increment(extra_hours)
+        pto_hours = round_hours_to_custom_increment(pto_hours)
         timesheet_exists = session.query(EmployeeHours).filter(
             EmployeeHours.EmployeeID == employee_id,
             EmployeeHours.DateWorked == date_worked
@@ -114,10 +123,14 @@ async def create_employee_hours(employee_id: str, date_worked: str, work_hours: 
     return timesheet_submission
 
 
-async def update_employee_hours(employee_id: str, date_worked: str, work_hours: int = 0, pto_hours: int = 0, extra_hours: int = 0, comment: str = "", session: Session = None) -> EmployeeHours:
+async def update_employee_hours(employee_id: str, date_worked: str, work_hours: float = 0, pto_hours: float = 0, extra_hours: float = 0, comment: str = "", session: Session = None) -> EmployeeHours:
     if session is None:
         session = next(get_db_session())
     try:
+        # Round all the timesheet hours to the nearest 0.5 hr increment.
+        work_hours = round_hours_to_custom_increment(work_hours)
+        extra_hours = round_hours_to_custom_increment(extra_hours)
+        pto_hours = round_hours_to_custom_increment(pto_hours)
         session.query(
             EmployeeHours
         ).filter(
