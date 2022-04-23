@@ -6,7 +6,7 @@ Please do not change any values within this module unless you know what you're d
 from pathlib import Path
 
 # Project Metadata
-META_VERSION = '1.0.2'
+META_VERSION = '1.0.3'
 META_NAME = 'PCAProject'
 ROOT_DIR = Path(__file__).parent.parent
 
