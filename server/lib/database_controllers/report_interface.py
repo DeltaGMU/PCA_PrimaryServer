@@ -203,7 +203,6 @@ async def get_all_student_care_for_csv(start_date: str, end_date: str, grade: st
 
         for record in all_student_hours.keys():
             student = all_student_hours[record]
-            print(student)
             student_hours_list.append([
                 student["care_date"],
                 record,
@@ -230,7 +229,6 @@ async def create_time_sheets_csv(start_date: str, end_date: str, session: Sessio
     employee_hours_list = await get_all_time_sheets_for_csv(start_date, end_date, session)
     mem_file = StringIO()
     csv.writer(mem_file).writerows(employee_hours_list)
-    print(mem_file.getvalue())
     return mem_file.getvalue()
 
 
@@ -244,7 +242,6 @@ async def create_student_care_csv(start_date: str, end_date: str, grade: str, se
     employee_hours_list = await get_all_student_care_for_csv(start_date.strip(), end_date.strip(), grade.strip(), session)
     mem_file = StringIO()
     csv.writer(mem_file).writerows(employee_hours_list)
-    print(mem_file.getvalue())
     return mem_file.getvalue()
 
 
