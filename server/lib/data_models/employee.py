@@ -48,32 +48,52 @@ class PydanticEmployeeUpdate(BaseModel):
 
 
 class PydanticMultipleEmployeesUpdate(BaseModel):
+    """
+    A Pydantic class containing a list of employee information to update multiple existing employee records from an HTTP request to the API.
+    Do not try to initialize this class as an independent entity or extend it into a subclass.
+    """
     employee_updates: Dict[str, PydanticEmployeeUpdate]
 
 
 class PydanticEmployeesRemoval(BaseModel):
     """
-    A Pydantic class used to represent an employee entity when deleting an existing employee record from an HTTP request to the API.
+    A Pydantic class containing a list of employee IDs that are used to deleting existing employee records from an HTTP request to the API.
     Do not try to initialize this class as an independent entity or extend it into a subclass.
     """
     employee_ids: Union[List[str], str]
 
 
 class PydanticRetrieveMultipleEmployees(BaseModel):
+    """
+    A Pydantic class used to retrieve employees from a list of employee IDs from an HTTP request to the API.
+    Do not try to initialize this class as an independent entity or extend it into a subclass.
+    """
     employee_ids: List[str]
 
 
 class PydanticUpdatePassword(BaseModel):
+    """
+    A Pydantic class containing updated password information for a single employee.
+    Do not try to initialize this class as an independent entity or extend it into a subclass.
+    """
     employee_id: str
     current_password: str
     new_password: str
 
 
 class PydanticForgotPassword(BaseModel):
+    """
+    A Pydantic class containing the employee ID of an employee that needs a password reset code sent to their email.
+    Do not try to initialize this class as an independent entity or extend it into a subclass.
+    """
     employee_id: str
 
 
 class PydanticResetPassword(BaseModel):
+    """
+    A Pydantic class containing a new password for an employee identified by a unique reset code.
+    Do not try to initialize this class as an independent entity or extend it into a subclass.
+    """
     new_password: str
     reset_code: str
 
@@ -81,8 +101,7 @@ class PydanticResetPassword(BaseModel):
 class Employee(Base):
     """
     A MariaDB data class that represents the table structure of the employee table in the database server.
-    This is replicated in the server code to ensure that the data being sent to and received from the database are valid.
-    Do not attempt to manually modify this class or extend it into a subclass.
+    This model is used to generate the employee table in the MariaDB database server.
     """
     __tablename__ = 'employee'
     id = Column(Integer, primary_key=True, autoincrement=True, unique=True, nullable=False)
@@ -101,7 +120,6 @@ class Employee(Base):
     LastUpdated = Column(DateTime, nullable=False, default=sql.func.now())
     EntryCreated = Column(DateTime, nullable=False, default=sql.func.now())
 
-    # Do not initialize this except for creating blank employee templates!
     def __init__(self, employee_id: str, first_name: str, last_name: str, phash: str, role_id: int,
                  contact_info: EmployeeContactInfo, pto_hours_enabled: bool = True, extra_hours_enabled: bool = True, enabled: bool = True):
         """
