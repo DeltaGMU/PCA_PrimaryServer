@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta, date
+from typing import Dict, List
 import pdfkit
 import csv
 from io import StringIO
@@ -21,6 +22,7 @@ from server.lib.data_models.employee_hours import EmployeeHours
 from server.lib.database_manager import get_db_session
 from server.lib.strings import ROOT_DIR
 
+# Initializes the file system loader environment for the report generation library.
 env = Environment(loader=FileSystemLoader(
     [
         f'{ROOT_DIR}/lib/report_generation'
@@ -28,11 +30,29 @@ env = Environment(loader=FileSystemLoader(
 ))
 
 
-async def get_all_time_sheets_for_report(start_date: str, end_date: str, session: Session = None):
+async def get_all_time_sheets_for_report(start_date: str, end_date: str, session: Session = None) -> Dict[str, any]:
+    """
+    This method retrieves all the timesheet records for all employees over the provided range of work dates,
+    and returns them as a JSON-Compatible dictionary organized by the employee ID as keys and the accumulated timesheet hours as values.
+    This method returns both the total accumulated hours for each employee and the individual timesheet submission comments.
+    This method is utilized by the report generation system to generate employee timesheet PDF reports.
+
+    :param start_date: The start work date for the range of employee timesheet records to retrieve.
+    :type start_date: str, required
+    :param end_date: The end work date for the range of employee timesheet records to retrieve.
+    :type end_date: str, required
+    :param session: The database session that is used to retrieve all employee timesheet records over the provided range of work dates.
+    :type session: Session, optional
+    :return: A JSON-Compatible dictionary containing employee IDs as keys and accumulated timesheet hours and submission comments as values.
+    :rtype: Dict[str, any]
+    :raises HTTPException: If an error is encountered retrieving an employee's timesheet record.
+    """
     if session is None:
         session = next(get_db_session())
     try:
-
+        # Retrieve all the employees that submitted time sheets during the provided reporting period,
+        # however, ignore the default admin account if it is included and ignore timesheet records with 0-hour entries.
+        # In addition, order the employee timesheet records by the employee last name.
         employee_time_sheet_records = session.query(Employee, EmployeeHours, EmployeeRole).filter(
             Employee.EmployeeEnabled == 1,
             Employee.EmployeeID != 'admin',
@@ -44,6 +64,8 @@ async def get_all_time_sheets_for_report(start_date: str, end_date: str, session
         if employee_time_sheet_records is None:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Encountered an error retrieving employee time sheets!")
 
+        # Define the data dictionary that will be used to hold the timesheet hours and comments for each employee that submitted time sheets
+        # over the reporting period.
         all_employees_hours = {}
         for record in employee_time_sheet_records:
             all_employees_hours[record[0].EmployeeID] = {
@@ -54,6 +76,7 @@ async def get_all_time_sheets_for_report(start_date: str, end_date: str, session
                 "comments": []
             }
 
+        # For each employee timesheet record, accumulate the total work hours, pto hours, and extra hours for each employee.
         for record in employee_time_sheet_records:
             all_employees_hours[record[0].EmployeeID]["work_hours"] += record[1].WorkHours
             all_employees_hours[record[0].EmployeeID]["pto_hours"] += record[1].PTOHours
@@ -67,10 +90,28 @@ async def get_all_time_sheets_for_report(start_date: str, end_date: str, session
     return all_employees_hours
 
 
-async def get_all_time_sheets_for_csv(start_date: str, end_date: str, session: Session = None):
+async def get_all_time_sheets_for_csv(start_date: str, end_date: str, session: Session = None) -> List[List[str]]:
+    """
+    This method retrieves all the timesheet records for all employees over the provided range of work dates,
+    and returns them as a JSON-Compatible dictionary organized by the employee ID as keys and the individual timesheet records as values.
+    This method is utilized by the report generation system to generate employee timesheet CSV spreadsheets.
+
+    :param start_date: The start work date for the range of employee timesheet records to retrieve.
+    :type start_date: str, required
+    :param end_date: The end work date for the range of employee timesheet records to retrieve.
+    :type end_date: str, required
+    :param session: The database session that is used to retrieve all employee timesheet records over the provided range of work dates.
+    :type session: Session, optional
+    :return: A list of all the employee timesheet records that were submitted over the provided range of work dates.
+    :rtype: List[List[str]]
+    :raises HTTPException: If an error is encountered retrieving an employee's timesheet record.
+    """
     if session is None:
         session = next(get_db_session())
     try:
+        # Retrieve all the employees that submitted time sheets during the provided reporting period,
+        # however, ignore the default admin account if it is included and ignore timesheet records with 0-hour entries.
+        # In addition, order the employee timesheet records by the employee last name.
         employee_time_sheet_records = session.query(Employee, EmployeeHours, EmployeeRole).filter(
             Employee.EmployeeEnabled == 1,
             Employee.EmployeeID != 'admin',
@@ -81,6 +122,7 @@ async def get_all_time_sheets_for_csv(start_date: str, end_date: str, session: S
         ).order_by(EmployeeHours.DateWorked).all()
         if employee_time_sheet_records is None:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Encountered an error retrieving employee time sheets!")
+        # For each retrieved employee timesheet record, format it as per the columns listed below for CSV spreadsheets.
         employee_hours_list = [['date', 'employee_id', 'first_name', 'last_name', 'work_hours', 'pto_hours', 'extra_hours', 'comments']]
         for item in employee_time_sheet_records:
             employee_hours_list.append([
@@ -99,6 +141,19 @@ async def get_all_time_sheets_for_csv(start_date: str, end_date: str, session: S
 
 
 async def get_employees_within_reporting_period(start_date: str, end_date: str, session: Session = None):
+    """
+    This utility method retrieves all the employees that submitted time sheets during the provided range of work dates,
+    and returns them as a list of employee records.
+
+    :param start_date: The start work date for the range of employee timesheet records to query.
+    :type start_date: str, required
+    :param end_date: The end work date for the range of employee timesheet records to query.
+    :type end_date: str, required
+    :param session: The database session that is used to retrieve all employee records that had timesheet submissions during the provided range of work dates.
+    :type session: Session, optional
+    :return: A list of employee records that had timesheet submissions during the provided range of work dates.
+    :rtype: List[Employee]
+    """
     if session is None:
         session = next(get_db_session())
     all_employees = session.query(Employee, EmployeeHours).filter(
@@ -110,7 +165,22 @@ async def get_employees_within_reporting_period(start_date: str, end_date: str, 
     return all_employees[0]
 
 
-async def get_all_student_care_for_report(start_date: str, end_date: str, grade: str, session: Session = None):
+async def get_all_student_care_for_report(start_date: str, end_date: str, grade: str, session: Session = None) -> Dict[str, any]:
+    """
+    This method retrieves all the student care records for all students over the provided range of student care dates,
+    and returns them as a JSON-Compatible dictionary organized by the student ID as keys and the accumulated student care hours as values.
+    This method is utilized by the report generation system to generate student care service PDF reports.
+
+    :param start_date: The start date for the range of student care records to retrieve.
+    :type start_date: str, required
+    :param end_date: The end date for the range of student care records to retrieve.
+    :type end_date: str, required
+    :param session: The database session that is used to retrieve all student care records over the provided range of dates.
+    :type session: Session, optional
+    :return: A JSON-Compatible dictionary containing student IDs as keys and accumulated student care hours as values.
+    :rtype: Dict[str, any]
+    :raises HTTPException: If an error is encountered retrieving a student's care service record.
+    """
     if session is None:
         session = next(get_db_session())
     try:
@@ -154,7 +224,22 @@ async def get_all_student_care_for_report(start_date: str, end_date: str, grade:
     return all_student_hours
 
 
-async def get_all_student_care_for_csv(start_date: str, end_date: str, grade: str, session: Session = None):
+async def get_all_student_care_for_csv(start_date: str, end_date: str, grade: str, session: Session = None) -> List[List[str]]:
+    """
+    This method retrieves all the student care records for all students over the provided range of student care dates,
+    and returns them as a JSON-Compatible dictionary organized by the student ID as keys and a list of individual service records as values.
+    This method is utilized by the report generation system to generate student care service CSV spreadsheets.
+
+    :param start_date: The start date for the range of student care records to retrieve.
+    :type start_date: str, required
+    :param end_date: The end date for the range of student care records to retrieve.
+    :type end_date: str, required
+    :param session: The database session that is used to retrieve all student care records over the provided range of dates.
+    :type session: Session, optional
+    :return: A list of student care service records retrieved from the provided range of dates.
+    :rtype: List[List[str]]
+    :raises HTTPException: If an error is encountered retrieving a student's care service record.
+    """
     if session is None:
         session = next(get_db_session())
     try:
@@ -221,7 +306,20 @@ async def get_all_student_care_for_csv(start_date: str, end_date: str, grade: st
     return student_hours_list
 
 
-async def create_time_sheets_csv(start_date: str, end_date: str, session: Session = None):
+async def create_time_sheets_csv(start_date: str, end_date: str, session: Session = None) -> str:
+    """
+    This method is used to generate a CSV spreadsheet containing all the employee timesheet records
+    that were submitted over the provided range of work dates.
+
+    :param start_date: The start work date for the range of employee timesheet records to retrieve.
+    :type start_date: str, required
+    :param end_date: The end work date for the range of employee timesheet records to retrieve.
+    :type end_date: str, required
+    :param session: The database session that is used to retrieve all employee timesheet records over the provided range of work dates.
+    :type session: Session, optional
+    :return: Returns a comma-separated string containing all the CSV rows of employee timesheet records over the provided range of work dates.
+    :rtype: str
+    """
     if session is None:
         session = next(get_db_session())
     if not check_date_formats([start_date, end_date]):
@@ -233,6 +331,21 @@ async def create_time_sheets_csv(start_date: str, end_date: str, session: Sessio
 
 
 async def create_student_care_csv(start_date: str, end_date: str, grade: str, session: Session = None):
+    """
+    This method is used to generate a CSV spreadsheet containing all the student care service records
+    from students of the provided grade level that were created over the provided range of dates.
+
+    :param start_date: The start date for the range of student care records to retrieve.
+    :type start_date: str, required
+    :param end_date: The end date for the range of student care records to retrieve.
+    :type end_date: str, required
+    :param grade: The student grade level for which to retrieve student records from.
+    :type grade: str, required
+    :param session: The database session that is used to retrieve all student care records over the provided range of dates.
+    :type session: Session, optional
+    :return: Returns a comma-separated string containing all the CSV rows of student care records over the provided range of dates.
+    :rtype: str
+    """
     if session is None:
         session = next(get_db_session())
     if not check_date_formats([start_date, end_date]):
@@ -245,7 +358,20 @@ async def create_student_care_csv(start_date: str, end_date: str, grade: str, se
     return mem_file.getvalue()
 
 
-async def create_time_sheets_report(start_date: str, end_date: str, session: Session = None):
+async def create_time_sheets_report(start_date: str, end_date: str, session: Session = None) -> bytes:
+    """
+    This method is used to generate a PDF report containing all the employee timesheet records
+    that were submitted over the provided range of work dates.
+
+    :param start_date: The start work date for the range of employee timesheet records to retrieve.
+    :type start_date: str, required
+    :param end_date: The end work date for the range of employee timesheet records to retrieve.
+    :type end_date: str, required
+    :param session: The database session that is used to retrieve all employee timesheet records over the provided range of work dates.
+    :type session: Session, optional
+    :return: Returns a byte-string containing all the employee timesheet records over the provided range of work dates.
+    :rtype: bytes
+    """
     if session is None:
         session = next(get_db_session())
     if not check_date_formats([start_date, end_date]):
@@ -296,7 +422,22 @@ async def create_time_sheets_report(start_date: str, end_date: str, session: Ses
     return pdf_bytes
 
 
-async def create_student_care_report(start_date, end_date, grade, session):
+async def create_student_care_report(start_date, end_date, grade, session) -> bytes:
+    """
+    This method is used to generate a PDF report containing all the student care service records
+    from students of the provided grade level that were created over the provided range of dates.
+
+    :param start_date: The start date for the range of student care records to retrieve.
+    :type start_date: str, required
+    :param end_date: The end date for the range of student care records to retrieve.
+    :type end_date: str, required
+    :param grade: The student grade level for which to retrieve student records from.
+    :type grade: str, required
+    :param session: The database session that is used to retrieve all student care records over the provided range of dates.
+    :type session: Session, optional
+    :return: Returns a byte-string containing all the student care records over the provided range of dates.
+    :rtype: bytes
+    """
     if session is None:
         session = next(get_db_session())
     if not check_date_formats([start_date, end_date]):
@@ -348,6 +489,18 @@ async def create_student_care_report(start_date, end_date, grade, session):
 
 
 async def create_leave_request_email(leave_request: PydanticLeaveRequest, session: Session = None):
+    """
+    This method is used to create and email the appropriate administration staff containing
+    the leave request of an employee.
+
+    :param leave_request: The information from a leave request form required to submit a leave request.
+    :type leave_request: PydanticLeaveRequest
+    :param session: The database session used to verify the employee ID provided in the leave request.
+    :type session: Session, optional
+    :return: True if the leave request was successfully formatted and emailed to the appropriate administration staff.
+    :rtype: bool
+    :raises HTTPException: If the provided employee ID was invalid or if an error occurred preventing the leave request email from being sent.
+    """
     if session is None:
         session = next(get_db_session())
     if not check_date_formats([leave_request.date_of_absence_start, leave_request.date_of_absence_end]):
@@ -389,7 +542,14 @@ async def create_leave_request_email(leave_request: PydanticLeaveRequest, sessio
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The email could not be sent!")
 
 
-async def get_leave_request_reasons():
+async def get_leave_request_reasons() -> List[str]:
+    """
+    This utility method retrieves the comma-separated list of reasons for an employee leave request
+    from the server configuration file and formats it into a python list.
+
+    :return: A list of all the leave-request reasons from the server configuration file.
+    :rtype: List[str]
+    """
     leave_request_strings = ConfigManager().config()['System Settings']['leave_request_reasons']
     leave_request_list = [reason.strip() for reason in leave_request_strings.split(",")]
     return leave_request_list
