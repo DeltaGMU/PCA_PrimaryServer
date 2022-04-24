@@ -1,3 +1,10 @@
+"""
+This module contains the MariaDB data classes and Pydantic data classes for the employee role entity.
+The MariaDB data classes are used in database queries and transactions.
+The Pydantic data classes are used in requests to the API for ensuring that data received and sent through requests are valid.
+For example, creating a new employee role through a request to the API will require a Pydantic employee role
+data class to define the attributes needed to create an employee role in the database and validate the data that is sent in the request.
+"""
 from pydantic.main import BaseModel
 from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Date, LargeBinary, VARCHAR, Boolean, sql
 from server.lib.database_controllers.sqlalchemy_base_interface import MainEngineBase as Base
@@ -15,8 +22,7 @@ class PydanticEmployeeRole(BaseModel):
 class EmployeeRole(Base):
     """
     A MariaDB data class that represents the table structure of the employee role table in the database server.
-    This is replicated in the server code to ensure that the data being sent to and received from the database are valid.
-    Do not attempt to manually modify this class or extend it into a subclass.
+    This model is used to generate the employee_role table in the MariaDB database server.
     """
     __tablename__ = 'employee_role'
     id = Column(Integer, primary_key=True, autoincrement=True, unique=True, nullable=False)
