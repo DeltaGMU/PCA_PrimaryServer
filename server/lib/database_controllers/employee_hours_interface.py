@@ -1,3 +1,10 @@
+"""
+This module contains the functions that interface with the database server
+to handle the processing of employee time sheets. Any code related to the handling of
+employing time sheets that require creating, reading, updating, or deleting data from the database server
+must use this interface module.
+"""
+
 from __future__ import annotations
 from typing import Dict, List
 from sqlalchemy.orm import Session
@@ -12,6 +19,24 @@ from server.lib.database_manager import get_db_session
 
 
 async def create_employee_multiple_hours(employee_id: str, employee_updates: List[PydanticEmployeeTimesheetSubmission], session: Session = None) -> List[EmployeeHours]:
+    """
+    This method inserts or updates the timesheet records for an employee and returns
+    a list of the employee records that have had their timesheet records updated.
+    If timesheet information is submitted for an employee that does not have an existing record, it will be inserted.
+    If timesheet information is submitted for an employee with an existing record, it will instead update the existing record.
+    Upon successful insertion or updating of the employee timesheet records an email is sent to the employee notifying them
+    of the timesheet submission.
+
+    :param employee_id: The ID of the employee.
+    :type employee_id: str, required
+    :param employee_updates: The list of timesheet submissions for the employee.
+    :type employee_updates: List[PydanticEmployeeTimesheetSubmission]
+    :param session: The database session.
+    :type session: Session
+    :return: A list of the employee timesheet records that have been created or updated.
+    :rtype: List[Employees]
+    :raises HTTPException: If one or more provided parameters are invalid, or the requested data is not found in the database.
+    """
     if session is None:
         session = next(get_db_session())
     if None in (employee_id, *employee_updates):
@@ -88,6 +113,28 @@ async def create_employee_multiple_hours(employee_id: str, employee_updates: Lis
 
 
 async def create_employee_hours(employee_id: str, date_worked: str, work_hours: float, pto_hours: float = 0, extra_hours: float = 0, comment: str = "", session: Session = None) -> EmployeeHours:
+    """
+    This method inserts a single timesheet record for an employee and returns the inserted employee record.
+    This method does not update the timesheet record if it already exists, instead a duplicate entry error is thrown.
+
+    :param employee_id: The ID of the employee.
+    :type employee_id: str, required
+    :param date_worked: The date of work for the employee timesheet record.
+    :type date_worked: str, required
+    :param work_hours: The number of hours worked by the employee on the provided date.
+    :type work_hours: float, required
+    :param pto_hours: The number of PTO hours taken by the employee on the provided date.
+    :type pto_hours: float, optional
+    :param extra_hours: The number of extra hours worked by the employee on the provided date.
+    :type extra_hours: float, optional
+    :param comment: A comment created by the employee for the timesheet submission.
+    :type comment: str, optional
+    :param session: The database session used to insert the employee timesheet record.
+    :type session: Session, optional
+    :return: The employee timesheet record that was inserted into the database.
+    :rtype: EmployeeHours
+    :raises HTTPException: If any provided parameters are invalid, or a duplicate data entry was attempted.
+    """
     if session is None:
         session = next(get_db_session())
     if None in (employee_id, date_worked, work_hours, pto_hours, extra_hours):
@@ -124,6 +171,28 @@ async def create_employee_hours(employee_id: str, date_worked: str, work_hours: 
 
 
 async def update_employee_hours(employee_id: str, date_worked: str, work_hours: float = 0, pto_hours: float = 0, extra_hours: float = 0, comment: str = "", session: Session = None) -> EmployeeHours:
+    """
+    This method updates a single timesheet record for an employee and returns the updated employee record.
+    This method does not insert a timesheet record if it doesn't exist, instead an error is thrown if the record doesn't exist.
+
+    :param employee_id: The ID of the employee.
+    :type employee_id: str, required
+    :param date_worked: The date of work for the employee timesheet record.
+    :type date_worked: str, required
+    :param work_hours: The number of hours worked by the employee on the provided date.
+    :type work_hours: float, optional
+    :param pto_hours: The number of PTO hours taken by the employee on the provided date.
+    :type pto_hours: float, optional
+    :param extra_hours: The number of extra hours worked by the employee on the provided date.
+    :type extra_hours: float, optional
+    :param comment: A comment created by the employee for the timesheet submission.
+    :type comment: str, optional
+    :param session: The database session used to insert the employee timesheet record.
+    :type session: Session, optional
+    :return: The employee timesheet record that was inserted into the database.
+    :rtype: EmployeeHours
+    :raises HTTPException: If any provided parameters are invalid, or the timesheet record does not exist.
+    """
     if session is None:
         session = next(get_db_session())
     try:
@@ -162,13 +231,34 @@ async def update_employee_hours(employee_id: str, date_worked: str, work_hours: 
 
 
 async def delete_all_employee_time_sheets(employee_id: str, session: Session = None):
+    """
+    This method deletes all the timesheet records for a single employee from the provided employee ID.
+
+    :param employee_id: The ID of the employee.
+    :type employee_id: str, required
+    :param session: The database session used to delete all the employee's timesheet records.
+    :type session: Session, optional
+    """
     session.query(EmployeeHours).filter(
-        EmployeeHours.EmployeeID == employee_id.strip()
+        EmployeeHours.EmployeeID == employee_id.lower().strip()
     ).delete()
     session.commit()
 
 
 async def delete_employee_time_sheets(employee_id: str, dates_worked: PydanticEmployeeTimesheetRemoval, session: Session = None) -> List[EmployeeHours]:
+    """
+    This method deletes the timesheet records of an employee for the specified dates worked.
+
+    :param employee_id: The ID of the employee.
+    :type employee_id: str, required
+    :param dates_worked: A list of the dates worked, or a single date worked, by the employee that need to have their records deleted.
+    :type dates_worked: PydanticEmployeeTimesheetRemoval, required
+    :param session: The database session used to delete employee timesheet records.
+    :type session: Session, optional
+    :return: A list of all the employee timesheet records that were deleted from the database.
+    :rtype: List[EmployeeHours]
+    :raises HTTPException: If any provided parameters are invalid, or the timesheet records for the provided date do not exist.
+    """
     if isinstance(dates_worked, PydanticEmployeeTimesheetRemoval):
         dates_worked = dates_worked.dates_worked
         if dates_worked is None:
@@ -200,6 +290,21 @@ async def delete_employee_time_sheets(employee_id: str, dates_worked: PydanticEm
 
 
 async def get_employee_hours_list(employee_id: str, date_start: str, date_end: str, session: Session = None) -> List[EmployeeHours]:
+    """
+    This method retrieves all the employee timesheet records for an employee from the provided range of work dates.
+
+    :param employee_id: The ID of the employee.
+    :type employee_id: str, required
+    :param date_start: The start work date for the range of employee timesheet records to retrieve.
+    :type date_start: str, required
+    :param date_end: The end work date for the range of employee timesheet records to retrieve.
+    :type date_end: str, required
+    :param session: The database session used to retrieve employee timesheet records.
+    :type session: Session, optional
+    :return: A list of all the employee timesheet records for the provided range of work dates.
+    :rtype: List[EmployeeHours]
+    :raises HTTPException: If an error is encountered retrieving employee timesheet records from the database.
+    """
     if session is None:
         session = next(get_db_session())
     try:
@@ -213,6 +318,25 @@ async def get_employee_hours_list(employee_id: str, date_start: str, date_end: s
 
 
 async def get_employee_hours_total(employee_id: str, date_start: str, date_end: str, session: Session = None, hours_only: bool = False) -> Dict[str, any]:
+    """
+    This method retrieves the total number of work hours, pto hours, and extra hours for an employee accumulated over
+    the provided range of work dates. If an employee has no timesheet submissions for the provided range of work dates,
+    then the work hours, pto hours, and extra hours will be 0.
+
+    :param employee_id: The ID of the employee.
+    :type employee_id: str, required
+    :param date_start: The start work date for the range of employee timesheet records to retrieve.
+    :type date_start: str, required
+    :param date_end: The end work date for the range of employee timesheet records to retrieve.
+    :type date_end: str, required
+    :param session: The database session used to retrieve employee timesheet records and total accumulated hours.
+    :type session: Session, optional
+    :param hours_only: If true, will only provide the total hours accumulated instead of also providing the list of individual timesheet records over the provided range of work dates.
+    :type hours_only: bool, optional
+    :return: A JSON-Compatible dictionary of the total work hours, pto hours, and extra hours accumulated by the employee timesheet records over the provided range of work dates.
+    :rtype: Dict[str, any]
+    :raises HTTPException: If an error is encountered retrieving employee timesheet records from the database.
+    """
     if session is None:
         session = next(get_db_session())
     try:
@@ -233,6 +357,7 @@ async def get_employee_hours_total(employee_id: str, date_start: str, date_end: 
         total_hours_and_list = {
             "total_hours": total_hours
         }
+        # If hours_only is disabled, then also include a list of the individual timesheet records over the range of work dates.
         if not hours_only:
             total_hours_and_list.update({"time_sheets": {f"{time_sheet.DateWorked}": time_sheet.as_dict() for time_sheet in employee_hours_list}})
     except IntegrityError as err:
