@@ -2,8 +2,9 @@
 This module contains the MariaDB data classes and Pydantic data classes for the student contact information entity.
 The MariaDB data classes are used in database queries and transactions.
 The Pydantic data classes are used in requests to the API for ensuring that data received and sent through requests are valid.
-For example, creating a new employee record through a request to the API will require a Pydantic employee data class to define the attributes needed
-to create the employee entity in the database and validate the data that is sent in the request.
+For example, creating a new student contact info record through a request to the API will
+require a Pydantic student contact info registration data class to define the attributes needed
+to create the student contact info entity in the database and validate the data that is sent in the request.
 """
 from __future__ import annotations
 from typing import Optional
@@ -32,9 +33,7 @@ class PydanticStudentContactInfoRegistration(BaseModel):
 class StudentContactInfo(Base):
     """
     A MariaDB data class that represents the table structure of the student contact info table in the database server.
-    This is replicated in the server code to ensure that the data being sent to and received from the database are valid.
-    This class provides a method of storing contact information for both employees and students.
-    Do not attempt to manually modify this class or extend it into a subclass.
+    This model is used to generate the student_contact_info table in the MariaDB database server.
     """
     __tablename__ = 'student_contact_info'
     id = Column(Integer, primary_key=True, autoincrement=True, unique=True, nullable=False)
@@ -51,7 +50,6 @@ class StudentContactInfo(Base):
     EntryCreated = Column(DateTime, nullable=False, default=sql.func.now())
     StudentParentRelationship = relationship("Student", back_populates="StudentContactInfo")
 
-    # Do not initialize this except for creating blank contact info templates!
     def __init__(self, student_id: str, parent_one_first_name: str, parent_one_last_name: str, primary_email: str,
                  parent_two_first_name: str = None, parent_two_last_name: str = None,
                  secondary_email: str = None, enable_primary_email_notifications: bool = True, enable_secondary_email_notifications: bool = False):
