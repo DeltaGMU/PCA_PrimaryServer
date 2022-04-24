@@ -1,3 +1,11 @@
+"""
+This module contains the functions that interface with the database server
+to handle the initialization of the python server to allow normal functionality and interaction
+between all subsystems of the server. This initialization process includes the creation of required tables,
+creation of required administrative accounts, clearing of temporary tables, etc.
+"""
+from __future__ import annotations
+
 import traceback
 from sqlalchemy.exc import SQLAlchemyError
 from server.web_api.api_routes import DefaultData
@@ -14,6 +22,13 @@ from server.lib.data_models.employee_contact_info import EmployeeContactInfo
 
 
 def initialize_tables():
+    """
+    This method is used to create and initialize required tables in the database
+    when the python server is initially launched.
+
+    :return: None
+    :rtype: None
+    """
     if MainEngineBase is None:
         return
 
@@ -31,6 +46,14 @@ def initialize_tables():
 
 
 def clear_temporary_tables():
+    """
+    This method is used to clear temporary tables when the python server is initially launched.
+
+    :return: None
+    :rtype: None
+    :raises RuntimeError: If an error is encountered while clearing temporary tables.
+    """
+
     if MainEngineBase is None:
         return
     session = next(get_db_session())
@@ -50,7 +73,15 @@ def clear_temporary_tables():
         raise RuntimeWarning from err
 
 
-def initialize_roles():
+def initialize_roles() -> bool | None:
+    """
+    This method created and initializes account roles that are required for the python server to function.
+
+    :return: True if the required account roles were successfully initialized.
+    :rtype: bool | None
+    :raises SQLAlchemyError: If SQLAlchemy encounters any errors during the creation and initialization of required account roles.
+    """
+
     if MainEngineBase is None:
         return
     session = next(get_db_session())
@@ -72,6 +103,15 @@ def initialize_roles():
 
 
 def create_default_admin_account():
+    """
+    This method is used to create and initialize the default administrator account.
+    Please note that the contact information for the default administrator account is never used and as a result is dummy information.
+
+    :return: None
+    :rtype: None
+    :raises RuntimeError: If the default administrator role provided in the default administrator account template is invalid, or if SQLAlchemy encounters and error initializing the default administrator account.
+    """
+
     if MainEngineBase is None:
         return
     session = next(get_db_session())
@@ -110,6 +150,13 @@ def create_default_admin_account():
 
 
 def initialize_admin():
+    """
+    This method ensures that at least one enabled administrator account is available when the python server launches.
+
+    :return: None
+    :rtype: None
+    :raises RuntimeWarning: If SQLAlchemy encounters an error while verifying administrator accounts.
+    """
     if MainEngineBase is None:
         return
     session = next(get_db_session())
