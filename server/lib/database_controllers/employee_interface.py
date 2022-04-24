@@ -1,3 +1,10 @@
+"""
+This module contains the functions that interface with the database server
+to handle the processing of employee account records. Any code related to the handling of
+employing account records that require creating, reading, updating, or deleting data from the database server
+must use this interface module.
+"""
+
 from __future__ import annotations
 from sqlalchemy.orm import Session
 from sqlalchemy import sql
