@@ -2,8 +2,8 @@
 This module contains the MariaDB data classes and Pydantic data classes for the employee contact information entity.
 The MariaDB data classes are used in database queries and transactions.
 The Pydantic data classes are used in requests to the API for ensuring that data received and sent through requests are valid.
-For example, creating a new employee record through a request to the API will require a Pydantic employee data class to define the attributes needed
-to create the employee entity in the database and validate the data that is sent in the request.
+For example, creating a new employee contact information record through a request to the API will require a Pydantic employee contact information registration
+data class to define the attributes needed to create the contact information entity in the database and validate the data that is sent in the request.
 """
 from __future__ import annotations
 from typing import Optional
@@ -29,9 +29,7 @@ class PydanticEmployeeContactInfoRegistration(BaseModel):
 class EmployeeContactInfo(Base):
     """
     A MariaDB data class that represents the table structure of the employee contact info table in the database server.
-    This is replicated in the server code to ensure that the data being sent to and received from the database are valid.
-    This class provides a method of storing contact information for both employees and students.
-    Do not attempt to manually modify this class or extend it into a subclass.
+    This model provides a method of storing contact information for employees and is used to generate the employee_contact_info table in the MariaDB database server.
     """
     __tablename__ = 'employee_contact_info'
     id = Column(Integer, primary_key=True, autoincrement=True, unique=True, nullable=False)
@@ -44,7 +42,6 @@ class EmployeeContactInfo(Base):
     EntryCreated = Column(DateTime, nullable=False, default=sql.func.now())
     EmployeeParentRelationship = relationship("Employee", back_populates="EmployeeContactInfo")
 
-    # Do not initialize this except for creating blank contact info templates!
     def __init__(self, employee_id: str, primary_email: str, secondary_email: str = None,
                  enable_primary_email_notifications: bool = True, enable_secondary_email_notifications: bool = False):
         """
