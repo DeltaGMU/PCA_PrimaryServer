@@ -431,7 +431,7 @@ async def get_all_employees(session: Session = None) -> List[Employee]:
     if session is None:
         session = next(get_db_session())
     all_employees = []
-    employees = session.query(Employee).all()
+    employees = session.query(Employee).order_by(Employee.LastName).all()
     for employee in employees:
         all_employees.append(employee)
     return all_employees
