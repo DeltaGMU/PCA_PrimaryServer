@@ -17,6 +17,20 @@ from fastapi import HTTPException, status
 
 
 async def create_employee(pyd_employee: PydanticEmployeeRegistration, session: Session = None) -> Dict[str, any]:
+    """
+    This method creates a new employee account with all associated employee information such as
+    employee contact information and employee role, and inserts the records into the database.
+    When a new employee account is created, the employee password is automatically generated
+    and sent to the employee's email. The employee may reset their password from the employee login portal.
+
+    :param pyd_employee: The set of information required to register a new employee account, represented by the ``PydanticEmployeeRegistration`` pydantic class.
+    :type pyd_employee: PydanticEmployeeRegistration, required
+    :param session: The database session used to insert the employee information into the database.
+    :type session: Session, optional
+    :return: A JSON-Compatible dictionary containing the newly created employee account information.
+    :rtype: Dict[str, any]
+    :raises HTTPException: If any of the provided parameters are invalid, or a database error occurred during employee creation.
+    """
     pyd_employee.first_name = pyd_employee.first_name.lower().strip()
     pyd_employee.last_name = pyd_employee.last_name.lower().strip()
     pyd_employee.primary_email = pyd_employee.primary_email.lower().strip()
@@ -66,8 +80,6 @@ async def create_employee(pyd_employee: PydanticEmployeeRegistration, session: S
                                        pyd_employee.enable_primary_email_notifications, pyd_employee.enable_secondary_email_notifications)
     if contact_info is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The contact information for the employee could not be created due to invalid parameters!")
-    # session.add(contact_info)
-    # session.flush()
 
     # Create the employee and add it to the database.
     try:
@@ -96,6 +108,19 @@ async def create_employee(pyd_employee: PydanticEmployeeRegistration, session: S
 
 
 async def remove_employees(employee_ids: PydanticEmployeesRemoval | str, session: Session = None) -> List[Employee]:
+    """
+    This method accepts one or more employee IDs and deletes the corresponding employee accounts from the database.
+    Please note that employee accounts that have associated timesheet records cannot be deleted unless all
+    timesheet records are removed.
+
+    :param employee_ids: A single employee ID or a list of employee IDs to delete the corresponding employee account(s).
+    :type employee_ids: PydanticEmployeesRemoval | str, required
+    :param session: The database session used to delete one or more employee account records.
+    :type session: Session, optional
+    :return: The list of employee account records that have been deleted from the database.
+    :rtype: List[Employee]
+    :raises HTTPException: If any of the provided parameters are invalid, or the employee has associated timesheet records.
+    """
     if session is None:
         session = next(get_db_session())
     if isinstance(employee_ids, PydanticEmployeesRemoval):
@@ -127,6 +152,19 @@ async def remove_employees(employee_ids: PydanticEmployeesRemoval | str, session
 
 
 async def update_employees(employee_updates: Dict[str, PydanticEmployeeUpdate], session: Session = None) -> List[Employee]:
+    """
+    This method updates one or more employee account records with updated employee information provided in the form
+    of a dictionary consisting of employee ID keys and employee update information values. Upon successful
+    submission of an employee record, an email is sent to the employee notifying them that their account has been updated.
+
+    :param employee_updates: A dictionary containing employee update information values paired with employee ID keys.
+    :type employee_updates: Dict[str, PydanticEmployeeUpdate]
+    :param session: The database session used to update one or more employee account records.
+    :type session: Session, optional
+    :return: A list of the employee account records that have been updated in the database.
+    :rtype: List[Employee]
+    :raises HTTPException: If any of the provided parameters are invalid.
+    """
     if employee_updates is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Provided request body did not contain any valid employee information!")
     all_updated_employees: List[Employee] = []
@@ -138,7 +176,26 @@ async def update_employees(employee_updates: Dict[str, PydanticEmployeeUpdate], 
     return all_updated_employees
 
 
-async def update_employee_password(employee_id: str, current_password: str, new_password: str, session: Session = None):
+async def update_employee_password(employee_id: str, current_password: str, new_password: str, session: Session = None) -> Employee:
+    """
+    This method updates an existing employee account's password with a new password.
+    The new employee password is provided as plain-text to this method which is then hashed and salted
+    before being entered into the database.
+    Upon a successful password change, the employee is sent an email notifying them that their account password
+    has been updated.
+
+    :param employee_id: The ID of the employee.
+    :type employee_id: str, required
+    :param current_password: The current plain-text password to the employee account.
+    :type current_password: str, required
+    :param new_password: The new plain-text password that the employee account should use.
+    :type new_password: str, required
+    :param session: The database session used to update the employee account's password.
+    :type session: Session, optional
+    :return: The employee account record that has had a password change.
+    :rtype: Employee
+    :raises HTTPException: If any of the provided parameters are invalid.
+    """
     if employee_id is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The employee ID must be provided to update an employee!")
     if session is None:
@@ -153,7 +210,7 @@ async def update_employee_password(employee_id: str, current_password: str, new_
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The employee id is incorrect or the employee does not exist!")
     if not await verify_employee_password(current_password.strip(), employee.PasswordHash):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The provided password does not match the account's password!")
-
+    # Create the password hash + salt for the provided plain-text password.
     password_hash = await create_employee_password_hashes(new_password)
     if password_hash is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The plain text password provided to be hashed is invalid!")
@@ -180,6 +237,20 @@ async def update_employee_password(employee_id: str, current_password: str, new_
 
 
 async def update_employee(employee_id, pyd_employee_update: PydanticEmployeeUpdate, session: Session = None) -> Employee:
+    """
+    This method updates a single employee account record with updated employee information.
+    Employee account passwords cannot be changed or updated using this method.
+    Upon successful submission of the employee record, an email is sent to the employee notifying them that their account has been updated.
+
+    :param employee_id: The ID of the employee.
+    :type employee_id: str, required
+    :param pyd_employee_update: The updated employee information that should be used.
+    :type pyd_employee_update: PydanticEmployeeUpdate, required
+    :param session: The database session used to update the employee record.
+    :type session: Session, optional
+    :return: The employee record that has been updated.
+    :rtype: Employee
+    """
     if pyd_employee_update is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Provided request body did not contain any valid employee information!")
     if employee_id is None:
@@ -257,7 +328,19 @@ async def update_employee(employee_id, pyd_employee_update: PydanticEmployeeUpda
     return employee
 
 
-async def check_employee_has_records(employee_id: str, session: Session = None):
+async def check_employee_has_records(employee_id: str, session: Session = None) -> bool:
+    """
+    This utility method verifies if an employee account record has any associated saved time sheets.
+    This method is useful in determining if an account is eligible to be deleted, since employee accounts
+    with associated time sheets cannot be deleted.
+
+    :param employee_id: The ID of the employee.
+    :type employee_id: str, required
+    :param session: The database session used to retrieve employee timesheet records for verification.
+    :type session: Session, optional
+    :return: True, if the employee has at least one timesheet record associated with the account.
+    :rtype: bool
+    """
     if session is None:
         session = next(get_db_session())
     if employee_id is None or not isinstance(employee_id, str):
@@ -275,6 +358,20 @@ async def check_employee_has_records(employee_id: str, session: Session = None):
 
 
 async def get_employee(username: str, session: Session = None) -> Employee:
+    """
+    This method is used to retrieve a single employee account record from the database provided
+    either an employee ID or employee primary email. For accounts with the same primary email as another,
+    only the account that was registered to that primary email first will be returned.
+    It is highly advised to retrieve employees using an employee ID since they are guaranteed to be unique.
+
+    :param username: The employee ID or the primary email of the employee account.
+    :type username: str, required
+    :param session: The database session used to retrieve the employee record.
+    :type session: Session, optional
+    :return: The employee account record associated with the employee ID or primary email.
+    :rtype: Employee
+    :raises HTTPException: If any of the provided parameters are invalid, or the employee ID or employee email does not correspond to any employee account record.
+    """
     if session is None:
         session = next(get_db_session())
     username = username.strip().lower()
@@ -297,6 +394,17 @@ async def get_employee(username: str, session: Session = None) -> Employee:
 
 
 async def get_multiple_employees(employee_ids: List[str], session: Session = None) -> List[Employee]:
+    """
+    This method is used to retrieve multiple employee account records for a list of employee IDs.
+
+    :param employee_ids: A list of employee IDs.
+    :type employee_ids: List[str]
+    :param session: The database session used to retrieve the list of employee account records.
+    :type session: Session, optional
+    :return: A list of employee account records corresponding to the provided employee IDs.
+    :rtype: List[Employee]
+    :raises HTTPException: If any of the provided parameters are invalid, or if one or more provided employee IDs do not correspond to an employee account record.
+    """
     if session is None:
         session = next(get_db_session())
     if None in employee_ids:
@@ -311,6 +419,15 @@ async def get_multiple_employees(employee_ids: List[str], session: Session = Non
 
 
 async def get_all_employees(session: Session = None) -> List[Employee]:
+    """
+    This method is used to retrieve all the employee account records stored in the database.
+    This includes all employee accounts that may be disabled.
+
+    :param session: The database session used to retrieve all the employee account records.
+    :type session: Session, optional
+    :return: A list of all the employee account records in the database.
+    :rtype: List[Employee]
+    """
     if session is None:
         session = next(get_db_session())
     all_employees = []
@@ -321,6 +438,19 @@ async def get_all_employees(session: Session = None) -> List[Employee]:
 
 
 async def get_employee_role(user: Employee, session: Session = None) -> EmployeeRole:
+    """
+    This method is used to retrieve an employee account record's employee role.
+    If you need to retrieve the employee role without a reference to the employee account record,
+    then consider retrieving that record first before using this method.
+
+    :param user: The employee account record to retrieve the employee role from.
+    :type user: Employee
+    :param session: The database session used to retrieve the employee account's role.
+    :type session: Session, optional
+    :return: The employee role associated with the employee account record.
+    :rtype: EmployeeRole
+    :raises HTTPException: If the employee entity provided is null or if there is no employee role associated with the employee account record.
+    """
     if user is None:
         raise RuntimeError('The user object was not provided! Please check for errors in the provided data!')
     if session is None:
@@ -334,6 +464,17 @@ async def get_employee_role(user: Employee, session: Session = None) -> Employee
 
 
 async def get_employee_contact_info(employee_id: str, session: Session = None) -> EmployeeContactInfo:
+    """
+    This method is used to retrieve an employee account record's contact information.
+
+    :param employee_id: The ID of the employee.
+    :type employee_id: str, required
+    :param session: The database session used to retrieve the employee contact information.
+    :type session: Session, optional
+    :return: The employee contact information associated with the provided employee ID.
+    :rtype: EmployeeContactInfo
+    :raises RuntimeError: If the employee ID is null or if there is no employee contact information associated with the employee account.
+    """
     if employee_id is None:
         raise RuntimeError('The employee ID was not provided! Please check for errors in the provided data!')
     if session is None:
@@ -348,6 +489,20 @@ async def get_employee_contact_info(employee_id: str, session: Session = None) -
 
 
 async def is_employee_role(user: Employee, role_name: str, session: Session = None) -> bool:
+    """
+    This utility method is used to check if an employee account has a specific employee role
+    that matches the provided role name.
+
+    :param user: The employee account record to check the role information for.
+    :type user: Employee
+    :param role_name: The name of the employee role that needs to be compared with the employee account record's role.
+    :type role_name: str, required
+    :param session: The database session used to retrieve and verify the employee account role.
+    :type session: Session, optional
+    :return: True if the employee account role matches the provided role name.
+    :rtype: bool
+    :raises RuntimeError: If the employee ID is null or if there is no employee role associated with the employee account.
+    """
     if None in (user, role_name):
         raise RuntimeError('The user or employee role was not provided to the employee role check method. Please check for errors in the provided data!')
     employee_role: EmployeeRole = await get_employee_role(user, session)
@@ -357,6 +512,17 @@ async def is_employee_role(user: Employee, role_name: str, session: Session = No
 
 
 async def is_admin(user: Employee, session: Session = None) -> bool:
+    """
+    This utility method is used to verify if the provided employee account record has administrative privileges.
+
+    :param user: The employee account record to check the role information for.
+    :type user: Employee
+    :param session: The database session used to retrieve and verify the employee account role.
+    :type session: Session, optional
+    :return: True if the employee account provided is an administrator role.
+    :rtype: bool
+    :raises RuntimeError: If the provided employee record is null or if the employee role could not be retrieved from the database for verification.
+    """
     if user is None:
         raise RuntimeError('The user object was not provided! Please check for errors in the provided data!')
     employee_is_admin: bool = await is_employee_role(user, 'administrator', session)
@@ -366,6 +532,17 @@ async def is_admin(user: Employee, session: Session = None) -> bool:
 
 
 async def is_employee(user: Employee, session: Session = None) -> bool:
+    """
+    This utility method is used to verify if the provided employee account record has regular employee privileges.
+
+    :param user: The employee account record to check the role information for.
+    :type user: Employee
+    :param session: The database session used to retrieve and verify the employee account role.
+    :type session: Session, optional
+    :return: True if the employee account provided is an employee role.
+    :rtype: bool
+    :raises RuntimeError: If the provided employee record is null or if the employee role could not be retrieved from the database for verification.
+    """
     if user is None:
         raise RuntimeError('The user object was not provided! Please check for errors in the provided data!')
     pca_employee: bool = await is_employee_role(user, 'employee', session)
@@ -374,7 +551,19 @@ async def is_employee(user: Employee, session: Session = None) -> bool:
     return pca_employee
 
 
-async def get_employee_security_scopes(user: Employee, session: Session = None):
+async def get_employee_security_scopes(user: Employee, session: Session = None) -> List[str]:
+    """
+    This utility method retrieves the security scopes associated with an employee account record.
+    Higher privilege roles have greater security scopes and access rights within the API.
+
+    :param user: The employee account record to check the security scopes for.
+    :type user: Employee
+    :param session: The database session used to retrieve and verify the employee account security scopes.
+    :type session: Session, optional
+    :return: A list of the security scopes associated with the provided employee account record.
+    :rtype: List[str]
+    :raises RuntimeError: If the provided employee record is null or if the employee's security scopes could not be retrieved.
+    """
     if user is None:
         raise RuntimeError('The user object was not provided! Please check for errors in the provided data!')
     employee_role = await get_employee_role(user, session)
@@ -385,5 +574,5 @@ async def get_employee_security_scopes(user: Employee, session: Session = None):
     elif employee_role.Name == 'employee':
         user_scopes = ['employee']
     else:
-        raise RuntimeError('The provided security scope is invalid! Please ensure that the security scope is in the database.')
+        raise RuntimeError('The provided security scope is invalid! Please ensure that the security scope (role) is in the database.')
     return user_scopes
