@@ -1,3 +1,10 @@
+"""
+This module contains the functionality that initializes the MariaDB database server
+connection and establishes the required database and required tables if they are not present.
+The database connectivity options support both secure and insecure connectivity methods
+which are configurable in the server configuration file.
+"""
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.scoping import scoped_session
@@ -6,6 +13,7 @@ from sqlalchemy_utils import create_database, database_exists
 from server.lib.config_manager import ConfigManager
 from server.lib.strings import ROOT_DIR
 
+# The database server connection options configured from the server configuration file.
 con_opts = {
     "connector": "mariadb+pymysql://",
     "username": ConfigManager().config()['Database']['username'],
