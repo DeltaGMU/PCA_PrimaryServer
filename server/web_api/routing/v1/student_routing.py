@@ -82,8 +82,8 @@ class StudentsRouter:
             if not await token_is_valid(token, ["administrator"]):
                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
             all_students = []
-            employees = session.query(Student).all()
-            for row in employees:
+            students = session.query(Student).order_by(Student.LastName).all()
+            for row in students:
                 item: Student = row
                 all_students.append(item.as_dict())
             return ResponseModel(status.HTTP_200_OK, "success", {"students": all_students})
@@ -123,7 +123,7 @@ class StudentsRouter:
         @router.put(API_ROUTES.Students.students, status_code=status.HTTP_200_OK)
         async def update_multiple_students(multi_student_update: PydanticMultipleStudentsUpdate, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
-            An endpoint that updates multiple students from the database from the provided employee information and employee ID.
+            An endpoint that updates multiple students from the database from the provided student information and student ID.
 
             :param multi_student_update: A dictionary that consists of pairs of student IDs and update information as per the ``PydanticStudentUpdate`` parameters.
             :type multi_student_update: PydanticMultipleStudentsUpdate, required
