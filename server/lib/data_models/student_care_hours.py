@@ -1,3 +1,11 @@
+"""
+This module contains the MariaDB data classes and Pydantic data classes for the student service care hours entity.
+The MariaDB data classes are used in database queries and transactions.
+The Pydantic data classes are used in requests to the API for ensuring that data received and sent through requests are valid.
+For example, creating a new student care service record through a request to the API will require a Pydantic student care record class
+to define the attributes needed to create the student care entity in the database and validate the data that is sent in the request.
+"""
+
 from __future__ import annotations
 import datetime
 from typing import Optional, List
@@ -48,7 +56,7 @@ class PydanticDeleteStudentCareRecord(BaseModel):
 
 class PydanticStudentCareHoursCheckIn(BaseModel):
     """
-    A Pydantic class used to represent a student entity that is being checked into student care when creating a new student care hours record from a http request to the API.
+    A Pydantic class used to represent a student entity that is being checked into student care which creates a new student care hours record.
     Do not try to initialize this class as an independent entity or extend it into a subclass.
     The check_in_time for this pydantic class is optional since the server can automatically generate the check-in time if one is not provided.
     """
@@ -74,8 +82,7 @@ class PydanticStudentCareHoursCheckOut(BaseModel):
 class StudentCareHours(Base):
     """
     A MariaDB data class that represents the table structure of the student care hours table in the database server.
-    This is replicated in the server code to ensure that the data being sent to and received from the database are valid.
-    Do not attempt to manually modify this class or extend it into a subclass.
+    This model is used to generate the student_care_hours table in the MariaDB database server.
     """
     __tablename__ = 'student_care_hours'
     id = Column(Integer, primary_key=True, autoincrement=True, unique=True, nullable=False)
@@ -102,9 +109,9 @@ class StudentCareHours(Base):
         :param care_type: The type of care that the student received with False being before-care, and True being after-care.
         :type care_type: bool, required
         :param checkin_time: The time that the student was checked into student care represented as a timestamp.
-        :type checkin_time: str, required
+        :type checkin_time: datetime, required
         :param checkout_time: The time that the student was checked out of student care represented as a timestamp.
-        :type checkout_time: str, required
+        :type checkout_time: datetime, required
         :param checkin_signature: The name of the individual that has checked in the student, for record-keeping purposes.
         :type checkin_signature: str, optional
         :param checkout_signature: The name of the individual that has checked out the student, for record-keeping purposes.
