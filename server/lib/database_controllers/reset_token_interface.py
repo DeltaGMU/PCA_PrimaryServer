@@ -1,3 +1,10 @@
+"""
+This module contains the functions that interface with the database server
+to handle the processing of employee password-reset tokens. Any code related to the handling of
+password reset tokens that require creating, reading, updating, or deleting data from the database server
+must use this interface module.
+"""
+
 import uuid
 from datetime import datetime, timedelta
 from fastapi import HTTPException, status
