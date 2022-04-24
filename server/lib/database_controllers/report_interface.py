@@ -1,3 +1,10 @@
+"""
+This module contains the functions that interface with the database server
+to handle the processing of report generation. Any code related to the generation of reports
+that require creating, reading, updating, or deleting data from the database server
+must use this interface module.
+"""
+
 from datetime import datetime, timedelta, date
 from typing import Dict, List
 import pdfkit
