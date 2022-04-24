@@ -35,6 +35,10 @@ class PydanticStudentRegistration(BaseModel):
 
 
 class PydanticStudentUpdate(BaseModel):
+    """
+    A Pydantic class used to validate student information when updating an existing employee record from an HTTP request to the API.
+    Do not try to initialize this class as an independent entity or extend it into a subclass.
+    """
     first_name: Optional[str]
     last_name: Optional[str]
     car_pool_number: Optional[int]
@@ -51,6 +55,10 @@ class PydanticStudentUpdate(BaseModel):
 
 
 class PydanticMultipleStudentsUpdate(BaseModel):
+    """
+    A Pydantic class used to validate student information when updating multiple existing employee records from an HTTP request to the API.
+    Do not try to initialize this class as an independent entity or extend it into a subclass.
+    """
     student_updates: Dict[str, PydanticStudentUpdate]
 
 
@@ -65,8 +73,7 @@ class PydanticStudentsRemoval(BaseModel):
 class Student(Base):
     """
     A MariaDB data class that represents the table structure of the student table in the database server.
-    This is replicated in the server code to ensure that the data being sent to and received from the database are valid.
-    Do not attempt to manually modify this class or extend it into a subclass.
+    This model is used to generate the student table in the MariaDB database server.
     """
     __tablename__ = 'student'
     id = Column(Integer, primary_key=True, autoincrement=True, unique=True, nullable=False)
@@ -82,11 +89,10 @@ class Student(Base):
     LastUpdated = Column(DateTime, nullable=False, default=sql.func.now())
     EntryCreated = Column(DateTime, nullable=False, default=sql.func.now())
 
-    # Do not initialize this except for creating blank student templates!
     def __init__(self, student_id: str, first_name: str, last_name: str, car_pool_number: int, contact_info: StudentContactInfo, grade_id: int, enabled: bool = True):
         """
         The constructor for the ``Student`` data class that is utilized internally by the SQLAlchemy library.
-        Only manually instantiate this data class to create employee hours records in the database within database sessions.
+        Only manually instantiate this data class to create new student records in the database within database sessions.
 
         :param student_id: The student id of the student.
         :type student_id: str, required
