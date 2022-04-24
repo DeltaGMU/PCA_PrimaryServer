@@ -15,6 +15,18 @@ from server.lib.data_models.student_care_hours import PydanticStudentCareHoursCh
 from server.lib.database_manager import get_db_session
 
 
+async def get_care_timeslots():
+    timeslots = {
+        "metadata": {
+            "before_care_check_in_time": ConfigManager().config()['Student Care Settings']['before_care_check_in_time'],
+            "before_care_check_out_time": ConfigManager().config()['Student Care Settings']['before_care_check_out_time'],
+            "after_care_check_in_time": ConfigManager().config()['Student Care Settings']['after_care_check_in_time'],
+            "after_care_check_out_time": ConfigManager().config()['Student Care Settings']['after_care_check_out_time']
+        }
+    }
+    return timeslots
+
+
 async def get_one_student_care(student_id: str, care_date: str, session: Session = None):
     if session is None:
         session = next(get_db_session())
@@ -30,14 +42,7 @@ async def get_one_student_care(student_id: str, care_date: str, session: Session
     if student_care is None:
         return None
     else:
-        care_dict = {
-            "metadata": {
-                "before_care_check_in_time": ConfigManager().config()['Student Care Settings']['before_care_check_in_time'],
-                "before_care_check_out_time": ConfigManager().config()['Student Care Settings']['before_care_check_out_time'],
-                "after_care_check_in_time": ConfigManager().config()['Student Care Settings']['after_care_check_in_time'],
-                "after_care_check_out_time": ConfigManager().config()['Student Care Settings']['after_care_check_out_time']
-            }
-        }
+        care_dict = await get_care_timeslots()
         for care in student_care:
             if not care.CareType:
                 care_dict['before_care'] = care.as_dict()

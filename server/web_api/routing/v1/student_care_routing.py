@@ -8,7 +8,7 @@ from fastapi_utils.inferring_router import InferringRouter
 from server.web_api.api_routes import API_ROUTES
 from server.lib.database_controllers.student_interface import get_student_by_id
 from server.lib.database_controllers.student_care_interface import check_in_student, check_out_student, get_one_student_care, \
-    get_care_students_by_grade, get_student_care_records, delete_student_care_records, get_total_student_care_for_period
+    get_care_students_by_grade, get_student_care_records, delete_student_care_records, get_total_student_care_for_period, get_care_timeslots
 from server.web_api.models import ResponseModel
 from server.lib.data_models.student_care_hours import PydanticStudentCareHoursCheckIn, PydanticStudentCareHoursCheckOut, \
     PydanticRetrieveCareStudentsByGrade, PydanticRetrieveStudentCareRecord, PydanticDeleteStudentCareRecord, PydanticRetrieveTotalHoursByGrade
@@ -26,6 +26,19 @@ class StudentCareRouter:
     The defined endpoints allow HTTP requests to conduct create, read, update, and delete tasks on student records.
     """
     class Read:
+        @staticmethod
+        @router.get(API_ROUTES.StudentCareKiosk.timeslots, status_code=status.HTTP_200_OK)
+        async def read_care_timeslots():
+            """
+            An endpoint that retrieves the student care service timeslots for before-care and after-care from.
+            the server configuration file.
+
+            :return: A response model containing timeslots for before-care and after-care services.
+            :rtype: server.web_api.models.ResponseModel
+            """
+            timeslot_information = await get_care_timeslots()
+            return ResponseModel(status.HTTP_200_OK, "success", timeslot_information)
+
         @staticmethod
         @router.get(API_ROUTES.StudentCareKiosk.one_student_info, status_code=status.HTTP_200_OK)
         async def read_one_student_limited(student_id: str, session=Depends(get_db_session)):

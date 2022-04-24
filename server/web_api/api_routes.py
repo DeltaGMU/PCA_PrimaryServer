@@ -84,6 +84,7 @@ class APIRoutes:
     class StudentCareKiosk:
         one_student_info = '/api/v1/kiosk/info/{student_id}'
         one_student_care = '/api/v1/kiosk/care/{student_id}'
+        timeslots = '/api/v1/kiosk/timeslots'
 
     class Timesheet:
         count = '/api/v1/timesheet/count'
