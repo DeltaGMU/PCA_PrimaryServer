@@ -2,7 +2,6 @@ import uuid
 from datetime import datetime, timedelta
 from fastapi import HTTPException, status
 
-from server.lib.data_models.employee_contact_info import EmployeeContactInfo
 from server.lib.utils.email_utils import send_email
 from server.lib.utils.employee_utils import create_employee_password_hashes
 from server.lib.config_manager import ConfigManager
