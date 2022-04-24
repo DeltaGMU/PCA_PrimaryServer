@@ -1,3 +1,10 @@
+"""
+This module contains the MariaDB data classes and Pydantic data classes for the employee hours entity (timesheet entity).
+The MariaDB data classes are used in database queries and transactions.
+The Pydantic data classes are used in requests to the API for ensuring that data received and sent through requests are valid.
+For example, creating a new employee hours record through a request to the API will require a Pydantic employee timesheet submission
+data class to define the attributes needed to create the timesheet record in the database and validate the data that is sent in the request.
+"""
 from pydantic.main import BaseModel
 from typing import Optional, List, Union
 from sqlalchemy.dialects.mysql import INTEGER, FLOAT
@@ -6,6 +13,10 @@ from server.lib.database_controllers.sqlalchemy_base_interface import MainEngine
 
 
 class PydanticEmployeeTimesheetSubmission(BaseModel):
+    """
+    A Pydantic class containing the information needed to submit an employee timesheet.
+    Do not try to initialize this class as an independent entity or extend it into a subclass.
+    """
     work_hours: float
     pto_hours: Optional[float] = 0.0
     extra_hours: Optional[float] = 0.0
@@ -14,15 +25,27 @@ class PydanticEmployeeTimesheetSubmission(BaseModel):
 
 
 class PydanticEmployeeMultipleTimesheetSubmission(BaseModel):
+    """
+    A Pydantic class containing a list of employee timesheet submission information to submit multiple time sheets at a time.
+    Do not try to initialize this class as an independent entity or extend it into a subclass.
+    """
     time_sheets: List[PydanticEmployeeTimesheetSubmission]
 
 
 class PydanticReadEmployeeTimesheet(BaseModel):
+    """
+    A Pydantic class containing the information needed to retrieve time sheets from a provided reporting period.
+    Do not try to initialize this class as an independent entity or extend it into a subclass.
+    """
     date_start: str
     date_end: Optional[str]
 
 
 class PydanticEmployeeTimesheetUpdate(BaseModel):
+    """
+    A Pydantic class containing the information needed to update an employee timesheet record.
+    Do not try to initialize this class as an independent entity or extend it into a subclass.
+    """
     date_worked: str
     work_hours: Optional[float] = 0.0
     pto_hours: Optional[float] = 0.0
@@ -31,14 +54,17 @@ class PydanticEmployeeTimesheetUpdate(BaseModel):
 
 
 class PydanticEmployeeTimesheetRemoval(BaseModel):
+    """
+    A Pydantic class containing the information needed to delete multiple employee timesheet records by a provided date.
+    Do not try to initialize this class as an independent entity or extend it into a subclass.
+    """
     dates_worked: Union[List[str], str]
 
 
 class EmployeeHours(Base):
     """
     A MariaDB data class that represents the table structure of the employee hours table in the database server.
-    This is replicated in the server code to ensure that the data being sent to and received from the database are valid.
-    Do not attempt to manually modify this class or extend it into a subclass.
+    This model is used to generate the employee_hours table in the MariaDB database server.
     """
     __tablename__ = 'employee_hours'
     id = Column(Integer, primary_key=True, autoincrement=True, unique=True, nullable=False)
