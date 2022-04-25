@@ -1,7 +1,15 @@
-from typing import Optional
+"""
+This module contains the API routes used for all the endpoints in the
+API server and initializes a global reference to the routes.
+In addition, a default data class is present to represent the parameters required
+to initialize the default administrator account.
+"""
 
 
 class DefaultData:
+    """
+    A JSON-Compatible dictionary containing the information required to initialize the default administrator account.
+    """
     default_admin = {
         'employee_id': 'admin',
         'first_name': 'pca',
