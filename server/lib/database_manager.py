@@ -1,7 +1,11 @@
-from server.lib.database_controllers.sqlalchemy_base_interface import MainEngineBase, main_engine, main_db_session
+from server.lib.database_controllers.sqlalchemy_base_interface import main_engine, main_db_session
 
 
 class SessionContext:
+    """
+    The session context class is used to establish temporary sessions with the database.
+    These sessions must be retrieved using the ``get_db_session`` utility method.
+    """
     def __init__(self, scoped_session_maker):
         self.session = scoped_session_maker()
 
