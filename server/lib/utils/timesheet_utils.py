@@ -1,3 +1,8 @@
+"""
+The timesheet utility module contains utility methods that serve to help tasks
+related to formatting and validating timesheet information.
+"""
+
 from math import modf
 
 
