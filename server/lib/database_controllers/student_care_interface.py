@@ -1,4 +1,12 @@
+"""
+This module contains the functions that interface with the database server
+to handle the processing of student care service records. Any code related to the handling of
+student care service records that require creating, reading, updating, or deleting data from the database server
+must use this interface module.
+"""
+from __future__ import annotations
 import time
+from typing import Dict, List
 from datetime import datetime, timedelta, date
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
@@ -15,7 +23,14 @@ from server.lib.data_models.student_care_hours import PydanticStudentCareHoursCh
 from server.lib.database_manager import get_db_session
 
 
-async def get_care_timeslots():
+async def get_care_timeslots() -> Dict[str, any]:
+    """
+    This utility method retrieves the before-care and after-care service timeslots from the server configuration file
+    and returns the information as a JSON-Compatible dictionary.
+
+    :return: Returns a JSON-Compatible dictionary containing the before-care and after-care service timeslots information.
+    :rtype: Dict[str, any]
+    """
     timeslots = {
         "metadata": {
             "before_care_check_in_time": ConfigManager().config()['Student Care Settings']['before_care_check_in_time'],
@@ -27,7 +42,23 @@ async def get_care_timeslots():
     return timeslots
 
 
-async def get_one_student_care(student_id: str, care_date: str, session: Session = None):
+async def get_one_student_care(student_id: str, care_date: str, session: Session = None) -> Dict[str, any] | None:
+    """
+    This method is used to retrieve before-care and after-care records for a student
+    from the provided date. This is useful to determine if a student has participated in
+    before-care or after-care for the day. If before-care or after-care records exist
+    for the provided day, then the corresponding records are returned along with the care service timeslots.
+
+    :param student_id: The ID of the student.
+    :type student_id: str, required
+    :param care_date: The date the student participated in a care service in YYYY-MM-DD format.
+    :type care_date: str, required
+    :param session: The database session used to retrieve student care records.
+    :type session: Session, optional
+    :return: None if no records exist, otherwise the student care timeslots and the before-care and after-care records for the student from the provided date if it exists is returned.
+    :rtype: Dict[str, any] | None
+    :raises HTTPException: If any of the provided parameters are invalid.
+    """
     if session is None:
         session = next(get_db_session())
     if student_id is None or not isinstance(student_id, str):
@@ -52,6 +83,18 @@ async def get_one_student_care(student_id: str, care_date: str, session: Session
 
 
 async def delete_student_care_records(pyd_student_care_delete: PydanticDeleteStudentCareRecord, session: Session = None):
+    """
+    This method is used to delete student care records for a single student by specifying either the care type and care date to delete either before-care or after-care,
+    or only providing a care date to delete both before-care and after-care records for the provided date.
+
+    :param pyd_student_care_delete: The ID of the student, care date, and optionally a care type (to delete specifically before-care or after-care)
+    :type pyd_student_care_delete: PydanticDeleteStudentCareRecord, required
+    :param session: The database session used to delete student care records from the database.
+    :type session: Session, optional
+    :return: None
+    :rtype: None
+    :raises HTTPException: If any of the provided parameters are invalid or the student ID does not exist.
+    """
     if session is None:
         session = next(get_db_session())
     if None in (pyd_student_care_delete.student_id, pyd_student_care_delete.care_date):
@@ -80,6 +123,23 @@ async def delete_student_care_records(pyd_student_care_delete: PydanticDeleteStu
 
 
 async def get_total_student_care_for_period(start_date: str, end_date: str, grade: str, session: Session = None):
+    """
+    This method retrieves the accumulated student care hours for before-care and after-care services
+    for the provided range of dates for all students of the specified grade level.
+
+    :param start_date: The start date of the student care records to retrieve in YYYY-MM-DD format.
+    :type start_date: str, required
+    :param end_date: The end date of the student care records to retrieve in YYYY-MM-DD format.
+    :type end_date: str, required
+    :param grade: The name of the student grade level to retrieve student records from.
+    :type grade: str, required
+    :param session: The database session used to retrieve student records and student care service records.
+    :type session: Session, optional
+    :return: A JSON-Compatible dictionary of accumulated student care hours for students of the specified grade over the provided range of dates.
+    :rtype: Dict[str, any]
+    :raises HTTPException: If any of the provided parameters are invalid or the student grade level doesn't exist.
+    :raises RuntimeError: If an integrity error is encountered with the retrieval of database records.
+    """
     if session is None:
         session = next(get_db_session())
     if not check_date_formats([start_date, end_date]):
@@ -97,7 +157,8 @@ async def get_total_student_care_for_period(start_date: str, end_date: str, grad
         all_students = session.query(Student).filter(
             Student.StudentEnabled == 1,
             Student.GradeID == student_grade.id
-        ).order_by(Student.FirstName).all()
+        ).order_by(Student.LastName).all()
+        # Iterate through each student record in the specified grade level and accumulate student care hours in seconds.
         all_student_hours = {}
         for student in all_students:
             student_care_records = session.query(StudentCareHours).filter(
@@ -118,7 +179,7 @@ async def get_total_student_care_for_period(start_date: str, end_date: str, grad
                         all_student_hours[student.StudentID]["before_care_hours"] += time_taken_in_seconds
                     else:
                         all_student_hours[student.StudentID]["after_care_hours"] += time_taken_in_seconds
-
+        # The accumulated hours at this point is in seconds, and must be converted to hours and minutes for displaying/reporting.
         for student_id in all_student_hours.keys():
             time_taken_before_care_formatted = str(timedelta(seconds=int(all_student_hours[student_id]['before_care_hours'])))
             time_taken_after_care_formatted = str(timedelta(seconds=int(all_student_hours[student_id]['after_care_hours'])))
@@ -131,6 +192,18 @@ async def get_total_student_care_for_period(start_date: str, end_date: str, grad
 
 
 async def get_student_care_records(pyd_student_care: PydanticRetrieveStudentCareRecord, session: Session = None):
+    """
+    This method is used to retrieve all before-care and after-care service records for the specified student
+    over the range of dates provided.
+
+    :param pyd_student_care: The student ID, start date and end date of the student care records to retrieve.
+    :type pyd_student_care: PydanticRetrieveStudentCareRecord, required
+    :param session: The database session used to retrieve student care records.
+    :type session: Session, optional
+    :return: A JSON-Compatible dictionary containing the before-care and after-care service for the range of dates provided for the specified student.
+    :rtype: Dict[str, any]
+    :raises HTTPException: If any of the provided parameters are invalid, or the student ID does not exist.
+    """
     if session is None:
         session = next(get_db_session())
     if None in (pyd_student_care.student_id, pyd_student_care.start_date, pyd_student_care.end_date):
@@ -166,7 +239,19 @@ async def get_student_care_records(pyd_student_care: PydanticRetrieveStudentCare
     return found_records
 
 
-async def get_care_students_by_grade(pyd_care_students: PydanticRetrieveCareStudentsByGrade, session: Session = None):
+async def get_care_students_by_grade(pyd_care_students: PydanticRetrieveCareStudentsByGrade, session: Session = None) -> List[Dict[str, any]]:
+    """
+    This method is used to retrieve all the students in a specific grade level that has care records for
+    the provided date and care service type. The student and student care records returned also include
+    if the student is applicable to be checked-in to the specified care type.
+
+    :param pyd_care_students: The student grade level, care type, and care date.
+    :type pyd_care_students: PydanticRetrieveCareStudentsByGrade, required
+    :param session: The database session used to retrieve students with care records by grade level and care date.
+    :type session: Session, optional
+    :return: A list of students in the specified grade level that has had participated in the specified care type on the specified care date.
+    :rtype: List[Dict[str, any]]
+    """
     if session is None:
         session = next(get_db_session())
     if None in (pyd_care_students.student_grade, pyd_care_students.care_date, pyd_care_students.care_type):
@@ -199,6 +284,22 @@ async def get_care_students_by_grade(pyd_care_students: PydanticRetrieveCareStud
 
 
 async def check_in_student(pyd_student_checkin: PydanticStudentCareHoursCheckIn, session: Session = None):
+    """
+    This method is used to check in a student into either before-care or after-care services for the specified date.
+    The current time and check-in signature is provided when the record is created and the check-out time is
+    automatically set to the maximum length of the timeslot unless the student has been manually checked out.
+    An email is automatically sent to the primary and secondary emails associated with the student's account
+    notifying parents that their child has been checked-in of care services. This email is only
+    sent to the parent email if notifications are enabled.
+
+    :param pyd_student_checkin: The student ID, care date, care type, check-in time, and check-in signature.
+    :type pyd_student_checkin: PydanticStudentCareHoursCheckIn, required
+    :param session: The database session used to add a student care record to the database.
+    :type session: Session, optional
+    :return: None
+    :rtype: None
+    :raises HTTPException: If any of the provided parameters are invalid, the current time is not within the timeslot time of the care service, or the student is already checked out.
+    """
     if session is None:
         session = next(get_db_session())
 
@@ -272,6 +373,22 @@ async def check_in_student(pyd_student_checkin: PydanticStudentCareHoursCheckIn,
 
 
 async def check_out_student(pyd_student_checkout: PydanticStudentCareHoursCheckOut, session: Session = None):
+    """
+    This method is used to check out a student from either before-care or after-care services for the specified date.
+    The current time and check-out signature is provided when the record is updated. The check-out time is
+    set to the current time when the student is checked out.
+    An email is automatically sent to the primary and secondary emails associated with the student's account
+    notifying parents that their child has been checked-out of care services. This email is only
+    sent to the parent email if notifications are enabled.
+
+    :param pyd_student_checkout: The student ID, care date, care type, check-out time, and check-out signature.
+    :type pyd_student_checkout: PydanticStudentCareHoursCheckOut, required
+    :param session: The database session used to add a student care record to the database.
+    :type session: Session, optional
+    :return: None
+    :rtype: None
+    :raises HTTPException: If any of the provided parameters are invalid, the current time is not within the timeslot time of the care service, or the student is already checked out.
+    """
     if session is None:
         session = next(get_db_session())
 
