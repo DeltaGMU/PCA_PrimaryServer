@@ -65,6 +65,23 @@ class EmployeeHours(Base):
     """
     A MariaDB data class that represents the table structure of the employee hours table in the database server.
     This model is used to generate the employee_hours table in the MariaDB database server.
+
+    :param id: The employee timesheet record's primary key.
+    :type id: int
+    :param EmployeeID: The ID of the employee account.
+    :type EmployeeID: str
+    :param WorkHours: The work hours for the timesheet record.
+    :type WorkHours: float
+    :param PTOHours: The PTO hours for the timesheet record.
+    :type PTOHours: float
+    :param ExtraHours: The Extra hours for the timesheet record.
+    :type ExtraHours: float
+    :param DateWorked: The date that the employee worked.
+    :type DateWorked: date
+    :param Comment: Optionally, a comment can be added to the timesheet record.
+    :type Comment: str, optional
+    :param EntryCreated: The timestamp of when the entry was created.
+    :type EntryCreated: datetime
     """
     __tablename__ = 'employee_hours'
     id = Column(Integer, primary_key=True, autoincrement=True, unique=True, nullable=False)

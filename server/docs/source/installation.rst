@@ -30,23 +30,4 @@ Other required packages:
 Installation and Setup
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-1) Create an empty directory named 'PCAServer' where you want to install the server:
-    * Ubuntu/Debian/Windows: ``mkdir <path_to_project>/PCAServer/``
-2) Access the new project directory in a terminal:
-    * Ubuntu/Debian/Windows: ``cd <path_to_project>/PCAServer/``
-3) Copy the server files to the project directory:
-    * Method 1: Clone the GitHub repository files (Requires Git to be installed):
-        * Ubuntu/Debian/Windows: ``git clone https://github.com/DeltaGMU/PCA_PrimaryServer.git .``
-        * Git will prompt you for your GitHub username/password for authenticating access.
-    * Method 2: Manually copy the codebase:
-        * Ubuntu/Debian: ``cp -a /<codebase_location>/. /<path_to_project>/PCAServer/``
-        * Windows: Drag and drop the files from the remote directory to the ``PCAServer/`` directory.
-4) Install the required python packages for the server and documentation:
-    * ``pip install -r requirements.txt``
-    * ``pip install -r docs/requirements.txt``
-5) Install the MariaDB Connector (Linux Only):
-    * Debian/Ubuntu: ``sudo apt-get install libmariadb3 libmariadb-dev``
-6) Setup the server configuration file in the server configs directory.
-    * ``<path_to_project>/PCAServer/server/configs/server_config.ini``
-7) Run the server:
-    * ``python3 PCAServer/``
+Please refer to the "Setup and Installation" guide provided to you.

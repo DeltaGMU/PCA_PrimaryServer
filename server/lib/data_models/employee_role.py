@@ -23,6 +23,11 @@ class EmployeeRole(Base):
     """
     A MariaDB data class that represents the table structure of the employee role table in the database server.
     This model is used to generate the employee_role table in the MariaDB database server.
+
+    :param id: The employee role record's primary key.
+    :type id: int
+    :param Name: The name of the employee role.
+    :type Name: str
     """
     __tablename__ = 'employee_role'
     id = Column(Integer, primary_key=True, autoincrement=True, unique=True, nullable=False)

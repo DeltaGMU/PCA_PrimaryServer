@@ -6,5 +6,6 @@ Utility Modules
    :caption: Utility Modules
 
    employee_utils
+   timesheet_utils
    student_utils
    print_utils

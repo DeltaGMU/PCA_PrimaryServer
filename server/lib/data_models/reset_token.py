@@ -25,6 +25,19 @@ class ResetToken(Base):
     """
     A MariaDB data class that represents the table structure of the reset tokens table in the database server.
     This model is used to generate the reset_tokens table in the MariaDB database server.
+
+    :param id: The reset token record's primary key.
+    :type id: int
+    :param EmployeeID: The employee ID associated with the reset token.
+    :type EmployeeID: str
+    :param ResetToken: The reset token associated with the employee ID.
+    :type ResetToken: str
+    :param Iss: The issue time of the reset token.
+    :type Iss: int
+    :param Exp: The expiration time of the reset token.
+    :type Exp: int
+    :param EntryCreated: The timestamp of when the entry was created.
+    :type EntryCreated: datetime
     """
     __tablename__ = 'reset_tokens'
     id = Column(Integer, primary_key=True, autoincrement=True, unique=True, nullable=False)

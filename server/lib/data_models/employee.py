@@ -102,6 +102,27 @@ class Employee(Base):
     """
     A MariaDB data class that represents the table structure of the employee table in the database server.
     This model is used to generate the employee table in the MariaDB database server.
+
+    :param id: The employee record's primary key.
+    :type id: int
+    :param EmployeeID: The ID of the employee account.
+    :type EmployeeID: str
+    :param FirstName: The first name of the employee.
+    :type FirstName: str
+    :param LastName: The last name of the employee.
+    :type LastName: str
+    :param PasswordHash: The hashed and salted representation of the employee password.
+    :type PasswordHash: str
+    :param PTOHoursEnabled: Enable or disable the employee's ability to enter PTO hours in their timesheets.
+    :type PTOHoursEnabled: bool
+    :param ExtraHoursEnabled: Enable or disable the employee's ability to enter Extra hours in their timesheets.
+    :type ExtraHoursEnabled: bool
+    :param EmployeeEnabled: Enable or disable the employee account in the system.
+    :type EmployeeEnabled: bool
+    :param LastUpdated: The timestamp of when the entry was last updated.
+    :type LastUpdated: datetime
+    :param EntryCreated: The timestamp of when the entry was created.
+    :type EntryCreated: datetime
     """
     __tablename__ = 'employee'
     id = Column(Integer, primary_key=True, autoincrement=True, unique=True, nullable=False)

@@ -83,6 +83,28 @@ class StudentCareHours(Base):
     """
     A MariaDB data class that represents the table structure of the student care hours table in the database server.
     This model is used to generate the student_care_hours table in the MariaDB database server.
+
+    :param id: The student care record's primary key.
+    :type id: int
+    :param StudentID: The ID of the student record.
+    :type StudentID: str
+    :param CareDate: The date that the student participated in care services in YYYY-MM-DD format.
+    :type CareDate: date
+    :param CheckInTime: The check-in time of the student into student care services in HH:MM format.
+    :type CheckInTime: time
+    :param CheckOutTime: The check-out time of the student from student care services in HH:MM format.
+    :type CheckOutTime: time
+    :param CareType: The type of student care service. False is before-care, and True is after-care.
+    :type CareType: bool
+    :param CheckInSignature: The signature entered during student check-in to student care services.
+    :type CheckInSignature: str
+    :param CheckOutSignature: The signature entered during student check-out from student care services. This field is optional since the record is initially created without a student check-out signature and updated when the student is
+    checked-out.
+    :type CheckOutSignature: str, optional
+    :param ManuallyCheckedOut: True if the student has been manually checked-out of a student care service by an employee or parent.
+    :type ManuallyCheckedOut: bool
+    :param EntryCreated: The timestamp of when the entry was created.
+    :type EntryCreated: datetime
     """
     __tablename__ = 'student_care_hours'
     id = Column(Integer, primary_key=True, autoincrement=True, unique=True, nullable=False)

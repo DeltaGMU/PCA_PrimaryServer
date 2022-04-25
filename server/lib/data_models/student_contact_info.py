@@ -34,6 +34,31 @@ class StudentContactInfo(Base):
     """
     A MariaDB data class that represents the table structure of the student contact info table in the database server.
     This model is used to generate the student_contact_info table in the MariaDB database server.
+
+    :param id: The student contact information record's primary key.
+    :type id: int
+    :param StudentID: The ID of the student record.
+    :type StudentID: str
+    :param ParentOneFirstName: The first name of the student's first parent.
+    :type ParentOneFirstName: str
+    :param ParentOneLastName: The last name of the student's first parent.
+    :type ParentOneLastName: str
+    :param ParentTwoFirstName: The first name of the student's second parent.
+    :type ParentTwoFirstName: str, optional
+    :param ParentTwoLastName: The last name of the student's first parent.
+    :type ParentTwoLastName: str
+    :param PrimaryEmail: The student's first parent's email address.
+    :type PrimaryEmail: str
+    :param SecondaryEmail: The student's second parent's email address.
+    :type SecondaryEmail: str, optional
+    :param EnablePrimaryEmailNotifications: Enable or disable email notifications for the student's first parent's email address.
+    :type EnablePrimaryEmailNotifications: bool
+    :param EnableSecondaryEmailNotifications: Enable or disable email notifications for the student's second parent's email address.
+    :type EnableSecondaryEmailNotifications: bool
+    :param LastUpdated: The timestamp of when the entry was last updated.
+    :type LastUpdated: datetime
+    :param EntryCreated: The timestamp of when the entry was created.
+    :type EntryCreated: datetime
     """
     __tablename__ = 'student_contact_info'
     id = Column(Integer, primary_key=True, autoincrement=True, unique=True, nullable=False)

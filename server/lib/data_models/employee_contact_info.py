@@ -30,6 +30,23 @@ class EmployeeContactInfo(Base):
     """
     A MariaDB data class that represents the table structure of the employee contact info table in the database server.
     This model provides a method of storing contact information for employees and is used to generate the employee_contact_info table in the MariaDB database server.
+
+    :param id: The employee contact information record's primary key.
+    :type id: int
+    :param EmployeeID: The ID of the employee account.
+    :type EmployeeID: str
+    :param PrimaryEmail: The primary email associated with the employee account.
+    :type PrimaryEmail: str
+    :param SecondaryEmail: The secondary email associated with the employee account.
+    :type SecondaryEmail: str, optional
+    :param EnablePrimaryEmailNotifications: Enable or disable email notifications for the primary email address.
+    :type EnablePrimaryEmailNotifications: bool
+    :param EnableSecondaryEmailNotifications: Enable or disable email notifications for the secondary email address.
+    :type EnableSecondaryEmailNotifications: bool
+    :param LastUpdated: The timestamp of when the entry was last updated.
+    :type LastUpdated: datetime
+    :param EntryCreated: The timestamp of when the entry was created.
+    :type EntryCreated: datetime
     """
     __tablename__ = 'employee_contact_info'
     id = Column(Integer, primary_key=True, autoincrement=True, unique=True, nullable=False)

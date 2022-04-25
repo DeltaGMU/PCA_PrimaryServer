@@ -74,6 +74,23 @@ class Student(Base):
     """
     A MariaDB data class that represents the table structure of the student table in the database server.
     This model is used to generate the student table in the MariaDB database server.
+
+    :param id: The student record's primary key.
+    :type id: int
+    :param StudentID: The ID of the student record.
+    :type StudentID: str
+    :param FirstName: The first name of the student.
+    :type FirstName: str
+    :param LastName: The last name of the student.
+    :type LastName: str
+    :param CarpoolNumber: The carpool number associated with the student record.
+    :type CarpoolNumber: int
+    :param StudentEnabled: Enable or disable the student record in the system.
+    :type StudentEnabled: bool
+    :param LastUpdated: The timestamp of when the entry was last updated.
+    :type LastUpdated: datetime
+    :param EntryCreated: The timestamp of when the entry was created.
+    :type EntryCreated: datetime
     """
     __tablename__ = 'student'
     id = Column(Integer, primary_key=True, autoincrement=True, unique=True, nullable=False)

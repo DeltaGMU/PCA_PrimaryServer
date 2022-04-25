@@ -26,6 +26,11 @@ class StudentGrade(Base):
     """
     A MariaDB data class that represents the table structure of the student grade table in the database server.
     This model is used to generate the student_grade table in the MariaDB database server.
+
+    :param id: The student grade record's primary key.
+    :type id: int
+    :param Name: The student grade level name.
+    :type Name: str
     """
     __tablename__ = 'student_grade'
     id = Column(Integer, primary_key=True, autoincrement=True, unique=True, nullable=False)

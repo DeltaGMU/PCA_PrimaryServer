@@ -13,6 +13,17 @@ class TokenBlacklist(Base):
     """
     A MariaDB data class that represents the table structure of the token_blacklist table in the database server.
     This model is used to generate the token blacklist table in the MariaDB database server.
+
+    :param id: The token blacklist record's primary key.
+    :type id: int
+    :param AccessToken: The access token that has been blacklisted.
+    :type AccessToken: str
+    :param Iss: The issue time of the blacklisted access token.
+    :type Iss: int
+    :param Exp: The expiration time of the blacklisted access token.
+    :type Exp: int
+    :param EntryCreated: The timestamp of when the entry was created.
+    :type EntryCreated: datetime
     """
     __tablename__ = 'token_blacklist'
     id = Column(Integer, primary_key=True, autoincrement=True, unique=True, nullable=False)
