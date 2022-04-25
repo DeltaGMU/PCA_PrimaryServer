@@ -10,5 +10,6 @@ Welcome to the developer documentation for the PCA Project!
    project_resources
    manager_modules
    utility_modules
+   database_controllers
    data_models
    web_modules

@@ -98,8 +98,7 @@ class StudentCareHours(Base):
     :type CareType: bool
     :param CheckInSignature: The signature entered during student check-in to student care services.
     :type CheckInSignature: str
-    :param CheckOutSignature: The signature entered during student check-out from student care services. This field is optional since the record is initially created without a student check-out signature and updated when the student is
-    checked-out.
+    :param CheckOutSignature: The signature entered during student check-out from student care services.
     :type CheckOutSignature: str, optional
     :param ManuallyCheckedOut: True if the student has been manually checked-out of a student care service by an employee or parent.
     :type ManuallyCheckedOut: bool
@@ -122,7 +121,6 @@ class StudentCareHours(Base):
         """
         The constructor for the ``StudentCareHours`` data class that is utilized internally by the SQLAlchemy library.
         Only manually instantiate this data class to create employee hours records in the database within database sessions.
-
 
         :param student_id: The student id that references the student id key in the student table.
         :type student_id: str, required
