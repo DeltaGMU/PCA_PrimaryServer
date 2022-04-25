@@ -11,7 +11,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException, status
 
-from lib.strings import LOG_ERROR_GENERAL, LOG_ORIGIN_API
+from server.lib.strings import LOG_ORIGIN_API
 from server.lib.logging_manager import LoggingManager
 from server.lib.utils.timesheet_utils import round_hours_to_custom_increment
 from server.lib.utils.email_utils import send_email
