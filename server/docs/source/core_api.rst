@@ -12,4 +12,5 @@ Welcome to the developer documentation for the PCA Project!
    utility_modules
    database_controllers
    data_models
+   api_routing_modules
    web_modules
