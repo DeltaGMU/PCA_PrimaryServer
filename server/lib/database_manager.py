@@ -1,4 +1,4 @@
-from server.lib.database_controllers.sqlalchemy_base_interface import main_engine, main_db_session
+from server.lib.database_controllers.sqlalchemy_base_interface import MainEngineBase, main_engine, main_db_session
 
 
 class SessionContext:
