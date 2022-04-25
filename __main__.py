@@ -70,6 +70,7 @@ def graceful_shutdown(web_session_manager=None):
 
 
 def handle_interrupt():
+    # Detects when a system interrupt signal is detected to shut down the server gracefully.
     print("System interrupt detected, shutting down gracefully.")
     graceful_shutdown()
 
