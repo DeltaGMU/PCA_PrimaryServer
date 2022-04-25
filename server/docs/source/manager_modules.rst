@@ -5,6 +5,7 @@ Manager Modules
    :maxdepth: 2
    :caption: Manager Modules
 
-   database_manager
-   web_manager
-   logging_manager
+   managers/config_manager
+   managers/database_manager
+   managers/web_manager
+   managers/logging_manager
