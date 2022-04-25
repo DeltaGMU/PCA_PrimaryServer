@@ -1,3 +1,10 @@
+"""
+This module contains the functions that interface with the database server
+to handle the processing of student records. Any code related to the handling of
+student records that require creating, reading, updating, or deleting data from the database server
+must use this interface module.
+"""
+
 from __future__ import annotations
 from typing import Dict, List
 
@@ -15,6 +22,21 @@ from fastapi import HTTPException, status
 
 
 async def create_student(pyd_student: PydanticStudentRegistration, session: Session = None) -> Dict[str, any]:
+    """
+    This method creates a new student record with all associated student information such as
+    parent contact information and student grade level, and inserts the records into the database.
+    When a new student record is created, an email is automatically sent to the primary parent email notifying them
+    that their child's account has been set up.
+
+    :param pyd_student: The set of information required to register a new student record, represented by the ``PydanticStudentRegistration`` pydantic class.
+    :type pyd_student: PydanticStudentRegistration, required
+    :param session: The database session used to insert the student information into the database.
+    :type session: Session, optional
+    :return: A JSON-Compatible dictionary containing the newly created student record information.
+    :rtype: Dict[str, any]
+    :raises HTTPException: If any of the provided parameters are invalid, or a database error occurred during student creation.
+    """
+
     if session is None:
         session = next(get_db_session())
 
@@ -64,8 +86,6 @@ async def create_student(pyd_student: PydanticStudentRegistration, session: Sess
                                       pyd_student.enable_secondary_email_notifications)
     if contact_info is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The contact information for the student could not be created due to invalid parameters!")
-    # session.add(contact_info)
-    # session.flush()
 
     # Verify that the student grade is valid and return the grade id for the specified grade.
     grade_query = session.query(StudentGrade).filter(StudentGrade.Name == pyd_student.grade).first()
@@ -110,6 +130,19 @@ async def create_student(pyd_student: PydanticStudentRegistration, session: Sess
 
 
 async def update_students(student_updates: Dict[str, PydanticStudentUpdate], session: Session = None) -> List[Student]:
+    """
+    This method updates one or more student records with updated student information provided in the form
+    of a dictionary consisting of student ID keys and student update information values. Upon successful
+    submission of a student record, an email is sent to the student's parents notifying them that their child's account has been updated.
+
+    :param student_updates: A dictionary containing student update information values paired with student ID keys.
+    :type student_updates: Dict[str, PydanticStudentUpdate]
+    :param session: The database session used to update one or more student records.
+    :type session: Session, optional
+    :return: A list of the student records that have been updated in the database.
+    :rtype: List[Student]
+    :raises HTTPException: If any of the provided parameters are invalid.
+    """
     if student_updates is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Provided request body did not contain any valid student information!")
     all_updated_students: List[Student] = []
@@ -122,6 +155,20 @@ async def update_students(student_updates: Dict[str, PydanticStudentUpdate], ses
 
 
 async def update_student(student_id: str, pyd_student_update: PydanticStudentUpdate, session: Session = None) -> Student:
+    """
+    This method updates a single student record with updated student information.
+    Upon successful submission of the student record, an email is sent to the student's parents notifying
+    them that their child's account has been updated.
+
+    :param student_id: The ID of the student.
+    :type student_id: str, required
+    :param pyd_student_update: The updated student information that should be used.
+    :type pyd_student_update: PydanticStudentUpdate, required
+    :param session: The database session used to update the student record.
+    :type session: Session, optional
+    :return: The student record that has been updated.
+    :rtype: Employee
+    """
     if pyd_student_update is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Provided request body did not contain any valid student information!")
     if student_id is None:
@@ -212,7 +259,18 @@ async def update_student(student_id: str, pyd_student_update: PydanticStudentUpd
     return student
 
 
-async def check_student_has_records(student_id: str, session: Session = None):
+async def check_student_has_records(student_id: str, session: Session = None) -> bool:
+    """
+    This utility method is used to check if a student record has any associated student care service records.
+
+    :param student_id: The ID of the student.
+    :type student_id: str, required
+    :param session: The database session used to retrieve student care records.
+    :type session: Session, optional
+    :return: True if the student has associated student care service records.
+    :rtype: bool
+    :raises HTTPException: If the provided student ID is invalid.
+    """
     if session is None:
         session = next(get_db_session())
     if student_id is None or not isinstance(student_id, str):
@@ -228,7 +286,18 @@ async def check_student_has_records(student_id: str, session: Session = None):
     return False
 
 
-async def get_student_by_id(student_id: str, session: Session = None):
+async def get_student_by_id(student_id: str, session: Session = None) -> Student:
+    """
+    This utility method is used to retrieve a student record from the provided student ID.
+
+    :param student_id: The ID of the student.
+    :type student_id: str, required
+    :param session: The database session used to retrieve the student record.
+    :type session: Session, optional
+    :return: The student record retrieved from the database.
+    :rtype: Student
+    :raises HTTPException: If the student ID is invalid, or the student record does not exist.
+    """
     if session is None:
         session = next(get_db_session())
 
@@ -245,6 +314,17 @@ async def get_student_by_id(student_id: str, session: Session = None):
 
 
 async def get_student_contact_info(student_id: str, session: Session = None) -> StudentContactInfo:
+    """
+    This method is used to retrieve a student record's parent contact information.
+
+    :param student_id: The ID of the student.
+    :type student_id: str, required
+    :param session: The database session used to retrieve the student's parent contact information.
+    :type session: Session, optional
+    :return: The student's parent contact information associated with the provided employee ID.
+    :rtype: StudentContactInfo
+    :raises RuntimeError: If the student ID is null or if there is no parent contact information associated with the student record.
+    """
     if student_id is None:
         raise RuntimeError('The student ID was not provided! Please check for errors in the provided data!')
     student_id = student_id.lower().strip()
@@ -260,6 +340,17 @@ async def get_student_contact_info(student_id: str, session: Session = None) -> 
 
 
 async def get_student_grade(student: Student, session: Session = None) -> StudentGrade:
+    """
+    This method is used to retrieve the grade level of the provided student record.
+
+    :param student: The student record used to retrieve the grade level of the provided student record.
+    :type student: Student
+    :param session: The database session used to retrieve the student grade level.
+    :type session: Session, optional
+    :return: The student grade level of the provided student record.
+    :rtype: StudentGrade
+    :raises RuntimeError: If the student record is null, or the student grade level is invalid or doesn't exist in the database.
+    """
     if student is None:
         raise RuntimeError('The student object was not provided! Please check for errors in the provided data!')
     if session is None:
@@ -273,6 +364,19 @@ async def get_student_grade(student: Student, session: Session = None) -> Studen
 
 
 async def remove_students(student_ids: PydanticStudentsRemoval | str, session: Session = None) -> List[Student]:
+    """
+    This method accepts one or more student IDs and deletes the corresponding student records from the database.
+    Please note that student records that have associated student care service records cannot be deleted unless all
+    student care service records are removed.
+
+    :param student_ids: A single student ID or a list of student IDs to delete the corresponding student record(s).
+    :type student_ids: PydanticStudentsRemoval | str, required
+    :param session: The database session used to delete one or more student records.
+    :type session: Session, optional
+    :return: The list of student records that have been deleted from the database.
+    :rtype: List[Student]
+    :raises HTTPException: If any of the provided parameters are invalid, or the student has associated student care service records.
+    """
     if isinstance(student_ids, PydanticStudentsRemoval):
         student_ids = student_ids.student_ids
         if student_ids is None:
