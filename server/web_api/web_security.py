@@ -1,7 +1,12 @@
+"""
+This module contains utility methods to handle web security functionality for the API server.
+This includes generating access tokens, blacklisting tokens, etc.
+"""
+
 from __future__ import annotations
 import traceback
 import jwt
-from typing import List
+from typing import List, Dict
 from datetime import timedelta, datetime
 from fastapi import HTTPException, status
 from fastapi.security.oauth2 import OAuth2PasswordBearer
@@ -18,7 +23,18 @@ from sqlalchemy.exc import IntegrityError
 oauth_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
 
 
-async def create_access_token(employee_user: Employee):
+async def create_access_token(employee_user: Employee) -> Dict[str, str]:
+    """
+    A utility method used to generate an access token for an employee account upon successful sign-in.
+    This method generates a JSON Web Token (JWT) with the current time as the issue time,
+    expiration time as specified in the server configuration file, and includes the appropriate
+    security scopes for the signed-in employee account.
+
+    :param employee_user: The employee record associated to the account that signed-in to the server.
+    :type employee_user: Employee, required
+    :return: A JSON-Compatible dictionary containing basic employee account information and access token information.
+    :rtype: Dict[str, str]
+    """
     if employee_user is None:
         raise RuntimeError('An access token cannot be created for a null user!')
     token_issue = int((datetime.utcnow()).timestamp())
@@ -34,7 +50,18 @@ async def create_access_token(employee_user: Employee):
     return {"employee_id": employee_user.EmployeeID, "first_name": employee_user.FirstName, "token": jwt_token, "token_type": 'Bearer', "iat": token_issue, "exp": token_expiration}
 
 
-async def get_user_from_token(token: str, session=None):
+async def get_user_from_token(token: str, session=None) -> Employee | None:
+    """
+    This utility method decodes a JSON Web Token (JWT) to retrieve the employee account ID.
+    Using this ID, the employee record is retrieved from the database and returned.
+
+    :param token: The access token of the employee account.
+    :type token: str, required
+    :param session: The database session used to retrieve the employee record.
+    :type session: Session, optional
+    :return: None if there is a JWT decode error, otherwise the employee record associated with the employee ID decoded from the JWT.
+    :rtype: Employee | None
+    """
     try:
         decoded_token = jwt.decode(token, ConfigManager().config()['API Server']['server_secret'], algorithms=["HS256"])
     except PyJWTError:
@@ -44,6 +71,20 @@ async def get_user_from_token(token: str, session=None):
 
 
 async def token_is_valid(token: str, scopes: List[str]) -> bool:
+    """
+    This utility method verifies the validity of a user access token and ensures
+    that the permissions scopes match those of the employee account.
+    This utility method is used frequently for protected API routes to ensure
+    only authenticated users can access the endpoints.
+
+    :param token: The access token of the employee account that needs to be verified.
+    :type token: str, required
+    :param scopes: A list of the permission scopes that the employee account must possess to be verified.
+    :type scopes: List[str]
+    :return: True if the access token corresponding to the employee account is valid and contains the correct permission scopes.
+    :rtype: bool
+    :raises HTTPException: If the access token is invalid or expired, or the employee account doesn't have the appropriate permission scopes.
+    """
     if None in (token, scopes):
         return False
     try:
@@ -75,7 +116,17 @@ async def token_is_valid(token: str, scopes: List[str]) -> bool:
     return True
 
 
-async def add_token_to_blacklist(token: str) -> bool | None:
+async def add_token_to_blacklist(token: str) -> bool:
+    """
+    This utility method adds the provided access token to the access token blacklist.
+    This is to prevent JWT hijacking so access tokens are blacklisted when they expire or the user account signs out.
+
+    :param token: The access token of the employee account that needs to be blacklisted.
+    :type token: str, required
+    :return: True if the access token was successfully blacklisted.
+    :rtype: bool
+    :raises HTTPException: If the access token is invalid or expired, or the token has already been invalidated and blacklisted.
+    """
     try:
         token_data = jwt.decode(token, ConfigManager().config()['API Server']['server_secret'], algorithms=["HS256"])
         token_user = token_data.get("sub")
