@@ -1,9 +1,9 @@
+from fastapi import status
 from fastapi_utils.cbv import cbv
 from fastapi_utils.inferring_router import InferringRouter
 from server.web_api.api_routes import API_ROUTES
 from server.web_api.models import ResponseModel
 from server.lib.database_manager import is_active
-from fastapi import status
 
 
 router = InferringRouter()
