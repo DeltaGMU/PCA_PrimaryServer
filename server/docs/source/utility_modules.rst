@@ -5,7 +5,9 @@ Utility Modules
    :maxdepth: 2
    :caption: Utility Modules
 
-   employee_utils
-   timesheet_utils
-   student_utils
-   print_utils
+   utilities/employee_utils
+   utilities/timesheet_utils
+   utilities/student_utils
+   utilities/email_utils
+   utilities/print_utils
+   utilities/date_utils

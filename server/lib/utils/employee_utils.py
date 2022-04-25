@@ -32,7 +32,6 @@ async def generate_employee_id(first_name: str, last_name: str, session: Session
     :return: The newly created employee ID if successful, otherwise None.
     :rtype: str | None
     """
-    # Get the instance of the application shared data and ensure the database engine is initialized.
     if db_engine is None:
         raise RuntimeError(f'Database Error [Error Code: {ERR_DB_SERVICE_INACTIVE}]\n'
                            'The database was unable to be verified as online and active!')
@@ -69,13 +68,13 @@ async def generate_employee_id(first_name: str, last_name: str, session: Session
 
 def create_employee_password_hashes_sync(password: str) -> str | None:
     """
-        This synchronous utility method creates a hashed and salted digest of a provided plain text password using BCrypt.
+    This synchronous utility method creates a hashed and salted digest of a provided plain text password using BCrypt.
 
-        :param password: The plain text password that needs the hash and salt generated.
-        :type password: str, required
-        :return: the newly generated employee password hash if successful, or None if the provided parameters are invalid.
-        :rtype: str | None
-        """
+    :param password: The plain text password that needs the hash and salt generated.
+    :type password: str, required
+    :return: the newly generated employee password hash if successful, or None if the provided parameters are invalid.
+    :rtype: str | None
+    """
     if password is None or len(password) == 0:
         return None
     employee_password_hash = bcrypt.hash(password.encode('utf-8'))
