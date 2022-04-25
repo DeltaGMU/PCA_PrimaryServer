@@ -74,7 +74,7 @@ class APIRoutes:
         remove_students = '/api/v1/students/remove'
         remove_one_student = '/api/v1/students/remove/{student_id}'
 
-    class StudentGrade:
+    class StudentGrades:
         count = '/api/v1/grades/count'
         grades = '/api/v1/grades'
         one_grade = '/api/v1/grades/{grade_name}'

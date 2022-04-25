@@ -24,7 +24,7 @@ class StudentGradesRouter:
     """
     class Create:
         @staticmethod
-        @router.post(API_ROUTES.StudentGrade.grades, status_code=status.HTTP_201_CREATED)
+        @router.post(API_ROUTES.StudentGrades.grades, status_code=status.HTTP_201_CREATED)
         async def create_student_grade(student_grade: PydanticStudentGrade, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint that creates a student grade in the database system.
@@ -46,7 +46,7 @@ class StudentGradesRouter:
 
     class Read:
         @staticmethod
-        @router.get(API_ROUTES.StudentGrade.grades, status_code=status.HTTP_200_OK)
+        @router.get(API_ROUTES.StudentGrades.grades, status_code=status.HTTP_200_OK)
         async def get_all_student_grades(token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint that retrieves all student grades in the database system.
@@ -65,7 +65,7 @@ class StudentGradesRouter:
             return ResponseModel(status.HTTP_200_OK, "success", {"grades": [student_grade.as_dict() for student_grade in student_grades]})
 
         @staticmethod
-        @router.get(API_ROUTES.StudentGrade.one_grade, status_code=status.HTTP_200_OK)
+        @router.get(API_ROUTES.StudentGrades.one_grade, status_code=status.HTTP_200_OK)
         async def get_one_student_grade(grade_name: str, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint that retrieves one student grade in the database system.
@@ -87,7 +87,7 @@ class StudentGradesRouter:
 
     class Delete:
         @staticmethod
-        @router.post(API_ROUTES.StudentGrade.remove_grade, status_code=status.HTTP_200_OK)
+        @router.post(API_ROUTES.StudentGrades.remove_grade, status_code=status.HTTP_200_OK)
         async def delete_student_grade(student_grade: PydanticStudentGrade, token: str = Depends(oauth_scheme), session=Depends(get_db_session)):
             """
             An endpoint that deletes an employee time sheet report provided the starting reporting period as a year and month in the YYYY-MM format.
