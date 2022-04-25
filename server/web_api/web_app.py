@@ -1,7 +1,6 @@
 from fastapi.exceptions import RequestValidationError
 
 from server.lib.config_manager import ConfigManager
-from server.lib.data_models.reset_token import PydanticResetToken
 from server.web_api.models import ResponseModel
 from server.web_api.routing.v1 import core_routing, employee_routing, employee_hours_routing, student_routing, \
     student_care_routing, reports_routing, email_routing, student_grade_routing
@@ -56,13 +55,22 @@ async def serve_index():
     Serves the index page of the uvicorn API server with the original request sent to the server.
 
     :return: The index page of the uvicorn API server.
-    :rtype: fastapi.templating.Jinja2Templates
+    :rtype: server.web_api.models.ResponseModel
     """
     return ResponseModel(status.HTTP_200_OK, "success", {"message": {}})
 
 
 @web_app.post(API_ROUTES.login, status_code=status.HTTP_200_OK)
 async def login(data: OAuth2PasswordRequestForm = Depends()):
+    """
+    An endpoint to handle login requests to the server which verifies employee accounts before allowing access.
+
+    :param data: The username and password of the employee account.
+    :type data: OAuth2PasswordRequestForm
+    :return: A response model containing basic employee account information and access token information.
+    :rtype: server.web_api.models.ResponseModel
+    :raises HTTPException: If the username or password is invalid, the employee account is disabled, or a network connection cannot be established.
+    """
     username = data.username.strip()
     password = data.password.strip()
 
@@ -81,6 +89,16 @@ async def login(data: OAuth2PasswordRequestForm = Depends()):
 
 @web_app.get(API_ROUTES.me, status_code=status.HTTP_200_OK)
 async def logged_in_welcome(token: str = Depends(oauth_scheme)):
+    """
+    An endpoint to welcome a signed-in account and return the first and last name information
+    from the employee account.
+
+    :param token: The access token of the signed-in user.
+    :type token: str, required
+    :return: A response model containing a success message and the first and last name of the signed in account.
+    :rtype: server.web_api.models.ResponseModel
+    :raises HTTPException: If the user access token has expired or is invalid.
+    """
     if not await token_is_valid(token, ["employee"]):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
     user = await get_user_from_token(token, )
@@ -91,6 +109,16 @@ async def logged_in_welcome(token: str = Depends(oauth_scheme)):
 
 @web_app.post(API_ROUTES.logout, status_code=status.HTTP_200_OK)
 async def logout(token: str = Depends(oauth_scheme)):
+    """
+    An endpoint that logs out a signed-in employee account and invalidates and blacklists the access token to prevent
+    JWT hijacking.
+
+    :param token: The access token of the signed-in user.
+    :type token: str, required
+    :return: A response model containing a success message.
+    :rtype: server.web_api.models.ResponseModel
+    :raises HTTPException: If the user access token has expired or is invalid.
+    """
     token_blacklist_check = await add_token_to_blacklist(token)
     if token_blacklist_check is None:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Token is invalid or expired!")
@@ -99,18 +127,18 @@ async def logout(token: str = Depends(oauth_scheme)):
     return ResponseModel(status.HTTP_200_OK, "logged out successfully!")
 
 
-@web_app.post(API_ROUTES.reset, status_code=status.HTTP_200_OK)
-async def reset_password(pyd_info: PydanticResetToken):
-    return ResponseModel(status.HTTP_200_OK, "")
-
-
-@web_app.post(API_ROUTES.forgot_password, status_code=status.HTTP_200_OK)
-async def forgot_password(employee_id: str):
-    return ResponseModel(status.HTTP_200_OK, "")
-
-
 @web_app.get(API_ROUTES.routes, status_code=status.HTTP_200_OK)
 async def get_api_routes(token: str = Depends(oauth_scheme)):
+    """
+    An endpoint that retrieves all the API routes registered in the API server.
+    This is a useful endpoint to verify if API routes are successfully loaded in and online.
+
+    :param token: The access token of the signed-in user.
+    :type token: str, required
+    :return: A response model containing a success message and the list of all active API routes.
+    :rtype: server.web_api.models.ResponseModel
+    :raises HTTPException: If the user access token has expired or is invalid.
+    """
     if not await token_is_valid(token, ["administrator"]):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired or is invalid!")
     routes_list = [{"path": route.path, "name": route.name} for route in web_app.routes]
