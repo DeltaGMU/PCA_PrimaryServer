@@ -9,6 +9,8 @@ from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
+from server.lib.logging_manager import LoggingManager
+from server.lib.strings import LOG_ORIGIN_API
 from server.lib.data_models.student import Student
 from server.lib.data_models.student_grade import StudentGrade, PydanticStudentGrade
 from server.lib.database_manager import get_db_session
@@ -79,6 +81,9 @@ async def create_student_grade(student_grade: PydanticStudentGrade, session: Ses
         new_student_grade = StudentGrade(student_grade)
         session.add(new_student_grade)
         session.commit()
+        LoggingManager().log(LoggingManager.LogLevel.LOG_INFO,
+                             f"A new student grade level: {new_student_grade.Name} has been created.",
+                             origin=LOG_ORIGIN_API, no_print=False)
     except IntegrityError as err:
         session.rollback()
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(err)) from err
@@ -115,6 +120,9 @@ async def remove_student_grade(student_grade: PydanticStudentGrade, session: Ses
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Cannot remove a student grade that is currently in use!")
         session.delete(matching_grade)
         session.commit()
+        LoggingManager().log(LoggingManager.LogLevel.LOG_INFO,
+                             f"A student grade level: {matching_grade.Name} has been deleted.",
+                             origin=LOG_ORIGIN_API, no_print=False)
     except IntegrityError:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Cannot remove a student grade that is currently in use!")
     except SQLAlchemyError as err:

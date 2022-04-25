@@ -14,7 +14,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from server.lib.data_models.employee import Employee
 from server.lib.data_models.employee_role import EmployeeRole
 from passlib.hash import bcrypt
-from server.lib.strings import LOG_ERROR_GENERAL
+from server.lib.strings import LOG_ERROR_GENERAL, LOG_ORIGIN_API
 from server.lib.database_manager import main_engine as db_engine, get_db_session
 
 
@@ -60,6 +60,9 @@ async def generate_employee_id(first_name: str, last_name: str, session: Session
             highest_id = blank_employee.id
         # Generate the ID using the first name, last name, and unique record ID.
         new_employee_id = f"{first_name[0].lower()}{last_name.lower()}{highest_id+1}"
+        LoggingManager().log(LoggingManager.LogLevel.LOG_INFO,
+                             f"A new employee ID was generated: {new_employee_id}.",
+                             origin=LOG_ORIGIN_API, no_print=False)
     except SQLAlchemyError as err:
         LoggingManager.log(LoggingManager.LogLevel.LOG_CRITICAL, f"Error: {str(err)}", origin=LOG_ERROR_GENERAL, no_print=False)
         return None

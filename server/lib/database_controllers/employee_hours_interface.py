@@ -10,6 +10,9 @@ from typing import Dict, List
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from fastapi import HTTPException, status
+
+from lib.strings import LOG_ERROR_GENERAL, LOG_ORIGIN_API
+from server.lib.logging_manager import LoggingManager
 from server.lib.utils.timesheet_utils import round_hours_to_custom_increment
 from server.lib.utils.email_utils import send_email
 from server.lib.data_models.employee import Employee
@@ -94,6 +97,9 @@ async def create_employee_multiple_hours(employee_id: str, employee_updates: Lis
                 submitted_time_sheets.append(timesheet_submission)
         session.commit()
         if len(submitted_time_sheets) > 0:
+            LoggingManager().log(LoggingManager.LogLevel.LOG_INFO,
+                                 f"One or more employee time sheets have been inserted/updated in the database for {employee_id}.",
+                                 origin=LOG_ORIGIN_API, no_print=False)
             # Send notification to enabled emails that the timesheet has been updated.
             send_emails_to = [check_employee.EmployeeContactInfo.PrimaryEmail]
             if check_employee.EmployeeContactInfo.EnableSecondaryEmailNotifications:
@@ -161,6 +167,9 @@ async def create_employee_hours(employee_id: str, date_worked: str, work_hours: 
             )
             session.add(timesheet_submission)
             session.commit()
+            LoggingManager().log(LoggingManager.LogLevel.LOG_INFO,
+                                 f"One or more employee time sheets have been inserted into the database for {employee_id}.",
+                                 origin=LOG_ORIGIN_API, no_print=False)
         else:
             session.rollback()
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Duplicate date entry! The employee already has hours entered for this day! You can update this entry instead using an UPDATE request.")
@@ -224,7 +233,9 @@ async def update_employee_hours(employee_id: str, date_worked: str, work_hours: 
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
                                 detail="The employee timesheet information could not be updated for the provided date. "
                                        "Please check the provided information for errors!")
-
+        LoggingManager().log(LoggingManager.LogLevel.LOG_INFO,
+                             f"One or more employee time sheets have been updated in the database for {employee_id}.",
+                             origin=LOG_ORIGIN_API, no_print=False)
     except IntegrityError as err:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(err)) from err
     return updated_hours
@@ -243,6 +254,9 @@ async def delete_all_employee_time_sheets(employee_id: str, session: Session = N
         EmployeeHours.EmployeeID == employee_id.lower().strip()
     ).delete()
     session.commit()
+    LoggingManager().log(LoggingManager.LogLevel.LOG_INFO,
+                         f"All employee time sheets have been deleted in the database for {employee_id}.",
+                         origin=LOG_ORIGIN_API, no_print=False)
 
 
 async def delete_employee_time_sheets(employee_id: str, dates_worked: PydanticEmployeeTimesheetRemoval, session: Session = None) -> List[EmployeeHours]:
@@ -273,6 +287,9 @@ async def delete_employee_time_sheets(employee_id: str, dates_worked: PydanticEm
                 session.delete(time_sheet)
                 removed_employee_time_sheets.append(time_sheet)
             session.commit()
+            LoggingManager().log(LoggingManager.LogLevel.LOG_INFO,
+                                 f"One or more employee time sheets have been deleted for {employee_id}.",
+                                 origin=LOG_ORIGIN_API, no_print=False)
         else:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Cannot remove employee time sheets that do not exist in the database!")
     else:
@@ -284,6 +301,9 @@ async def delete_employee_time_sheets(employee_id: str, dates_worked: PydanticEm
             session.delete(time_sheet)
             removed_employee_time_sheets.append(time_sheet)
             session.commit()
+            LoggingManager().log(LoggingManager.LogLevel.LOG_INFO,
+                                 f"An employee time sheet on {dates_worked.strip()} has been deleted in the database for {employee_id}.",
+                                 origin=LOG_ORIGIN_API, no_print=False)
         else:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Cannot remove an employee time sheet that does not exist in the database!")
     return removed_employee_time_sheets

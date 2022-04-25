@@ -11,6 +11,8 @@ from sqlalchemy import sql
 from typing import List, Dict
 from random import randint
 
+from server.lib.logging_manager import LoggingManager
+from server.lib.strings import LOG_ORIGIN_API
 from server.lib.data_models.employee_hours import EmployeeHours
 from server.lib.utils.email_utils import send_email
 from server.lib.utils.employee_utils import generate_employee_id, create_employee_password_hashes, verify_employee_password
@@ -94,6 +96,12 @@ async def create_employee(pyd_employee: PydanticEmployeeRegistration, session: S
                                 pyd_employee.pto_hours_enabled, pyd_employee.extra_hours_enabled, pyd_employee.is_enabled)
         session.add(new_employee)
         session.commit()
+        LoggingManager().log(LoggingManager.LogLevel.LOG_INFO,
+                             f"A new employee account record was created: {new_employee.EmployeeID}.",
+                             origin=LOG_ORIGIN_API, no_print=False)
+        LoggingManager().log(LoggingManager.LogLevel.LOG_INFO,
+                             f"A new employee contact information record was created for {new_employee.EmployeeID}.",
+                             origin=LOG_ORIGIN_API, no_print=False)
     except IntegrityError as err:
         session.rollback()
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(err)) from err
@@ -155,6 +163,9 @@ async def remove_employees(employee_ids: PydanticEmployeesRemoval | str, session
             session.commit()
         else:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Cannot remove an employee that does not exist in the database!")
+    LoggingManager().log(LoggingManager.LogLevel.LOG_INFO,
+                         f"The following employee account records were deleted: {','.join([employee.EmployeeID for employee in removed_employees])}.",
+                         origin=LOG_ORIGIN_API, no_print=False)
     return removed_employees
 
 
@@ -180,6 +191,9 @@ async def update_employees(employee_updates: Dict[str, PydanticEmployeeUpdate], 
         all_updated_employees.append(updated_employee)
     if len(employee_updates) != len(all_updated_employees):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="One or more employees were not able to be updated!")
+    LoggingManager().log(LoggingManager.LogLevel.LOG_INFO,
+                         f"The following employee account records were updated: {','.join([employee.EmployeeID for employee in all_updated_employees])}.",
+                         origin=LOG_ORIGIN_API, no_print=False)
     return all_updated_employees
 
 
@@ -224,6 +238,9 @@ async def update_employee_password(employee_id: str, current_password: str, new_
     employee.PasswordHash = password_hash
     employee.LastUpdated = sql.func.now()
     session.commit()
+    LoggingManager().log(LoggingManager.LogLevel.LOG_INFO,
+                         f"The following employee account had its password changed: {employee.EmployeeID}.",
+                         origin=LOG_ORIGIN_API, no_print=False)
     # Send notification to enabled emails that the account has had its password updated.
     send_emails_to = []
     if employee.EmployeeContactInfo.EnablePrimaryEmailNotifications:
@@ -316,6 +333,9 @@ async def update_employee(employee_id, pyd_employee_update: PydanticEmployeeUpda
         employee.EmployeeEnabled = pyd_employee_update.is_enabled
         employee.LastUpdated = sql.func.now()
     session.commit()
+    LoggingManager().log(LoggingManager.LogLevel.LOG_INFO,
+                         f"The following employee account had its information updated: {employee.EmployeeID}.",
+                         origin=LOG_ORIGIN_API, no_print=False)
     # Send notification to enabled emails that the account has had its password updated.
     send_emails_to = []
     if employee.EmployeeContactInfo.EnablePrimaryEmailNotifications:

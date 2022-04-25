@@ -7,8 +7,10 @@ import re
 from typing import List
 import requests
 from jinja2 import Environment, FileSystemLoader
+
+from server.lib.logging_manager import LoggingManager
 from server.lib.config_manager import ConfigManager
-from server.lib.strings import ROOT_DIR
+from server.lib.strings import ROOT_DIR, LOG_ORIGIN_API
 from server.web_api.api_routes import THIRD_PARTY_ROUTES
 
 # Email validation regex
@@ -136,4 +138,7 @@ def send_email(to_user: str, to_email: List[str], subj: str, messages: List[str]
                           data=email_opts, headers=headers)
         except requests.exceptions.HTTPError:
             return False
+    LoggingManager().log(LoggingManager.LogLevel.LOG_INFO,
+                         f"An email was sent to the following email addresses: {', '.join([email for email in to])}.",
+                         origin=LOG_ORIGIN_API, no_print=False)
     return True

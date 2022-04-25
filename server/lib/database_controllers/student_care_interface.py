@@ -13,6 +13,8 @@ from sqlalchemy.orm import Session
 from sqlalchemy import desc, asc
 from fastapi import HTTPException, status
 
+from server.lib.logging_manager import LoggingManager
+from server.lib.strings import LOG_ORIGIN_API
 from server.lib.utils.email_utils import send_email
 from server.lib.data_models.student_grade import StudentGrade
 from server.lib.config_manager import ConfigManager
@@ -120,6 +122,9 @@ async def delete_student_care_records(pyd_student_care_delete: PydanticDeleteStu
     for care_record in care_records:
         session.delete(care_record)
     session.commit()
+    LoggingManager().log(LoggingManager.LogLevel.LOG_INFO,
+                         f"One or more student care records have been deleted for: {pyd_student_care_delete.student_id}.",
+                         origin=LOG_ORIGIN_API, no_print=False)
 
 
 async def get_total_student_care_for_period(start_date: str, end_date: str, grade: str, session: Session = None):
@@ -336,6 +341,9 @@ async def check_in_student(pyd_student_checkin: PydanticStudentCareHoursCheckIn,
             )
             session.add(new_student_care_hours)
             session.commit()
+            LoggingManager().log(LoggingManager.LogLevel.LOG_INFO,
+                                 f"A student: {pyd_student_checkin.student_id} has been checked-in to {'after-care' if pyd_student_checkin.care_type else 'before-care'} services on {pyd_student_checkin.check_in_date} at {check_in_time}.",
+                                 origin=LOG_ORIGIN_API, no_print=False)
         except IntegrityError as err:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(err)) from err
     else:
@@ -423,6 +431,11 @@ async def check_out_student(pyd_student_checkout: PydanticStudentCareHoursCheckO
         student_care.CheckOutSignature = pyd_student_checkout.check_out_signature
         student_care.ManuallyCheckedOut = True
         session.commit()
+        LoggingManager().log(LoggingManager.LogLevel.LOG_INFO,
+                             f"A student: {pyd_student_checkout.student_id} has been manually checked-out of "
+                             f"{'after-care' if pyd_student_checkout.care_type else 'before-care'} services on {pyd_student_checkout.check_out_date} at "
+                             f"{student_care.CheckOutTime}.",
+                             origin=LOG_ORIGIN_API, no_print=False)
     except IntegrityError as err:
         session.rollback()
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(err)) from err

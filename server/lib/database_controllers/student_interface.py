@@ -8,6 +8,8 @@ must use this interface module.
 from __future__ import annotations
 from typing import Dict, List
 
+from server.lib.logging_manager import LoggingManager
+from server.lib.strings import LOG_ORIGIN_API
 from server.lib.data_models.student_care_hours import StudentCareHours
 from server.lib.utils.email_utils import send_email
 from server.lib.data_models.student_grade import StudentGrade
@@ -98,6 +100,12 @@ async def create_student(pyd_student: PydanticStudentRegistration, session: Sess
                               contact_info, grade_query.id, pyd_student.is_enabled)
         session.add(new_student)
         session.commit()
+        LoggingManager().log(LoggingManager.LogLevel.LOG_INFO,
+                             f"A new student account record was created: {new_student.StudentID}.",
+                             origin=LOG_ORIGIN_API, no_print=False)
+        LoggingManager().log(LoggingManager.LogLevel.LOG_INFO,
+                             f"A new student contact information record was created for {new_student.StudentID}.",
+                             origin=LOG_ORIGIN_API, no_print=False)
     except IntegrityError as err:
         session.rollback()
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(err)) from err
@@ -151,6 +159,9 @@ async def update_students(student_updates: Dict[str, PydanticStudentUpdate], ses
         all_updated_students.append(updated_student)
     if len(student_updates) != len(all_updated_students):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="One or more students were not able to be updated!")
+    LoggingManager().log(LoggingManager.LogLevel.LOG_INFO,
+                         f"The following student account records were updated: {','.join([student.StudentID for student in all_updated_students])}.",
+                         origin=LOG_ORIGIN_API, no_print=False)
     return all_updated_students
 
 
@@ -235,6 +246,9 @@ async def update_student(student_id: str, pyd_student_update: PydanticStudentUpd
         student.GradeID = grade_query.id
         student.LastUpdated = sql.func.now()
     session.commit()
+    LoggingManager().log(LoggingManager.LogLevel.LOG_INFO,
+                         f"The following student account had its information updated: {student.StudentID}.",
+                         origin=LOG_ORIGIN_API, no_print=False)
     # Send notification to enabled emails that the account has been created.
     if student.StudentContactInfo.EnablePrimaryEmailNotifications:
         send_email(
@@ -402,4 +416,7 @@ async def remove_students(student_ids: PydanticStudentsRemoval | str, session: S
             session.commit()
         else:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Cannot remove a student that does not exist in the database!")
+    LoggingManager().log(LoggingManager.LogLevel.LOG_INFO,
+                         f"The following student account records were deleted: {','.join([student.StudentID for student in removed_students])}.",
+                         origin=LOG_ORIGIN_API, no_print=False)
     return removed_students

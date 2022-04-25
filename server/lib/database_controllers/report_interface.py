@@ -16,6 +16,7 @@ from sqlalchemy import or_
 from fastapi import HTTPException, status
 from jinja2 import Environment, FileSystemLoader
 
+from server.lib.logging_manager import LoggingManager
 from server.lib.config_manager import ConfigManager
 from server.lib.utils.email_utils import send_email
 from server.lib.data_models.report import PydanticLeaveRequest
@@ -27,7 +28,7 @@ from server.lib.data_models.employee_role import EmployeeRole
 from server.lib.data_models.employee import Employee
 from server.lib.data_models.employee_hours import EmployeeHours
 from server.lib.database_manager import get_db_session
-from server.lib.strings import ROOT_DIR
+from server.lib.strings import ROOT_DIR, LOG_ORIGIN_API
 
 # Initializes the file system loader environment for the report generation library.
 env = Environment(loader=FileSystemLoader(
@@ -334,6 +335,9 @@ async def create_time_sheets_csv(start_date: str, end_date: str, session: Sessio
     employee_hours_list = await get_all_time_sheets_for_csv(start_date, end_date, session)
     mem_file = StringIO()
     csv.writer(mem_file).writerows(employee_hours_list)
+    LoggingManager().log(LoggingManager.LogLevel.LOG_INFO,
+                         f"A timesheet CSV spreadsheet was generated for the reporting period: {start_date} - {end_date}.",
+                         origin=LOG_ORIGIN_API, no_print=False)
     return mem_file.getvalue()
 
 
@@ -362,6 +366,9 @@ async def create_student_care_csv(start_date: str, end_date: str, grade: str, se
     employee_hours_list = await get_all_student_care_for_csv(start_date.strip(), end_date.strip(), grade.strip(), session)
     mem_file = StringIO()
     csv.writer(mem_file).writerows(employee_hours_list)
+    LoggingManager().log(LoggingManager.LogLevel.LOG_INFO,
+                         f"A student care service CSV spreadsheet was generated for the reporting period: {start_date} - {end_date}.",
+                         origin=LOG_ORIGIN_API, no_print=False)
     return mem_file.getvalue()
 
 
@@ -426,6 +433,9 @@ async def create_time_sheets_report(start_date: str, end_date: str, session: Ses
                                        f"{ROOT_DIR}/lib/report_generation/styles.css"
                                    ],
                                    options=options)
+    LoggingManager().log(LoggingManager.LogLevel.LOG_INFO,
+                         f"A timesheet PDF report was generated for the reporting period: {start_date} - {end_date}.",
+                         origin=LOG_ORIGIN_API, no_print=False)
     return pdf_bytes
 
 
@@ -492,6 +502,9 @@ async def create_student_care_report(start_date, end_date, grade, session) -> by
                                        f"{ROOT_DIR}/lib/report_generation/styles.css"
                                    ],
                                    options=options)
+    LoggingManager().log(LoggingManager.LogLevel.LOG_INFO,
+                         f"A student care service PDF report was generated for the reporting period: {start_date} - {end_date}.",
+                         origin=LOG_ORIGIN_API, no_print=False)
     return pdf_bytes
 
 
@@ -544,6 +557,9 @@ async def create_leave_request_email(leave_request: PydanticLeaveRequest, sessio
                     to_cc=matching_employee.EmployeeContactInfo.PrimaryEmail
                 )
     if sent_email:
+        LoggingManager().log(LoggingManager.LogLevel.LOG_INFO,
+                             f"A leave request was created by: {matching_employee.EmployeeID} and has been emailed to administration",
+                             origin=LOG_ORIGIN_API, no_print=False)
         return True
     else:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The email could not be sent!")

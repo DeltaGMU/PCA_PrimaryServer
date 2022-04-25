@@ -48,6 +48,6 @@ async def generate_student_id(first_name: str, last_name: str, car_pool_number: 
         LoggingManager().log(LoggingManager.LogLevel.LOG_CRITICAL, f"Encountered an error creating a unique student ID: {str(err)}",
                              error_type=LOG_ERROR_DATABASE, origin=LOG_ERROR_DATABASE, no_print=False)
         raise RuntimeError("Encountered an error creating a unique student ID!") from err
-    LoggingManager().log(LoggingManager.LogLevel.LOG_INFO, f"Generated a new unique student ID.",
+    LoggingManager().log(LoggingManager.LogLevel.LOG_INFO, f"A new student ID was generated: {new_student_id}",
                          origin=LOG_ORIGIN_GENERAL, no_print=False)
     return new_student_id

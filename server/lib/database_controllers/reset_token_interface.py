@@ -9,6 +9,8 @@ import uuid
 from datetime import datetime, timedelta
 from fastapi import HTTPException, status
 
+from server.lib.logging_manager import LoggingManager
+from server.lib.strings import LOG_ORIGIN_API
 from server.lib.utils.email_utils import send_email
 from server.lib.utils.employee_utils import create_employee_password_hashes
 from server.lib.config_manager import ConfigManager
@@ -90,6 +92,9 @@ async def generate_reset_code(forgot_password: PydanticForgotPassword, session: 
             except IntegrityError:
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Cannot find an employee with a matching employee ID!")
     session.commit()
+    LoggingManager().log(LoggingManager.LogLevel.LOG_INFO,
+                         f"A password reset token was generated for: {employee_id} and will be emailed to the account's primary email.",
+                         origin=LOG_ORIGIN_API, no_print=False)
     # Send notification to the primary email that the account has requested a password reset.
     if employee.EmployeeContactInfo.PrimaryEmail:
         send_email(
@@ -145,6 +150,9 @@ async def reset_account_password(reset_password: PydanticResetPassword, session:
     if reset_token.Exp <= cur_time:
         session.delete(reset_token)
         session.commit()
+        LoggingManager().log(LoggingManager.LogLevel.LOG_INFO,
+                             f"A password reset token was deleted for {employee.EmployeeID} because the token has expired.",
+                             origin=LOG_ORIGIN_API, no_print=False)
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="The provided reset code has expired! Please try sending a new reset request.")
     else:
         password_hash = await create_employee_password_hashes(reset_password.new_password)
@@ -153,6 +161,9 @@ async def reset_account_password(reset_password: PydanticResetPassword, session:
         employee.PasswordHash = password_hash
         session.delete(reset_token)
     session.commit()
+    LoggingManager().log(LoggingManager.LogLevel.LOG_INFO,
+                         f"Password has been successfully reset for {employee.EmployeeID} from the provided reset token.",
+                         origin=LOG_ORIGIN_API, no_print=False)
     # Send notification to the primary email that the account has had a password update.
     if employee.EmployeeContactInfo.PrimaryEmail:
         send_email(

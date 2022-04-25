@@ -139,6 +139,9 @@ def create_default_admin_account():
                                  default_admin_password, default_admin_role_id, default_admin_contact_info, enabled=True)
         session.add(default_admin)
         session.commit()
+        LoggingManager().log(LoggingManager.LogLevel.LOG_INFO,
+                             f"A default administrator account was created: {default_admin.EmployeeID}.",
+                             origin=LOG_ORIGIN_DATABASE, no_print=False)
     except SQLAlchemyError as err:
         LoggingManager().log(LoggingManager.LogLevel.LOG_CRITICAL,
                              f'Encountered an error checking/setting-up the account roles: {str(err)}',
