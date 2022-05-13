@@ -7,8 +7,7 @@ from server.lib.error_codes import ERR_CONFIG_MNGR_INCORRECT_PARAMS
 
 class ConfigManager:
     """
-    This class handles the logic for logging information to both the console and to log files.
-    It utilizes rotating log files to log server processes and events as well as any errors that may occur.
+    This class handles the logic for reading and writing data to the server configuration file.
 
     :raises RuntimeError: If any of the parameters passed through to the constructor is invalid.
     """
